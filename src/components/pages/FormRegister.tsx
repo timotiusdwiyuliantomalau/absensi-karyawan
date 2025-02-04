@@ -106,7 +106,7 @@ const FormRegister = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-orange-400 hover:bg-white/30 text-white font-bold rounded-lg transition-all duration-300 uppercase tracking-wider cursor-pointer"
+            className="w-full py-3 bg-orange-400 text-white font-bold rounded-lg transition-all duration-300 uppercase tracking-wider cursor-pointer"
           >
             Daftar
           </button>
