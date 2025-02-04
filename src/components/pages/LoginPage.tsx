@@ -29,7 +29,7 @@ export default function LoginPage() {
           GG Suspension
         </motion.h1>
         <motion.p
-          className="text-lg text-center max-w-md"
+          className="text-xl text-center max-w-md mb-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
