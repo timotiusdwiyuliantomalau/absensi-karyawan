@@ -1,27 +1,48 @@
 import { useEffect, useState } from "react";
 import { getDaftarKaryawan } from "../../firebase/service";
 import { RiAccountPinCircleLine } from "react-icons/ri";
+import { GrUserWorker } from "react-icons/gr";
 
 const EmployeeList = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("All");
+  const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
 
-  const branches = ["ALL", "BEKASI","TANGERANG","DEPOK","JAKTIM","JAKSEL","CIKARANG","BOGOR"];
+  const branches = [
+    "ALL",
+    "BEKASI",
+    "TANGERANG",
+    "DEPOK",
+    "JAKTIM",
+    "JAKSEL",
+    "CIKARANG",
+    "BOGOR",
+  ];
 
   useEffect(() => {
-    getDaftarKaryawan().then((res) => {
-      setDaftarKaryawan(res)
+    getDaftarKaryawan().then((res: any) => {
+      if (selectedBranch === "ALL") {
+        setDaftarKaryawan(res);
+      } else {
+        const listKaryawan = res.filter(
+          (karyawan: any) =>
+            karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase()
+        );
+        setDaftarKaryawan(listKaryawan);
+      }
+
     });
-  }, []);
+  }, [selectedBranch]); // Dependency pada selectedBranch saja
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="">
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#d27925] py-8 px-7 w-full">
-          <h1 className="text-3xl font-bold text-white">
-            Daftar Karyawan
-          </h1>
+            <div className="flex items-center gap-3">
+            <GrUserWorker className="text-5xl text-white" />
+          <h1 className="text-3xl font-bold text-white">Daftar Karyawan</h1>
+            </div>
 
           <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -52,8 +73,6 @@ const EmployeeList = () => {
               value={selectedBranch}
               onChange={(e) => {
                 setSelectedBranch(e.target.value);
-                const listKaryawan=daftarKaryawan.filter((karyawan:any)=>karyawan.gerai.toLowerCase()==e.target.value.toLowerCase());
-                setDaftarKaryawan(listKaryawan);
               }}
             >
               {branches.map((branch) => (
@@ -66,13 +85,13 @@ const EmployeeList = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-          {daftarKaryawan.map((employee:any,i:number) => (
+          {daftarKaryawan.map((employee: any, i: number) => (
             <div
               key={i}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <div className="p-6 flex items-start gap-4">
-              <RiAccountPinCircleLine className="w-16 h-16 rounded-full object-cover border-2 border-blue-100" />
+                <RiAccountPinCircleLine className="w-16 h-16 rounded-full object-cover border-2 border-blue-100" />
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900">
                     {employee.nama.toUpperCase()}
