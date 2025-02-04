@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { handleGoogleSignIn } from "../../utils/SignInGoogle";
-import { Link } from "react-router-dom";
 
 export default function LoginPage() {
     return(
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#e7453a] to-[#dab455] text-white">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#ed6437] to-[#dab455] text-white">
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
