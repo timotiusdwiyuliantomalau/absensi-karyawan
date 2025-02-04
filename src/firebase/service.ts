@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, writeBatch } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, writeBatch } from "firebase/firestore";
 import { firestore } from "./init";
 import Papa from 'papaparse';
 
@@ -48,4 +48,15 @@ export async function importCSV(file: any) {
       console.error('Error parsing CSV:', error);
     }
   });
+}
+
+
+export async function handleAddKaryawan(data:any){
+  try{
+    await addDoc(collection(firestore, "daftar-karyawan"), data);
+    return { message: "Berhail register!" };
+  }
+  catch{
+
+  }
 }

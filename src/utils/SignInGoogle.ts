@@ -7,7 +7,9 @@ export const handleGoogleSignIn = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    console.log(user);
+    console.log(user.email);
+    user&&localStorage.setItem("email", JSON.stringify(user.email));
+    if(user) window.location.href="/#/register";
   } catch (error) {
     console.error("Error signing in:", error);
   }

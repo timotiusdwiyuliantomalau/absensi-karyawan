@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { handleGoogleSignIn } from "../../utils/SignInGoogle";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
     return(
@@ -20,7 +21,7 @@ export default function LoginPage() {
           />
         </motion.div>
         <motion.h1
-          className="text-5xl font-bold mb-4 mt-8"
+          className="text-5xl mb-4 mt-8 text-black font-bold"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -36,7 +37,7 @@ export default function LoginPage() {
         >
           Absensi Pegawai GG Suspension
         </motion.p>
-        {/* <Link to="/home"> */}
+        {/* <Link to="/register"> */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
