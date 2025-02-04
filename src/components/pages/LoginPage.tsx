@@ -22,7 +22,7 @@ export default function LoginPage() {
         </span>
       </motion.div>
       <motion.h1
-        className="text-5xl mb-4 mt-8 text-black font-bold"
+        className="text-4xl mt-8 text-black font-bold text-center p-3"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -30,7 +30,7 @@ export default function LoginPage() {
         GG SUSPENSION
       </motion.h1>
       <motion.p
-        className="text-xl text-center max-w-md mb-3"
+        className="text-xl text-center max-w-md mb-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.5 }}

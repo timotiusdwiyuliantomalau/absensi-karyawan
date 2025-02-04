@@ -5,6 +5,7 @@ import Location from "../fragments/Location";
 import { handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [selfieImage, setSelfieImage] = useState<string>("");
@@ -86,10 +87,10 @@ const Home = () => {
             { icon: <FaCalendar />, text: "Kalender" },
             { icon: <FaClock />, text: "Lembur" },
           ].map((item, index) => (
-            <div key={index}>
+            <Link to={"/daftar-karyawan"} key={index}>
               <div className="flex justify-center text-2xl">{item.icon}</div>
               <div className="mt-2 text-sm">{item.text}</div>
-            </div>
+            </Link>
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />

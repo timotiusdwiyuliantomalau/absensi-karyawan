@@ -17,7 +17,6 @@ export const handleGoogleSignIn = async () => {
 export const handleSignOut = async () => {
   try {
     await signOut(auth);
-    console.log("Successfully signed out");
     window.location.reload();
   } catch (error) {
     console.error("Error signing out:", error);

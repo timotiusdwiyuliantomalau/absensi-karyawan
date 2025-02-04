@@ -98,6 +98,9 @@ const FormRegister = () => {
               <option value="BOGOR" className="bg-white text-black">
                 BOGOR
               </option>
+              <option value="JAKSEL" className="bg-white text-black">
+                JAKSEL
+              </option>
             </select>
           </div>
 
