@@ -83,6 +83,9 @@ const FormRegister = () => {
               <option value="BEKASI" className="bg-white text-black">
                 BEKASI (PUSAT)
               </option>
+              <option value="BOGOR" className="bg-white text-black">
+                TANGERANG
+              </option>
               <option value="DEPOK" className="bg-white text-black">
                 DEPOK
               </option>
