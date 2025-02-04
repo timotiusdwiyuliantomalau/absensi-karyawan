@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { getDaftarKaryawan } from "../../firebase/service";
+import { RiAccountPinCircleLine } from "react-icons/ri";
 
 const EmployeeList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("All");
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
 
-  const branches = ["All", "Bekasi", "Bandung", "Surabaya"];
+  const branches = ["ALL", "BEKASI","TANGERANG","DEPOK","JAKTIM","JAKSEL","CIKARANG","BOGOR"];
 
   useEffect(() => {
     getDaftarKaryawan().then((res) => {
@@ -15,10 +16,10 @@ const EmployeeList = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">
+    <div className="min-h-screen bg-gray-50">
+      <div className="">
+        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#d27925] py-8 px-7 w-full">
+          <h1 className="text-3xl font-bold text-white">
             Daftar Karyawan
           </h1>
 
@@ -26,7 +27,7 @@ const EmployeeList = () => {
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="Search employees..."
+                placeholder="Cari karyawan..."
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -49,7 +50,11 @@ const EmployeeList = () => {
             <select
               className="w-full sm:w-40 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
+              onChange={(e) => {
+                setSelectedBranch(e.target.value);
+                const listKaryawan=daftarKaryawan.filter((karyawan:any)=>karyawan.gerai.toLowerCase()==e.target.value.toLowerCase());
+                setDaftarKaryawan(listKaryawan);
+              }}
             >
               {branches.map((branch) => (
                 <option key={branch} value={branch}>
@@ -60,18 +65,14 @@ const EmployeeList = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           {daftarKaryawan.map((employee:any,i:number) => (
             <div
               key={i}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <div className="p-6 flex items-start gap-4">
-                <img
-                  src={employee.nama}
-                  alt={employee.nama}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-blue-100"
-                />
+              <RiAccountPinCircleLine className="w-16 h-16 rounded-full object-cover border-2 border-blue-100" />
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900">
                     {employee.nama.toUpperCase()}
@@ -79,7 +80,7 @@ const EmployeeList = () => {
                   <p className="text-sm text-gray-600 mt-1">
                     {employee.divisi.toUpperCase()}
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-3 flex items-center gap-1">
                     <svg
                       className="w-5 h-5"
                       fill="red"
