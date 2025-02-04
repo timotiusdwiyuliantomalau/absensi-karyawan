@@ -1,7 +1,16 @@
-import { addDoc, collection, doc, setDoc, writeBatch } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, setDoc, writeBatch } from "firebase/firestore";
 import { firestore } from "./init";
 import Papa from 'papaparse';
 
+export async function getDaftarKaryawan() {
+  try {
+    const snapshot = await getDocs(collection(firestore, "daftar-karyawan"));
+    const data = snapshot.docs.map((doc) => doc.data());
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
 
 export async function handleSubmitAbsensi(
   collectionName: string,
