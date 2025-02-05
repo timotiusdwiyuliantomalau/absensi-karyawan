@@ -2,7 +2,6 @@ import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from "../firebase/init";
 import { getPersonalKaryawan } from "../firebase/service";
 import { setCookie } from "./cookies";
-import { a } from "framer-motion/client";
 import Swal from "sweetalert2";
 
 // Create a provider instance
