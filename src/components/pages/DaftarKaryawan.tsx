@@ -37,8 +37,8 @@ const EmployeeList = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="">
-        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#d27925] py-8 px-7 w-full">
+      <div>
+        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#EA9146] py-8 px-7 w-full">
             <div className="flex items-center gap-3">
             <GrUserWorker className="text-5xl text-white" />
           <h1 className="text-3xl font-bold text-white">Daftar Karyawan</h1>

@@ -22,7 +22,7 @@ export default function LoginPage() {
         </span>
       </motion.div>
       <motion.h1
-        className="text-4xl mt-8 text-black font-bold text-center p-3"
+        className="text-5xl mt-8 text-black font-bold text-center p-3"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -44,7 +44,7 @@ export default function LoginPage() {
         className="flex gap-3 items-center px-6 py-2 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 mt-2"
         onClick={handleGoogleSignIn}
       >
-        <p>REGISTER</p>
+        <p>LOGIN</p>
         <img src="/LOGO%20GOOGLE.png" alt="" className="w-5" />
       </motion.button>
       {/* </Link> */}
