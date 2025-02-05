@@ -17,7 +17,7 @@ const Home = () => {
   const [myProfile, setMyProfile] = useState<any>(null);
 
   const handleCapture = (image: string) => {
-    if(location.length==0) return alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
+    // if(location.length==0) return alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
     setSelfieImage(image);
     const date = new Date();
     const day = String(date.getDate()).padStart(2, "0");
