@@ -1,17 +1,20 @@
 import { FaUsers, FaCalendarAlt, FaCalendar, FaClock } from "react-icons/fa";
 import Camera from "../fragments/Camera";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Location from "../fragments/Location";
 import { handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
 import { Link } from "react-router-dom";
+import { getCookie } from "../../utils/cookies";
+import { MdAccountCircle } from "react-icons/md";
 
 const Home = () => {
   const [selfieImage, setSelfieImage] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isCamera,setIsCamera]=useState<boolean>(false);
+  const [myProfile, setMyProfile] = useState<any>(null);
 
   const handleCapture = (image: string) => {
     if(location.length==0) return alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
@@ -25,16 +28,21 @@ const Home = () => {
     setIsSubmit(true);
     handleSubmitAbsensi(
       "absensi-pegawai-bekasi",
-      [{ nama: "John Doe", alamat: location, jabatan: "IT Developer",waktu:currentTime }],
+      {...myProfile,alamat:location,waktu:currentTime },
       formattedDate
     ).then((res: any) => {
+      console.log(res);
       setIsSubmit(false);
-      res && Swal.fire("Berhasil", "Anda telah absen!", "success");
+      Swal.fire("Berhasil", "Anda telah absen!", "success");
       setIsCamera(false);
     });
   };
 
-  
+  useEffect(() => {
+    const result=getCookie("myData");
+    setMyProfile(JSON.parse(result||""));
+  },[]);
+
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
@@ -53,21 +61,17 @@ const Home = () => {
             <img
               src="./LOGO%20OFFICIAL.png"
               alt="Logo"
-              className="w-10 h-10"
+              className="w-8"
             />
-            <span className="ml-2 text-xl font-bold">Absensi Pegawai</span>
+            <span className="ml-2 text-md font-bold">Absensi Pegawai GG Suspension</span>
           </div>
           <i className="fas fa-bell"></i>
         </div>
-        <div className="flex items-center mt-4">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/G8zbMvUB-qpJk7jO7mBu7igEtjdvcaO2xkI2KThBAkk.jpg"
-            alt="User profile"
-            className="w-12 h-12 rounded-full"
-          />
-          <div className="ml-4">
-            <div className="text-lg font-semibold">John Doe</div>
-            <div className="text-sm">UI/UX Designer</div>
+        <div className="flex items-center mt-4 gap-2">
+          <MdAccountCircle className="text-7xl"></MdAccountCircle>
+          <div>
+            <div className="text-lg font-semibold">{myProfile?.nama}</div>
+            <div className="text-sm">{myProfile?.divisi}</div>
           </div>
           <div className="ml-auto text-right">
             <div className="text-lg font-semibold">09:50 WIB</div>

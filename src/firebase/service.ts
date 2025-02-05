@@ -1,6 +1,16 @@
-import { addDoc, collection, doc, getDocs, setDoc, writeBatch } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 import { firestore } from "./init";
-import Papa from 'papaparse';
+import Papa from "papaparse";
 
 export async function getDaftarKaryawan() {
   try {
@@ -17,11 +27,21 @@ export async function handleSubmitAbsensi(
   data: any,
   tanggal: string
 ) {
-  try{
-      const newDocRef = doc(firestore, collectionName, tanggal);
-      await setDoc(newDocRef, {data});
-    return { message: "Berhail update dokumen lama!" };
-  }catch(err){
+  try {
+    const result: any = await getDoc(doc(firestore, collectionName, tanggal));
+    data = {
+      email: data.email,
+      alamat: data.alamat,
+      divisi: data.divisi,
+      nama: data.nama,
+      waktu: data.waktu,
+    };
+    const snapshot = result.data();
+    snapshot?.data.push(data);
+    const newDocRef = doc(firestore, collectionName, tanggal);
+    await setDoc(newDocRef, { data: snapshot?.data });
+    return snapshot?.data;
+  } catch (err) {
     console.error(err);
   }
 }
@@ -29,20 +49,16 @@ export async function handleSubmitAbsensi(
 export async function importCSV(file: any) {
   Papa.parse(file, {
     complete: async (results) => {
-      const csvData = results.data
-        .slice(1)
-        .filter((row: any) => 
-          row[2]
-        );
+      const csvData = results.data.slice(1).filter((row: any) => row[2]);
       const batch = writeBatch(firestore);
-      const collectionRef = collection(firestore, 'daftar-karyawan');
+      const collectionRef = collection(firestore, "daftar-karyawan");
 
       csvData.forEach((row: any) => {
         const docRef = doc(collectionRef, row[0].trim());
         batch.set(docRef, {
           divisi: row[1].trim(),
           nama: row[2].trim(),
-          gerai:row[4].trim(),
+          gerai: row[4].trim(),
         });
       });
 
@@ -50,22 +66,36 @@ export async function importCSV(file: any) {
         await batch.commit();
         console.log("Berhasil import!");
       } catch (error) {
-        console.error('Gagal import:', error);
+        console.error("Gagal import:", error);
       }
     },
     error: (error: any) => {
-      console.error('Error parsing CSV:', error);
-    }
+      console.error("Error parsing CSV:", error);
+    },
   });
 }
 
-
-export async function handleAddKaryawan(data:any){
-  try{
+export async function handleAddKaryawan(data: any) {
+  try {
     await addDoc(collection(firestore, "daftar-karyawan"), data);
     return { message: "Berhail register!" };
+  } catch (err) {
+    console.error(err);
   }
-  catch{
+}
 
+export async function getPersonalKaryawan(email: string | null) {
+  try {
+    const snapshot = await getDocs(
+      query(
+        collection(firestore, "daftar-karyawan"),
+        where("email", "==", email)
+      )
+    );
+    if (snapshot.empty) return "TIDAK ADA DATA";
+    const data = snapshot.docs.map((doc) => (doc.id, doc.data()));
+    return data.length > 1 ? data[0] : data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
   }
 }
