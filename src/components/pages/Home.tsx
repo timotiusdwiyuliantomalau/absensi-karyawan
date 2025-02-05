@@ -14,8 +14,8 @@ const Home = () => {
   const [isCamera,setIsCamera]=useState<boolean>(false);
 
   const handleCapture = (image: string) => {
-    setSelfieImage(image);
     if(location.length==0) return alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
+    setSelfieImage(image);
     const date = new Date();
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
