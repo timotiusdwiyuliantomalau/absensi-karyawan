@@ -99,3 +99,13 @@ export async function getPersonalKaryawan(email: string | null) {
     console.error("Error fetching data:", error);
   }
 }
+
+export async function getDataAbsensi(tanggal: string) {
+  try {
+    const result: any = await getDoc(doc(firestore, "absensi-pegawai-bekasi", tanggal));
+    return (result.data());
+  }
+  catch (error) {
+    return {error};
+  }
+}

@@ -53,7 +53,7 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
   }
 
   return (
-    <div className="flex items-center space-x-2 text-sm text-gray-600">
+    <div className="flex items-center space-x-2 text-sm text-black font-bold absolute bottom-0 right-4 rounded-full p-2 opacity-60">
       <MapPin className="w-4 h-4" />
       {location ? (
         <span className="truncate max-w-[300px]">
