@@ -19,6 +19,9 @@ const FormRegister = () => {
     handleAddKaryawan(formData).then(() => {
       setIsSubmit(false);
       Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
+      setTimeout(() => {
+        window.location.href = "/";
+      },2500)
     });
   };
 
