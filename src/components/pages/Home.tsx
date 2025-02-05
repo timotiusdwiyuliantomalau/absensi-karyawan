@@ -5,7 +5,7 @@ import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 
@@ -18,20 +18,20 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] = useState<any>(
     []
   );
+  const [hasAbsent,setHasAbsent] = useState<boolean>(true);
+
   const date = new Date();
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     const formattedDate = `${day}-${month}-${year}`;
+    let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
 
   const handleCapture = () => {
     if (location.length == 0)
       return alert(
         "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
       );
-    // setSelfieImage(image);
-    
-    let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
     setIsSubmit(true);
     handleSubmitAbsensi(
       "absensi-pegawai-bekasi",
@@ -42,6 +42,7 @@ const Home = () => {
       setIsSubmit(false);
       Swal.fire("Berhasil", "Anda telah absen!", "success");
       setIsCamera(false);
+      setDataAbsensiSemuaKaryawan([]);
       setTimeout(() => {
         window.location.reload();
       },1500)
@@ -56,6 +57,11 @@ const Home = () => {
         (data: any) => result&&data.email == JSON.parse(result).email
       );
       setDataAbsensiSemuaKaryawan(dataAbsensi);
+      if(currentTime<="17:00:00"||dataAbsensi.length==2){
+        setHasAbsent(true);
+      }else{
+        setHasAbsent(false);
+      }
     });
   }, []);
 
@@ -93,8 +99,9 @@ const Home = () => {
         </div>
         <div className="mt-4 flex justify-center">
           <button
+          disabled={hasAbsent}
             onClick={() => setIsCamera(true)}
-            className="bg-pink-500 text-white py-2 px-6 rounded-full text-lg font-semibold"
+            className={`bg-pink-500 text-white py-2 px-6 rounded-full text-lg font-semibold ${hasAbsent ? "opacity-60 cursor-not-allowed" : ""}`}
           >
             Absensi Kehadiran
           </button>
