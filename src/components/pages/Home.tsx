@@ -42,6 +42,9 @@ const Home = () => {
       setIsSubmit(false);
       Swal.fire("Berhasil", "Anda telah absen!", "success");
       setIsCamera(false);
+      setTimeout(() => {
+        window.location.reload();
+      },1500)
     });
   };
 
