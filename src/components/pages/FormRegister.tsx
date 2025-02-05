@@ -21,7 +21,7 @@ const FormRegister = () => {
       Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
       setTimeout(() => {
         window.location.href = "/";
-      },2500)
+      },2000)
     });
   };
 
