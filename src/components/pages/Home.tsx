@@ -5,7 +5,7 @@ import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 
