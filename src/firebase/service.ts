@@ -94,7 +94,7 @@ export async function getPersonalKaryawan(email: string | null) {
     );
     if (snapshot.empty) return "TIDAK ADA DATA";
     const data = snapshot.docs.map((doc) => (doc.id, doc.data()));
-    return data.length > 1 ? data[0] : data;
+    return data.length > 1 ? data[1] : data[0];
   } catch (error) {
     console.error("Error fetching data:", error);
   }
