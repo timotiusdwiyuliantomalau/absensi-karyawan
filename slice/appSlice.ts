@@ -14,7 +14,7 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setIsLoading: (state) => {
-      state.isLoading = true;
+      state.isLoading = !state.isLoading;
     },
   },
 });

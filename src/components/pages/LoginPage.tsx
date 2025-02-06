@@ -56,16 +56,18 @@ export default function LoginPage() {
         className="flex gap-3 items-center px-6 py-2 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 mt-2"
         onClick={() => {
           handleGoogleSignIn().then((data: any) => {
-            getPersonalKaryawan(data.email).then((data: any) => {      
-                  data.email
-                    ? setCookie("myData", JSON.stringify(data))
-                    : Swal.fire({
-                        icon: "error",
-                        title: "Email Tidak Terdaftar",
-                        text: "Gunakan email yang sudah terdaftar sebelumnya!",
-                      });
-                      dispatch(setIsLoading());
-                      window.location.href = "/#/home";
+            getPersonalKaryawan(data.email).then((data: any) => {  
+                  if(data.email){
+                    setCookie("myData", JSON.stringify(data))
+                    dispatch(setIsLoading());
+                    window.location.href = "/#/home";
+                  }else{
+                    Swal.fire({
+                      icon: "error",
+                      title: "Email Tidak Terdaftar",
+                      text: "Gunakan email yang sudah terdaftar sebelumnya!",
+                    });
+                  }
                 });
           });
         }}
