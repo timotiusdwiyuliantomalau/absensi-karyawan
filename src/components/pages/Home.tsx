@@ -114,7 +114,7 @@ const Home = () => {
         </div>
       </div>
       <div className="p-4">
-        <div className="grid grid-cols-4 gap-4 text-center text-red-700 mb-5">
+        <div className="grid grid-cols-4 gap-4 text-center text-black mb-5">
           {[
             { icon: <FaUsers />, text: "Daftar Karyawan" },
             { icon: <FaCalendarAlt />, text: "Izin Cuti" },
