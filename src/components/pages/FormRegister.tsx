@@ -12,7 +12,7 @@ const FormRegister = () => {
     divisi: "",
     email: emailUser,
   });
-
+  
   const handleSubmit = (e: any) => {
     setIsSubmit(true);
     e.preventDefault();

@@ -56,14 +56,14 @@ export default function LoginPage() {
         className="flex gap-3 items-center px-6 py-2 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 mt-2"
         onClick={() => {
           handleGoogleSignIn().then((data: any) => {
-            dispatch(setIsLoading());
-            setTimeout(() => {
-              dispatch(setIsLoading());
-            }, 2000);
             getPersonalKaryawan(data.email).then((data: any) => {
+              dispatch(setIsLoading());
+              setTimeout(() => {
+                dispatch(setIsLoading());
+              }, 2000);
               if (data.email) {
                 setCookie("myData", JSON.stringify(data));
-                window.location.href = "/#/home";
+                // window.location.href = "/#/home";
               } else {
                 Swal.fire({
                   icon: "error",

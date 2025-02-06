@@ -1,15 +1,29 @@
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import RegisterPage from "./components/pages/RegisterPage";
+import FormRegister from "./components/pages/FormRegister";
+import { getCookie } from "./utils/cookies";
 import Home from "./components/pages/Home";
 import DaftarKaryawan from "./components/pages/DaftarKaryawan";
-import FormRegister from "./components/pages/FormRegister";
 
+const isLoggedIn = getCookie("myData");
 const router = createHashRouter([
-  { path: "/", element: <LoginPage /> },
-  { path: "/register", element: <RegisterPage /> },
-  { path: "/home", element: <Home /> },
-  { path: "/daftar-karyawan", element: <DaftarKaryawan /> },
+  {
+    path: "/",
+    element: isLoggedIn ? <Navigate to="/home" /> : <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: isLoggedIn ? <Navigate to="/home" /> : <RegisterPage />,
+  },
+  {
+    path: "/home",
+    element: isLoggedIn ? <Home></Home> : <Navigate to={"/login"} />,
+  },
+  {
+    path: "/daftar-karyawan",
+    element: <DaftarKaryawan />,
+  },
   { path: "/register-form", element: <FormRegister /> },
 ]);
 

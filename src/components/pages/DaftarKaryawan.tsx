@@ -3,7 +3,7 @@ import { getDaftarKaryawan } from "../../firebase/service";
 import { RiAccountPinCircleLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 
-const EmployeeList = () => {
+const DaftarKaryawan = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
@@ -133,4 +133,4 @@ const EmployeeList = () => {
   );
 };
 
-export default EmployeeList;
+export default DaftarKaryawan;

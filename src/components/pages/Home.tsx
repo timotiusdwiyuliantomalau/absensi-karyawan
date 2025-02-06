@@ -33,7 +33,7 @@ const Home = () => {
       return alert(
         "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
       );
-      
+
     handleSubmitAbsensi(
       "absensi-pegawai-bekasi",
       { ...myProfile, alamat: location, waktu: currentTime },
@@ -57,7 +57,7 @@ const Home = () => {
       const dataAbsensi = res.data.filter(
         (data: any) => result && data.email == JSON.parse(result).email
       );
-      if(dataAbsensi.length<1) return setHasAbsent(false);
+      if (dataAbsensi.length < 1) return setHasAbsent(false);
       setDataAbsensiSemuaKaryawan(dataAbsensi);
       if (dataAbsensi.length < 2) {
         currentTime >= jamPulang && setHasAbsent(false);
@@ -77,11 +77,11 @@ const Home = () => {
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
       {isSubmit && <LoadingElement></LoadingElement>}
-      <div className="bg-orange-500 text-white px-5 pt-4 pb-7 rounded-b-3xl">
+      <div className="bg-orange-500 text-white px-4 pt-4 pb-7 rounded-b-3xl flex flex-col">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="p-[0.1em] bg-white rounded-full">
-            <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
+              <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
             </span>
             <span className="ml-2 text-md font-bold text-black">
               Absensi Pegawai GG Suspension
@@ -89,16 +89,22 @@ const Home = () => {
           </div>
           <i className="fas fa-bell"></i>
         </div>
-        <div className="flex items-center mt-4 gap-2 text-white">
-          <MdAccountCircle className="text-7xl"></MdAccountCircle>
+        <div className="flex items-center mt-4 text-white justify-between">
+          <div className="flex gap-2">
+          <MdAccountCircle className="text-7xl text-gray-300"></MdAccountCircle>
           <div>
             <div className="text-lg font-extrabold">
               {myProfile?.nama.toUpperCase()}
             </div>
-            <div className="text-sm font-extrabold">{myProfile?.divisi.toUpperCase()}</div>
+            <div className="text-lg ">
+              {myProfile?.divisi.toUpperCase()}
+            </div>
           </div>
-          <div className="ml-auto text-right">
-            <div className="text-md font-bold">{tanggalHariIni}</div>
+          </div>
+
+            <div className="text-md font-bold flex gap-2 items-center">
+              <FaCalendar className="text-2xl"/>
+              <p className="text-[10] ">{tanggalHariIni}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-center">
@@ -121,9 +127,15 @@ const Home = () => {
             { icon: <FaCalendar />, text: "Kalender" },
             { icon: <FaClock />, text: "Lembur" },
           ].map((item, index) => (
-            <Link to={"/daftar-karyawan"} key={index} className="bg-white p-4 rounded-lg">
+            <Link
+              to={"/daftar-karyawan"}
+              key={index}
+              className="bg-white p-4 rounded-lg flex flex-col "
+            >
               <div className="flex justify-center text-2xl">{item.icon}</div>
-              <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">{item.text}</div>
+              <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
+                {item.text}
+              </div>
             </Link>
           ))}
         </div>
@@ -138,12 +150,12 @@ const Home = () => {
             dataAbsensiSemuaKaryawan.map((item: any, index: number) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-green-500 text-white px-6 py-3 rounded-full shadow-xl gap-5"
+                className="flex items-center justify-between bg-green-500 text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:text-2xl desktop:font-bold"
               >
                 <span className="font-semibold">
                   {index == 0 ? "Absen Masuk" : "Absen Pulang"}
                 </span>
-                <span className="text-sm font-semibold">{item.waktu}</span>
+                <span className="text-sm desktop:text-lg font-semibold">{item.waktu}</span>
               </div>
             ))
           ) : (
