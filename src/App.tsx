@@ -1,19 +1,20 @@
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/pages/Home";
-import FormRegister from "./components/pages/FormRegister";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
-import DaftarKaryawan from "./components/pages/DaftarKaryawan";
 import RegisterPage from "./components/pages/RegisterPage";
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/daftar-karyawan" element={<DaftarKaryawan />} />
-        <Route path="/register-form" element={<FormRegister />} />
-      </Routes>
-    </Router>
-  );
-}
+import Home from "./components/pages/Home";
+import DaftarKaryawan from "./components/pages/DaftarKaryawan";
+import FormRegister from "./components/pages/FormRegister";
+
+const router = createHashRouter([
+  { path: "/", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
+  { path: "/home", element: <Home /> },
+  { path: "/daftar-karyawan", element: <DaftarKaryawan /> },
+  { path: "/register-form", element: <FormRegister /> },
+]);
+
+const App = () => {
+  return <RouterProvider router={router} />;
+};
+
+export default App;

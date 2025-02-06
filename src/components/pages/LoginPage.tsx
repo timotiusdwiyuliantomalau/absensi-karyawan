@@ -1,9 +1,21 @@
 import { motion } from "framer-motion";
 import { handleGoogleSignIn } from "../../utils/SignInGoogle";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../slice/store";
+import { LoadingElement } from "../ui/LoadingElement";
+import { useDispatch } from "react-redux";
+import { setIsLoading } from "../../../slice/appSlice";
+import { setCookie } from "../../utils/cookies"; 
+import Swal from "sweetalert2";
+import { getPersonalKaryawan } from "../../firebase/service";
 
 export default function LoginPage() {
+  const isLoading = useSelector((state: RootState) => state.slice.isLoading);
+  const dispatch = useDispatch();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#ed6437] to-[#dab455] text-white">
+      {isLoading && <LoadingElement />}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -13,12 +25,12 @@ export default function LoginPage() {
         }}
       >
         <span className="bg-white p-3 rounded-full flex items-center justify-center">
-        <img
-          src="./LOGO%20OFFICIAL.png"
-          alt="logo-gg"
-          width={200}
-          height={200}
-        />
+          <img
+            src="./LOGO%20OFFICIAL.png"
+            alt="logo-gg"
+            width={200}
+            height={200}
+          />
         </span>
       </motion.div>
       <motion.h1
@@ -42,7 +54,21 @@ export default function LoginPage() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         className="flex gap-3 items-center px-6 py-2 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 mt-2"
-        onClick={handleGoogleSignIn}
+        onClick={() => {
+          handleGoogleSignIn().then((data: any) => {
+            getPersonalKaryawan(data.email).then((data: any) => {      
+                  data.email
+                    ? setCookie("myData", JSON.stringify(data))
+                    : Swal.fire({
+                        icon: "error",
+                        title: "Email Tidak Terdaftar",
+                        text: "Gunakan email yang sudah terdaftar sebelumnya!",
+                      });
+                      dispatch(setIsLoading());
+                      window.location.href = "/#/home";
+                });
+          });
+        }}
       >
         <p>LOGIN</p>
         <img src="/LOGO%20GOOGLE.png" alt="" className="w-5" />

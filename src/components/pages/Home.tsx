@@ -5,9 +5,10 @@ import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
+import LoadingRefresh from "../ui/LoadingRefresh";
 
 const Home = () => {
   // const [selfieImage, setSelfieImage] = useState<string>("");
@@ -15,24 +16,23 @@ const Home = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isCamera, setIsCamera] = useState<boolean>(false);
   const [myProfile, setMyProfile] = useState<any>(null);
-  const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] = useState<any>(
-    []
-  );
-  const [hasAbsent,setHasAbsent] = useState<boolean>(true);
-
+  const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
+    useState<any>(undefined);
+  const [hasAbsent, setHasAbsent] = useState<boolean>(true);
+  const jamPulang = "17:00:00";
   const date = new Date();
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
-    let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
 
   const handleCapture = () => {
     if (location.length == 0)
       return alert(
         "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
       );
-    setIsSubmit(true);
+    // setIsSubmit(true);
     handleSubmitAbsensi(
       "absensi-pegawai-bekasi",
       { ...myProfile, alamat: location, waktu: currentTime },
@@ -45,7 +45,7 @@ const Home = () => {
       setDataAbsensiSemuaKaryawan([]);
       setTimeout(() => {
         window.location.reload();
-      },1500)
+      }, 1500);
     });
   };
 
@@ -53,14 +53,18 @@ const Home = () => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
     getDataAbsensi(formattedDate).then((res: any) => {
+      if(!res) setHasAbsent(false);
       const dataAbsensi = res.data.filter(
-        (data: any) => result&&data.email == JSON.parse(result).email
+        (data: any) => result && data.email == JSON.parse(result).email
       );
       setDataAbsensiSemuaKaryawan(dataAbsensi);
-      if(currentTime<="17:00:00"||dataAbsensi.length==2){
+      if (dataAbsensi.length < 2) {
+        currentTime >= jamPulang && setHasAbsent(false);
+        dataAbsensi.length == 1 &&
+          dataAbsensi[0].waktu <= jamPulang &&
+          setHasAbsent(true);
+      } else {
         setHasAbsent(true);
-      }else{
-        setHasAbsent(false);
       }
     });
   }, []);
@@ -71,11 +75,7 @@ const Home = () => {
 
   return (
     <div className="bg-gray-100 font-roboto min-h-screen">
-      {isSubmit && (
-        <div className="h-full w-full fixed z-10 bg-black opacity-70">
-          <LoadingElement></LoadingElement>
-        </div>
-      )}
+      {isSubmit && <LoadingElement></LoadingElement>}
       <div className="bg-indigo-900 text-white px-5 pt-4 pb-7 rounded-b-3xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -89,19 +89,22 @@ const Home = () => {
         <div className="flex items-center mt-4 gap-2">
           <MdAccountCircle className="text-7xl"></MdAccountCircle>
           <div>
-            <div className="text-lg font-semibold">{myProfile?.nama.toUpperCase()}</div>
+            <div className="text-lg font-semibold">
+              {myProfile?.nama.toUpperCase()}
+            </div>
             <div className="text-sm">{myProfile?.divisi.toUpperCase()}</div>
           </div>
           <div className="ml-auto text-right">
-            <div className="text-lg font-semibold">09:50 WIB</div>
             <div className="text-sm">Jumat 12 Februari 2023</div>
           </div>
         </div>
         <div className="mt-4 flex justify-center">
           <button
-          disabled={hasAbsent}
+            disabled={hasAbsent}
             onClick={() => setIsCamera(true)}
-            className={`bg-pink-500 text-white py-2 px-6 rounded-full text-lg font-semibold ${hasAbsent ? "opacity-60 cursor-not-allowed" : ""}`}
+            className={`bg-pink-500 text-white py-2 px-6 rounded-full text-lg font-semibold ${
+              hasAbsent ? "opacity-60 cursor-not-allowed" : ""
+            }`}
           >
             Absensi Kehadiran
           </button>
@@ -123,17 +126,25 @@ const Home = () => {
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera onCapture={handleCapture}></Camera>}
+        <div className="text-center text-xl text-green-700 font-bold mt-5 mb-5">
+          ABSENSI DILAKUKAN 2 HARI SEKALI
+        </div>
         <div className="flex flex-col gap-3">
-          {dataAbsensiSemuaKaryawan.length > 0 &&
+          {dataAbsensiSemuaKaryawan ? (
             dataAbsensiSemuaKaryawan.map((item: any, index: number) => (
               <div
                 key={index}
                 className="flex items-center justify-between bg-green-500 text-white px-6 py-3 rounded-full shadow-xl gap-5"
               >
-                <span className="font-semibold">Sudah Absen</span>
-                <span className="text-sm">{item.waktu}</span>
+                <span className="font-semibold">
+                  {index == 0 ? "Absen Masuk" : "Absen Pulang"}
+                </span>
+                <span className="text-sm font-semibold">{item.waktu}</span>
               </div>
-            ))}
+            ))
+          ) : (
+            <LoadingRefresh></LoadingRefresh>
+          )}
         </div>
       </div>
     </div>

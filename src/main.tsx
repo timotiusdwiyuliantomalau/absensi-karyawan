@@ -1,10 +1,11 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-const container = document.getElementById('root');
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import { Provider } from "react-redux";
+import store from "../slice/store.ts";
 
-// Create a root instance
-const root = createRoot(container!); // The '!' asserts container exists
-
-// Render your app
-root.render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);

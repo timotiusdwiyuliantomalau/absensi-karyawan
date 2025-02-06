@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "./init";
 import Papa from "papaparse";
+import { s } from "framer-motion/client";
 
 export async function getDaftarKaryawan() {
   try {
@@ -27,7 +28,6 @@ export async function handleSubmitAbsensi(
   data: any,
   tanggal: string
 ) {
-  try {
     const result: any = await getDoc(doc(firestore, collectionName, tanggal));
     data = {
       email: data.email,
@@ -36,14 +36,15 @@ export async function handleSubmitAbsensi(
       nama: data.nama,
       waktu: data.waktu,
     };
-    const snapshot = result.data();
+    let snapshot = result.data();
     snapshot?.data.push(data);
-    const newDocRef = doc(firestore, collectionName, tanggal);
-    await setDoc(newDocRef, { data: snapshot?.data });
-    return snapshot?.data;
-  } catch (err) {
-    console.error(err);
-  }
+    if(snapshot){
+      const newDocRef = doc(firestore, collectionName, tanggal);
+      await setDoc(newDocRef, snapshot);
+    }else{
+      const newDocRef = doc(firestore, collectionName, tanggal);
+      await setDoc(newDocRef, { data:[data] });
+    }
 }
 
 export async function importCSV(file: any) {
@@ -52,7 +53,6 @@ export async function importCSV(file: any) {
       const csvData = results.data.slice(1).filter((row: any) => row[2]);
       const batch = writeBatch(firestore);
       const collectionRef = collection(firestore, "daftar-karyawan");
-
       csvData.forEach((row: any) => {
         const docRef = doc(collectionRef, row[0].trim());
         batch.set(docRef, {
