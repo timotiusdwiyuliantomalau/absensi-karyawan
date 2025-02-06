@@ -12,6 +12,7 @@ import { getPersonalKaryawan } from "../../firebase/service";
 export default function LoginPage() {
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
   const dispatch = useDispatch();
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#ed6437] to-[#dab455] text-white">
@@ -58,9 +59,9 @@ export default function LoginPage() {
           handleGoogleSignIn().then((data: any) => {
             getPersonalKaryawan(data.email).then((data: any) => {  
                   if(data.email){
-                    setCookie("myData", JSON.stringify(data))
                     dispatch(setIsLoading());
-                    window.location.href = "/#/home";
+                    setCookie("myData", JSON.stringify(data))
+                    // window.location.href = "/#/home";
                   }else{
                     Swal.fire({
                       icon: "error",
