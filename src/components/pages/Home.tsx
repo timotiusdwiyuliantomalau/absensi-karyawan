@@ -57,13 +57,10 @@ const Home = () => {
       const dataAbsensi = res.data.filter(
         (data: any) => result && data.email == JSON.parse(result).email
       );
-      if (dataAbsensi.length < 1) return setHasAbsent(false);
       setDataAbsensiSemuaKaryawan(dataAbsensi);
       if (dataAbsensi.length < 2) {
-        currentTime >= jamPulang && setHasAbsent(false);
-        dataAbsensi.length == 1 &&
-          dataAbsensi[0].waktu <= jamPulang &&
-          setHasAbsent(true);
+        setHasAbsent(false);
+        if(dataAbsensi.length==1&&dataAbsensi[0].waktu<=jamPulang) setHasAbsent(true);
       } else {
         setHasAbsent(true);
       }
@@ -91,20 +88,18 @@ const Home = () => {
         </div>
         <div className="flex items-center mt-4 text-white justify-between">
           <div className="flex gap-2">
-          <MdAccountCircle className="text-7xl text-gray-300"></MdAccountCircle>
-          <div>
-            <div className="text-lg font-extrabold">
-              {myProfile?.nama.toUpperCase()}
+            <MdAccountCircle className="text-7xl text-gray-300"></MdAccountCircle>
+            <div>
+              <div className="text-lg font-extrabold">
+                {myProfile?.nama.toUpperCase()}
+              </div>
+              <div className="text-lg ">{myProfile?.divisi.toUpperCase()}</div>
             </div>
-            <div className="text-lg ">
-              {myProfile?.divisi.toUpperCase()}
-            </div>
-          </div>
           </div>
 
-            <div className="text-md font-bold flex gap-2 items-center">
-              <FaCalendar className="text-2xl"/>
-              <p className="text-[10] ">{tanggalHariIni}</p>
+          <div className="text-md font-bold flex gap-2 items-center">
+            <FaCalendar className="text-2xl" />
+            <p className="text-[10] ">{tanggalHariIni}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-center">
@@ -120,7 +115,7 @@ const Home = () => {
         </div>
       </div>
       <div className="p-4">
-        <div className="grid grid-cols-4 gap-4 text-center text-black mb-5">
+        <div className="grid grid-cols-4 gap-3 tablet:gap-5 text-center text-black mb-5">
           {[
             { icon: <FaUsers />, text: "Daftar Karyawan" },
             { icon: <FaCalendarAlt />, text: "Izin Cuti" },
@@ -155,7 +150,9 @@ const Home = () => {
                 <span className="font-semibold">
                   {index == 0 ? "Absen Masuk" : "Absen Pulang"}
                 </span>
-                <span className="text-sm desktop:text-lg font-semibold">{item.waktu}</span>
+                <span className="text-sm desktop:text-lg font-semibold">
+                  {item.waktu}
+                </span>
               </div>
             ))
           ) : (
