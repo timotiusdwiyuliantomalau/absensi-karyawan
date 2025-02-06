@@ -54,10 +54,10 @@ const Home = () => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
     getDataAbsensi(formattedDate).then((res: any) => {
-      if(!res) setHasAbsent(false);
       const dataAbsensi = res.data.filter(
         (data: any) => result && data.email == JSON.parse(result).email
       );
+      if(dataAbsensi.length<1) return setHasAbsent(false);
       setDataAbsensiSemuaKaryawan(dataAbsensi);
       if (dataAbsensi.length < 2) {
         currentTime >= jamPulang && setHasAbsent(false);
