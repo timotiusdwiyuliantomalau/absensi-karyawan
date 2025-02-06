@@ -5,7 +5,7 @@ import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
@@ -32,7 +32,7 @@ const Home = () => {
       return alert(
         "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
       );
-    // setIsSubmit(true);
+      
     handleSubmitAbsensi(
       "absensi-pegawai-bekasi",
       { ...myProfile, alamat: location, waktu: currentTime },

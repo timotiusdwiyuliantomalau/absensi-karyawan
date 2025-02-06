@@ -11,7 +11,6 @@ import {
 } from "firebase/firestore";
 import { firestore } from "./init";
 import Papa from "papaparse";
-import { s } from "framer-motion/client";
 
 export async function getDaftarKaryawan() {
   try {
