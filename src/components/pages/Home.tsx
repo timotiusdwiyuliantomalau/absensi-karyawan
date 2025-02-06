@@ -75,36 +75,38 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gray-100 font-roboto min-h-screen">
+    <div className="bg-gray-200 font-roboto min-h-screen">
       {isSubmit && <LoadingElement></LoadingElement>}
-      <div className="bg-indigo-900 text-white px-5 pt-4 pb-7 rounded-b-3xl">
+      <div className="bg-orange-500 text-white px-5 pt-4 pb-7 rounded-b-3xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
+            <span className="p-[0.1em] bg-white rounded-full">
             <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
-            <span className="ml-2 text-md font-bold">
+            </span>
+            <span className="ml-2 text-md font-bold text-black">
               Absensi Pegawai GG Suspension
             </span>
           </div>
           <i className="fas fa-bell"></i>
         </div>
-        <div className="flex items-center mt-4 gap-2">
+        <div className="flex items-center mt-4 gap-2 text-white">
           <MdAccountCircle className="text-7xl"></MdAccountCircle>
           <div>
-            <div className="text-lg font-semibold">
+            <div className="text-lg font-extrabold">
               {myProfile?.nama.toUpperCase()}
             </div>
-            <div className="text-sm">{myProfile?.divisi.toUpperCase()}</div>
+            <div className="text-sm font-extrabold">{myProfile?.divisi.toUpperCase()}</div>
           </div>
           <div className="ml-auto text-right">
-            <div className="text-sm font-bold">{tanggalHariIni}</div>
+            <div className="text-md font-bold">{tanggalHariIni}</div>
           </div>
         </div>
         <div className="mt-4 flex justify-center">
           <button
             disabled={hasAbsent}
             onClick={() => setIsCamera(true)}
-            className={`bg-pink-500 text-white py-2 px-6 rounded-full text-lg font-semibold ${
-              hasAbsent ? "opacity-60 cursor-not-allowed" : ""
+            className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
+              hasAbsent ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             Absensi Kehadiran
@@ -112,7 +114,7 @@ const Home = () => {
         </div>
       </div>
       <div className="p-4">
-        <div className="grid grid-cols-4 gap-4 text-center text-pink-500 mb-5">
+        <div className="grid grid-cols-4 gap-4 text-center text-red-700 mb-5">
           {[
             { icon: <FaUsers />, text: "Daftar Karyawan" },
             { icon: <FaCalendarAlt />, text: "Izin Cuti" },
@@ -121,14 +123,15 @@ const Home = () => {
           ].map((item, index) => (
             <Link to={"/daftar-karyawan"} key={index}>
               <div className="flex justify-center text-2xl">{item.icon}</div>
-              <div className="mt-2 text-sm">{item.text}</div>
+              <div className="mt-2 text-sm font-medium">{item.text}</div>
             </Link>
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera onCapture={handleCapture}></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-5 mb-5">
-          ABSENSI DILAKUKAN 2 HARI SEKALI
+          <p>ABSENSI DILAKUKAN 2 HARI SEKALI</p>
+          <p>08.00 | 17.00</p>
         </div>
         <div className="flex flex-col gap-3">
           {dataAbsensiSemuaKaryawan ? (
