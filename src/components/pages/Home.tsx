@@ -10,6 +10,7 @@ import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
+import { Clock5, Clock8 } from "lucide-react";
 
 const Home = () => {
   // const [selfieImage, setSelfieImage] = useState<string>("");
@@ -43,6 +44,7 @@ const Home = () => {
       setIsSubmit(false);
       Swal.fire("Berhasil", "Anda telah absen!", "success");
       setIsCamera(false);
+      setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
       setTimeout(() => {
         window.location.reload();
@@ -54,13 +56,16 @@ const Home = () => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
     getDataAbsensi(formattedDate).then((res: any) => {
+      setHasAbsent(false);
+      if(!res)return setDataAbsensiSemuaKaryawan([]);
       const dataAbsensi = res.data.filter(
         (data: any) => result && data.email == JSON.parse(result).email
       );
       setDataAbsensiSemuaKaryawan(dataAbsensi);
       if (dataAbsensi.length < 2) {
         setHasAbsent(false);
-        if(dataAbsensi.length==1&&dataAbsensi[0].waktu<=jamPulang) setHasAbsent(true);
+        if(dataAbsensi.length==1&&currentTime<=jamPulang) return  setHasAbsent(true);
+        if(currentTime>=jamPulang) setHasAbsent(false);
       } else {
         setHasAbsent(true);
       }
@@ -136,11 +141,14 @@ const Home = () => {
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera onCapture={handleCapture}></Camera>}
-        <div className="text-center text-xl text-green-700 font-bold mt-8 mb-5">
-          <p>ABSENSI DILAKUKAN 2 KALI SEHARI</p>
-          <p>DATANG : 08.00 | PULANG : 17.00</p>
+        <div className="text-center text-xl text-green-700 font-bold mt-12 mb-7 flex flex-col items-center justify-center gap-2">
+          <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>
+          <span className="text-sm flex gap-3">
+            <span className="flex gap-1 bg-yellow-400 p-2 rounded-full"> <Clock8></Clock8> <p>08.00</p></span>
+            <span className="flex gap-1 bg-yellow-400 p-2 rounded-full"><Clock5></Clock5> <p>17.00</p></span>
+          </span>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 rounded-xl">
           {dataAbsensiSemuaKaryawan ? (
             dataAbsensiSemuaKaryawan.map((item: any, index: number) => (
               <div
@@ -157,6 +165,9 @@ const Home = () => {
             ))
           ) : (
             <LoadingRefresh></LoadingRefresh>
+          )}
+          {dataAbsensiSemuaKaryawan&&dataAbsensiSemuaKaryawan.length<1&&(
+            <div className="text-red-500 text-center -mt-3 font-semibold">Anda belum absen hari ini!</div>
           )}
         </div>
       </div>
