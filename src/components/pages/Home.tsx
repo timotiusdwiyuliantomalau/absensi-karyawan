@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
+import { tanggalHariIni } from "../../utils/tanggalSekarang";
 
 const Home = () => {
   // const [selfieImage, setSelfieImage] = useState<string>("");
@@ -95,7 +96,7 @@ const Home = () => {
             <div className="text-sm">{myProfile?.divisi.toUpperCase()}</div>
           </div>
           <div className="ml-auto text-right">
-            <div className="text-sm">Jumat 12 Februari 2023</div>
+            <div className="text-sm font-bold">{tanggalHariIni}</div>
           </div>
         </div>
         <div className="mt-4 flex justify-center">
