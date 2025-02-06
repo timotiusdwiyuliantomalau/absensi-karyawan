@@ -106,7 +106,7 @@ const Home = () => {
             disabled={hasAbsent}
             onClick={() => setIsCamera(true)}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
-              hasAbsent ? "opacity-50 cursor-not-allowed" : ""
+              hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
           >
             Absensi Kehadiran
@@ -121,17 +121,17 @@ const Home = () => {
             { icon: <FaCalendar />, text: "Kalender" },
             { icon: <FaClock />, text: "Lembur" },
           ].map((item, index) => (
-            <Link to={"/daftar-karyawan"} key={index}>
+            <Link to={"/daftar-karyawan"} key={index} className="bg-white p-4 rounded-lg">
               <div className="flex justify-center text-2xl">{item.icon}</div>
-              <div className="mt-2 text-sm font-medium">{item.text}</div>
+              <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">{item.text}</div>
             </Link>
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera onCapture={handleCapture}></Camera>}
-        <div className="text-center text-xl text-green-700 font-bold mt-5 mb-5">
-          <p>ABSENSI DILAKUKAN 2 HARI SEKALI</p>
-          <p>08.00 | 17.00</p>
+        <div className="text-center text-xl text-green-700 font-bold mt-8 mb-5">
+          <p>ABSENSI DILAKUKAN 2 KALI SEHARI</p>
+          <p>DATANG : 08.00 | PULANG : 17.00</p>
         </div>
         <div className="flex flex-col gap-3">
           {dataAbsensiSemuaKaryawan ? (

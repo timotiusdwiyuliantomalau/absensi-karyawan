@@ -63,7 +63,6 @@ export default function LoginPage() {
             getPersonalKaryawan(data.email).then((data: any) => {
               if (data.email) {
                 setCookie("myData", JSON.stringify(data));
-
                 window.location.href = "/#/home";
               } else {
                 Swal.fire({
