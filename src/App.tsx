@@ -5,6 +5,7 @@ import FormRegister from "./components/pages/FormRegister";
 import { getCookie } from "./utils/cookies";
 import Home from "./components/pages/Home";
 import DaftarKaryawan from "./components/pages/DaftarKaryawan";
+import KaryawanDetail from "./components/pages/KaryawanDetail";
 
 const isLoggedIn = getCookie("myData");
 const router = createHashRouter([
@@ -23,6 +24,10 @@ const router = createHashRouter([
   {
     path: "/daftar-karyawan",
     element: <DaftarKaryawan />,
+  },
+  {
+    path: "/daftar-karyawan/:email",
+    element: <KaryawanDetail />,
   },
   { path: "/register-form", element: <FormRegister /> },
 ]);

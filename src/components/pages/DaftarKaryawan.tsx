@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getDaftarKaryawan } from "../../firebase/service";
 import { RiAccountPinCircleLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
 const DaftarKaryawan = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,27 +23,39 @@ const DaftarKaryawan = () => {
   useEffect(() => {
     getDaftarKaryawan().then((res: any) => {
       if (selectedBranch === "ALL") {
-        setDaftarKaryawan(res);
+        let daftarKaryawanSementara = res;
+        let arr:any=[];
+        daftarKaryawanSementara.forEach((karyawan: any) => {
+          if(arr.length===0) return arr.push(karyawan);
+          res=arr.filter((filterKaryawan: any) => filterKaryawan.email === karyawan.email);
+          if(res.length===0) arr.push(karyawan)
+        });
+        setDaftarKaryawan(arr);
       } else {
-        const listKaryawan = res.filter(
+        let daftarKaryawanSementara = res;
+        let arr:any=[];
+        daftarKaryawanSementara.forEach((karyawan: any) => {
+          if(arr.length===0) return arr.push(karyawan);
+          res=arr.filter((filterKaryawan: any) => filterKaryawan.email === karyawan.email);
+          if(res.length===0) arr.push(karyawan)
+        });
+        const listKaryawan = arr.filter(
           (karyawan: any) =>
             karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase()
         );
         setDaftarKaryawan(listKaryawan);
       }
-
     });
   }, [selectedBranch]); // Dependency pada selectedBranch saja
-  
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div>
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#EA9146] py-8 px-7 w-full">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <GrUserWorker className="text-5xl text-white" />
-          <h1 className="text-3xl font-bold text-white">Daftar Karyawan</h1>
-            </div>
+            <h1 className="text-3xl font-bold text-white">Daftar Karyawan</h1>
+          </div>
 
           <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -86,7 +99,7 @@ const DaftarKaryawan = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           {daftarKaryawan.map((employee: any, i: number) => (
-            <div
+            <Link to={`/daftar-karyawan/${employee.email}`}
               key={i}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >
@@ -125,7 +138,7 @@ const DaftarKaryawan = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

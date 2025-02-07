@@ -34,6 +34,7 @@ export async function handleSubmitAbsensi(
       divisi: data.divisi,
       nama: data.nama,
       waktu: data.waktu,
+      img: data.img,
     };
     let snapshot = result.data();
     snapshot?.data.push(data);
@@ -108,3 +109,4 @@ export async function getDataAbsensi(tanggal: string) {
     return {error};
   }
 }
+
