@@ -99,7 +99,7 @@ export async function getPersonalKaryawan(email: string | null) {
 export async function getDataAbsensi(tanggal: string) {
   try {
     const result: any = await getDoc(
-      doc(firestore, "absensi-pegawai-bekasi", tanggal)
+      doc(firestore, "absensi-pegawai", tanggal)
     );
     return result.data();
   } catch (error) {
