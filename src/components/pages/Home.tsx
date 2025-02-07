@@ -59,7 +59,8 @@ const Home = () => {
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
-      uploadImage(imgURL).then((res: any) => {
+      uploadImage(imgURL,myProfile.email,new Date()
+      .toLocaleTimeString("en-GB", { hour12: false })).then((res: any) => {
         if (location.length == 0)
           return alert(
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
@@ -146,7 +147,7 @@ const Home = () => {
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
-        {isCamera && <Camera></Camera>}
+        {isCamera && <Camera ></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
           <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>
           <span className="text-sm flex gap-3">
