@@ -63,7 +63,7 @@ export default function LoginPage() {
               }, 2000);
               if (data.email) {
                 setCookie("myData", JSON.stringify(data));
-                // window.location.href = "/#/home";
+                window.location.href = "/#/home";
               } else {
                 Swal.fire({
                   icon: "error",

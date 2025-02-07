@@ -18,7 +18,7 @@ const router = createHashRouter([
   },
   {
     path: "/home",
-    element: isLoggedIn ? <Home></Home> : <Navigate to={"/login"} />,
+    element: isLoggedIn ? <Home></Home> : <Navigate to="/" />,
   },
   {
     path: "/daftar-karyawan",
