@@ -93,7 +93,7 @@ const Home = () => {
         </div>
         <div className="flex items-center mt-4 text-white justify-between">
           <div className="flex gap-2">
-            <MdAccountCircle className="text-7xl text-gray-300"></MdAccountCircle>
+            <MdAccountCircle className="text-7xl text-blue-500 bg-white rounded-full"></MdAccountCircle>
             <div>
               <div className="text-lg font-extrabold">
                 {myProfile?.nama.toUpperCase()}
