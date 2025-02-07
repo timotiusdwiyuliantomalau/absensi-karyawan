@@ -66,7 +66,7 @@ const Home = () => {
           alert(
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
           );
-          setHasAbsent(false);
+          return setHasAbsent(false);
         };
         handleSubmitAbsensi(
           { ...myProfile, alamat: location, waktu: currentTime, img: res },
