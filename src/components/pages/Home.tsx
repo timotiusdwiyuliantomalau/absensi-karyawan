@@ -21,13 +21,14 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
   const [hasAbsent, setHasAbsent] = useState<boolean>(true);
-  const jamPulang = "17:00:00";
+  const jamMasuk = "08:00";
+  const jamPulang = "11:00";
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
-  let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
+  let currentTime = new Date().toLocaleTimeString("en-GB", { hour12: false }).substring(0, 5);
 
   const handleCapture = () => {
     if (location.length == 0)
@@ -93,7 +94,9 @@ const Home = () => {
         </div>
         <div className="flex items-center mt-4 text-white justify-between">
           <div className="flex gap-2">
-            <MdAccountCircle className="text-7xl text-blue-500 bg-white rounded-full"></MdAccountCircle>
+            <span className="bg-white rounded-full h-fit">
+            <MdAccountCircle className="text-7xl text-blue-500 rounded-full"></MdAccountCircle>
+            </span>
             <div>
               <div className="text-lg font-extrabold">
                 {myProfile?.nama.toUpperCase()}
@@ -141,7 +144,7 @@ const Home = () => {
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera onCapture={handleCapture}></Camera>}
-        <div className="text-center text-xl text-green-700 font-bold mt-12 mb-7 flex flex-col items-center justify-center gap-2">
+        <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
           <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>
           <span className="text-sm flex gap-3">
             <span className="flex gap-1 bg-yellow-400 p-2 rounded-full"> <Clock8></Clock8> <p>08.00</p></span>
@@ -151,17 +154,37 @@ const Home = () => {
         <div className="flex flex-col gap-3 rounded-xl">
           {dataAbsensiSemuaKaryawan ? (
             dataAbsensiSemuaKaryawan.map((item: any, index: number) => (
-              <div
+              <>
+              {index==0?<div
                 key={index}
-                className="flex items-center justify-between bg-green-500 text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:text-2xl desktop:font-bold"
+                className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${item.waktu<jamMasuk?'bg-green-500':'bg-red-500'}`}
               >
-                <span className="font-semibold">
+                <span className="font-bold py-2">
                   {index == 0 ? "Absen Masuk" : "Absen Pulang"}
                 </span>
-                <span className="text-sm desktop:text-lg font-semibold">
+                <span className="text-xs tablet:text-sm font-semibold">
+                {item.waktu>jamMasuk&&(
+                <p>Terlambat</p>)}
+                <span className="font-semibold">
                   {item.waktu}
                 </span>
-              </div>
+                </span>
+              </div>:<div
+                key={index}
+                className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${item.waktu<jamPulang?'bg-green-500':'bg-red-500'}`}
+              >
+                <span className="font-bold py-2">
+                  {index == 0 ? "Absen Masuk" : "Absen Pulang"}
+                </span>
+                <span className="text-xs tablet:text-sm font-semibold">
+                {item.waktu>jamPulang&&(
+                <p>Terlambat</p>)}
+                <span className="font-semibold">
+                  {item.waktu}
+                </span>
+                </span>
+              </div>}
+              </>
             ))
           ) : (
             <LoadingRefresh></LoadingRefresh>
