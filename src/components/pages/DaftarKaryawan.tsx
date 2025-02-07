@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getDaftarKaryawan } from "../../firebase/service";
 import { RiAccountPinCircleLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { Link } from "react-router-dom";
+import { debounce } from "lodash";
 
 const DaftarKaryawan = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
 
@@ -19,25 +19,52 @@ const DaftarKaryawan = () => {
     "CIKARANG",
     "BOGOR",
   ];
+  const [query, setQuery] = useState("");
+
+  // Fungsi pencarian dengan debounce (500ms delay)
+  const handleSearch = useCallback(
+    debounce((searchTerm: any) => {
+      const res = daftarKaryawan.filter((karyawan: any) => {
+        return karyawan.nama
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      });
+      if (res.length > 0) {
+        return setDaftarKaryawan(res);
+      } 
+    }, 500),
+    []
+  );
+
+  // Event handler input
+  const handleChange = (event: any) => {
+    setQuery(event.target.value);
+    handleSearch(event.target.value); // Panggil debounce function
+    
+  };
 
   useEffect(() => {
     getDaftarKaryawan().then((res: any) => {
       if (selectedBranch === "ALL") {
         let daftarKaryawanSementara = res;
-        let arr:any=[];
+        let arr: any = [];
         daftarKaryawanSementara.forEach((karyawan: any) => {
-          if(arr.length===0) return arr.push(karyawan);
-          res=arr.filter((filterKaryawan: any) => filterKaryawan.email === karyawan.email);
-          if(res.length===0) arr.push(karyawan)
+          if (arr.length === 0) return arr.push(karyawan);
+          res = arr.filter(
+            (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+          );
+          if (res.length === 0) arr.push(karyawan);
         });
         setDaftarKaryawan(arr);
       } else {
         let daftarKaryawanSementara = res;
-        let arr:any=[];
+        let arr: any = [];
         daftarKaryawanSementara.forEach((karyawan: any) => {
-          if(arr.length===0) return arr.push(karyawan);
-          res=arr.filter((filterKaryawan: any) => filterKaryawan.email === karyawan.email);
-          if(res.length===0) arr.push(karyawan)
+          if (arr.length === 0) return arr.push(karyawan);
+          res = arr.filter(
+            (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+          );
+          if (res.length === 0) arr.push(karyawan);
         });
         const listKaryawan = arr.filter(
           (karyawan: any) =>
@@ -63,8 +90,8 @@ const DaftarKaryawan = () => {
                 type="text"
                 placeholder="Cari karyawan..."
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={query}
+                onChange={handleChange}
               />
               <svg
                 className="w-5 h-5 absolute left-3 top-2.5 text-gray-400"
@@ -99,7 +126,8 @@ const DaftarKaryawan = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           {daftarKaryawan.map((employee: any, i: number) => (
-            <Link to={`/absensi-karyawan/${employee.email}`}
+            <Link
+              to={`/absensi-karyawan/${employee.email}`}
               key={i}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >

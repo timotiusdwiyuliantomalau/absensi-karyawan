@@ -50,8 +50,8 @@ export default function KaryawanDetail() {
               {absensiKaryawan.length > 0 &&
                 absensiKaryawan.map((item: any, index: number) => (
                   <div key={index} className="bg-gray-100 p-3 rounded-xl">
-                    <img src={item.img} alt="" />
-                    <p>Alamat : {item.alamat}</p>
+                    <img width={200} height={200} src={item.img} alt="foto-absensi" />
+                    <p><span className="font-semibold">Alamat : </span>{item.alamat}</p>
                     {index==0?<p className={item.waktu<jamMasuk?"bg-green-300 font-semibold":"bg-red-500 rounded-lg font-semibold"}>{item.waktu}</p>:<p className="bg-green-500 rounded-lg font-semibold">{item.waktu}</p>}
                   </div>
                 ))}
