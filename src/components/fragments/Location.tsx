@@ -39,7 +39,7 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
           }
         },
         (err) => {
-          setError("Aktifkan izin lokasi di HP!");
+          setError("Aktifkan izin lokasi di HP, kemudian refresh kembali Website!");
           console.error(err);
         }
       );
@@ -60,7 +60,7 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
           {location.address || `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}
         </span>
       ) : (
-        <span>Getting location...</span>
+        <span>Mencari lokasi Anda...</span>
       )}
     </div>
   );
