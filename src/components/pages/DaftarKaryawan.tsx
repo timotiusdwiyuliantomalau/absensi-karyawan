@@ -99,7 +99,7 @@ const DaftarKaryawan = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           {daftarKaryawan.map((employee: any, i: number) => (
-            <Link to={`/daftar-karyawan/${employee.email}`}
+            <Link to={`/absensi-karyawan/${employee.email}`}
               key={i}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >
