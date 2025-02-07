@@ -64,7 +64,6 @@ const Home = () => {
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
           );
           handleSubmitAbsensi(
-            "absensi-pegawai-bekasi",
             { ...myProfile, alamat: location, waktu: currentTime, img:res },
             formattedDate
           ).then((res: any) => {

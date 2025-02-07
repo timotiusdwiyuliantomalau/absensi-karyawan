@@ -22,29 +22,25 @@ export async function getDaftarKaryawan() {
   }
 }
 
-export async function handleSubmitAbsensi(
-  collectionName: string,
-  data: any,
-  tanggal: string
-) {
-    const result: any = await getDoc(doc(firestore, collectionName, tanggal));
-    data = {
-      email: data.email,
-      alamat: data.alamat,
-      divisi: data.divisi,
-      nama: data.nama,
-      waktu: data.waktu,
-      img: data.img,
-    };
-    let snapshot = result.data();
-    snapshot?.data.push(data);
-    if(snapshot){
-      const newDocRef = doc(firestore, collectionName, tanggal);
-      await setDoc(newDocRef, snapshot);
-    }else{
-      const newDocRef = doc(firestore, collectionName, tanggal);
-      await setDoc(newDocRef, { data:[data] });
-    }
+export async function handleSubmitAbsensi(data: any, tanggal: string) {
+  const result: any = await getDoc(doc(firestore, "absensi-pegawai", tanggal));
+  data = {
+    email: data.email,
+    alamat: data.alamat,
+    divisi: data.divisi,
+    nama: data.nama,
+    waktu: data.waktu,
+    img: data.img,
+  };
+  let snapshot = result.data();
+  snapshot?.data.push(data);
+  if (snapshot) {
+    const newDocRef = doc(firestore, "absensi-pegawai", tanggal);
+    await setDoc(newDocRef, snapshot);
+  } else {
+    const newDocRef = doc(firestore, "absensi-pegawai", tanggal);
+    await setDoc(newDocRef, { data: [data] });
+  }
 }
 
 export async function importCSV(file: any) {
@@ -102,11 +98,11 @@ export async function getPersonalKaryawan(email: string | null) {
 
 export async function getDataAbsensi(tanggal: string) {
   try {
-    const result: any = await getDoc(doc(firestore, "absensi-pegawai-bekasi", tanggal));
-    return (result.data());
-  }
-  catch (error) {
-    return {error};
+    const result: any = await getDoc(
+      doc(firestore, "absensi-pegawai-bekasi", tanggal)
+    );
+    return result.data();
+  } catch (error) {
+    return { error };
   }
 }
-
