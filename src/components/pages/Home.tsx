@@ -61,7 +61,6 @@ const Home = () => {
       setDataAbsensiSemuaKaryawan([]);
       uploadImage(imgURL,myProfile.email,new Date()
       .toLocaleTimeString("en-GB", { hour12: false })).then((res: any) => {
-        console.log(res)
         if (location.length == 0){
           alert(
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
