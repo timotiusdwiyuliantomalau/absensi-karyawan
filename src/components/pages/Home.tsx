@@ -23,7 +23,7 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
   const [hasAbsent, setHasAbsent] = useState<boolean>(true);
-  const jamMasuk = "08:00";
+  const jamMasuk = "08:05";
   const jamPulang = "17:00";
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
@@ -31,8 +31,8 @@ const Home = () => {
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
   let currentTime = new Date()
-  .toLocaleTimeString("en-GB", { hour12: false })
-  .substring(0, 5);
+    .toLocaleTimeString("en-GB", { hour12: false })
+    .substring(0, 5);
   const imgURL = useSelector((state: any) => state.slice.imgURL);
 
   useEffect(() => {
@@ -47,13 +47,14 @@ const Home = () => {
       setDataAbsensiSemuaKaryawan(dataAbsensi);
       if (dataAbsensi.length < 2) {
         setHasAbsent(false);
-        if(dataAbsensi.length==1&&currentTime<=jamPulang) return  setHasAbsent(true);
+        if (dataAbsensi.length == 1 && currentTime <= jamPulang)
+          return setHasAbsent(true);
         if (currentTime >= jamPulang) setHasAbsent(false);
       } else {
         setHasAbsent(true);
       }
     });
-    if(imgURL.length>0){
+    if (imgURL.length > 0) {
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
@@ -63,14 +64,14 @@ const Home = () => {
           return alert(
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
           );
-          handleSubmitAbsensi(
-            { ...myProfile, alamat: location, waktu: currentTime, img:res },
-            formattedDate
-          ).then((res: any) => {
-            setDataAbsensiSemuaKaryawan(res);
-            Swal.fire("Berhasil", "Anda telah absen!", "success");
-            window.location.reload();
-          });
+        handleSubmitAbsensi(
+          { ...myProfile, alamat: location, waktu: currentTime, img: res },
+          formattedDate
+        ).then((res: any) => {
+          setDataAbsensiSemuaKaryawan(res);
+          Swal.fire("Berhasil", "Anda telah absen!", "success");
+          window.location.reload();
+        });
       });
     }
   }, [imgURL]);
@@ -179,9 +180,7 @@ const Home = () => {
                 ) : (
                   <div
                     key={index}
-                    className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${
-                      item.waktu < jamPulang ? "bg-green-500" : "bg-red-500"
-                    }`}
+                    className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-500`}
                   >
                     <span className="font-bold py-2">
                       {index == 0 ? "Absen Masuk" : "Absen Pulang"}
