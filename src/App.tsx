@@ -22,11 +22,11 @@ const router = createHashRouter([
     element: isLoggedIn ? <Home></Home> : <Navigate to="/" />,
   },
   {
-    path: "/daftar-karyawan",
+    path: "/absensi-karyawan",
     element: <DaftarKaryawan />,
   },
   {
-    path: "/daftar-karyawan/:email",
+    path: "/absensi-karyawan/:email",
     element: <KaryawanDetail />,
   },
   { path: "/register-form", element: <FormRegister /> },

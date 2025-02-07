@@ -134,7 +134,7 @@ const Home = () => {
             { icon: <FaClock />, text: "Lembur" },
           ].map((item, index) => (
             <Link
-              to={"/daftar-karyawan"}
+              to={"/"}
               key={index}
               className="bg-white p-4 rounded-lg flex flex-col "
             >
