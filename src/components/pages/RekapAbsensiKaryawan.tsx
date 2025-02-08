@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDaftarKaryawan, getDataAbsensi } from "../../firebase/service";
 import { Link } from "react-router-dom";
+import LoadingRefresh from "../ui/LoadingRefresh";
 
 export default function RekapAbsensiKaryawan() {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] = useState<any>(
@@ -94,7 +95,7 @@ export default function RekapAbsensiKaryawan() {
         </select>
       </div>
       <div className="flex flex-col bg-white gap-5">
-        {dataAbsensiSemuaKaryawan.length > 0 &&
+        {dataAbsensiSemuaKaryawan.length > 0 ?
           dataAbsensiSemuaKaryawan.map((data: any, i: number) => (
             <div key={i} className="bg-orange-300 p-4 rounded-xl">
               <span className="flex justify-between">
@@ -136,7 +137,7 @@ export default function RekapAbsensiKaryawan() {
               )}
               </div>
             </div>
-          ))}
+          )):<LoadingRefresh/>}
       </div>
     </div>
   );
