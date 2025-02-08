@@ -26,43 +26,48 @@ export default function RekapAbsensiKaryawan() {
   ];
 
   useEffect(() => {
-    getDataAbsensi(formattedDate).then((absensi: any) => {
-      getDaftarKaryawan().then((res: any) => {
-        if (selectedBranch === "ALL") {
-          let daftarKaryawanSementara = res;
-          let arr: any = [];
-          daftarKaryawanSementara.forEach((karyawan: any) => {
-            if (arr.length === 0) return arr.push(karyawan);
-            res = arr.filter(
-              (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+    getDataAbsensi(formattedDate + "-1").then((absensi1: any) => {
+      getDataAbsensi(formattedDate + "-2").then((absensi2: any) => {
+        let absensi: any;
+        if (absensi1) absensi = absensi1.data;
+        if (absensi1 && absensi2) absensi = absensi1.data.concat(absensi2.data);
+        getDaftarKaryawan().then((res: any) => {
+          if (selectedBranch === "ALL") {
+            let daftarKaryawanSementara = res;
+            let arr: any = [];
+            daftarKaryawanSementara.forEach((karyawan: any) => {
+              if (arr.length === 0) return arr.push(karyawan);
+              res = arr.filter(
+                (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+              );
+              if (res.length === 0) arr.push(karyawan);
+            });
+            const hasilMultiAbsensi = arr.map((k: any) => ({
+              ...k,
+              absensi: absensi.filter((a: any) => a.email === k.email),
+            }));
+            setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
+          } else {
+            let daftarKaryawanSementara = res;
+            let arr: any = [];
+            daftarKaryawanSementara.forEach((karyawan: any) => {
+              if (arr.length === 0) return arr.push(karyawan);
+              res = arr.filter(
+                (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+              );
+              if (res.length === 0) arr.push(karyawan);
+            });
+            const listKaryawan = arr.filter(
+              (karyawan: any) =>
+                karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase()
             );
-            if (res.length === 0) arr.push(karyawan);
-          });
-          const hasilMultiAbsensi = arr.map((k: any) => ({
-            ...k,
-            absensi: absensi.data.filter((a: any) => a.email === k.email),
-          }));
-          setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
-        } else {
-          let daftarKaryawanSementara = res;
-          let arr: any = [];
-          daftarKaryawanSementara.forEach((karyawan: any) => {
-            if (arr.length === 0) return arr.push(karyawan);
-            res = arr.filter(
-              (filterKaryawan: any) => filterKaryawan.email === karyawan.email
-            );
-            if (res.length === 0) arr.push(karyawan);
-          });
-          const listKaryawan = arr.filter(
-            (karyawan: any) =>
-              karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase()
-          );
-          const hasilMultiAbsensi = listKaryawan.map((k: any) => ({
-            ...k,
-            absensi: absensi.data.filter((a: any) => a.email === k.email),
-          }));
-          setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
-        }
+            const hasilMultiAbsensi = listKaryawan.map((k: any) => ({
+              ...k,
+              absensi: absensi.filter((a: any) => a.email === k.email),
+            }));
+            setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
+          }
+        });
       });
     });
   }, [selectedBranch]);
@@ -95,7 +100,7 @@ export default function RekapAbsensiKaryawan() {
         </select>
       </div>
       <div className="flex flex-col bg-white gap-5">
-        {dataAbsensiSemuaKaryawan.length > 0 ?
+        {dataAbsensiSemuaKaryawan.length > 0 ? (
           dataAbsensiSemuaKaryawan.map((data: any, i: number) => (
             <div key={i} className="bg-orange-300 p-4 rounded-xl">
               <span className="flex justify-between">
@@ -109,35 +114,50 @@ export default function RekapAbsensiKaryawan() {
               <p className="">{data.divisi.toUpperCase()}</p>
               <p className="text-sm tablet:text-lg">{data.email}</p>
               <div className="flex flex-col gap-5">
-              {data.absensi.length > 0 ? (
-                data.absensi.map((absensi: any,index:number) => (
-                    <span className="flex gap-2">
+                {data.absensi.length > 0 ? (
+                  data.absensi.map((absensi: any, index: number) => (
+                    <span key={index} className="flex gap-2">
                       <img
                         src={absensi.img}
                         className="w-[7em] h-[7em] tablet:w-[18em] tablet:h-[18em] object-cover object-center rounded-lg"
                         alt=""
                       />
                       <span>
-                        <p className="font-semibold text-sm tablet:text-lg">Alamat : </p>
+                        <p className="font-semibold text-sm tablet:text-lg">
+                          Alamat :{" "}
+                        </p>
                         <p className="text-sm tablet:text-lg">
                           {absensi.alamat.substring(0, 50)}..
                         </p>
-                       {index==0? <p className={`text-sm font-semibold tablet:text-lg ${absensi.waktu<"08:05"?"bg-green-500":"bg-red-500"} p-2 w-fit rounded-lg`}>
-                          {absensi.waktu}
-                        </p>: <p className="text-sm font-semibold tablet:text-lg bg-green-500 p-2 w-fit rounded-lg">
-                          {absensi.waktu}
-                        </p>}
+                        {index == 0 ? (
+                          <p
+                            className={`text-sm font-semibold tablet:text-lg ${
+                              absensi.waktu < "08:05"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            } p-2 w-fit rounded-lg`}
+                          >
+                            {absensi.waktu}
+                          </p>
+                        ) : (
+                          <p className="text-sm font-semibold tablet:text-lg bg-green-500 p-2 w-fit rounded-lg">
+                            {absensi.waktu}
+                          </p>
+                        )}
                       </span>
                     </span>
-                ))
-            ) : (
-                <p className="font-semibold text-2xl text-red-500">
-                  Belum Absen
-                </p>
-              )}
+                  ))
+                ) : (
+                  <p className="font-semibold text-2xl text-red-500">
+                    Belum Absen
+                  </p>
+                )}
               </div>
             </div>
-          )):<LoadingRefresh/>}
+          ))
+        ) : (
+          <LoadingRefresh />
+        )}
       </div>
     </div>
   );

@@ -37,34 +37,40 @@ const Home = () => {
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
-    getDataAbsensi(formattedDate).then((res: any) => {
-      setHasAbsent(false);
-      if (!res) return setDataAbsensiSemuaKaryawan([]);
-      const dataAbsensi = res.data.filter(
-        (data: any) => result && data.email == JSON.parse(result).email
-      );
-      setDataAbsensiSemuaKaryawan(dataAbsensi);
-      if (dataAbsensi.length < 2) {
+    getDataAbsensi(formattedDate + "-1").then((res1: any) => {
+      getDataAbsensi(formattedDate + "-2").then((res2: any) => {
+        let res;
+        if(res1) res = res1.data;
+        if (res1 && res2) res = res1.data.concat(res2.data);
         setHasAbsent(false);
-        if (dataAbsensi.length == 1 && currentTime <= jamPulang)
-          return setHasAbsent(true);
-        if (currentTime >= jamPulang) setHasAbsent(false);
-      } else {
-        setHasAbsent(true);
-      }
+        if (!res) return setDataAbsensiSemuaKaryawan([]);
+        const dataAbsensi = res.filter(
+          (data: any) => result && data.email == JSON.parse(result).email
+        );
+        setDataAbsensiSemuaKaryawan(dataAbsensi);
+        if (dataAbsensi.length < 2) {
+          setHasAbsent(false);
+          if (dataAbsensi.length == 1 && currentTime <= jamPulang)
+            if (currentTime >= jamPulang)
+              return setHasAbsent(true);
+              setHasAbsent(false);
+        } else {
+          setHasAbsent(true);
+        }
+      });
     });
     if (imgURL.length > 0) {
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
-      if(location.length == 0) {
+      if (location.length == 0) {
         alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
         return setIsSubmit(false);
       }
       handleSubmitAbsensi(
         { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
-        formattedDate
+        formattedDate + "-" + `${currentTime >= jamPulang ? 2 : 1}`
       ).then((res: any) => {
         setDataAbsensiSemuaKaryawan(res);
         Swal.fire("Berhasil", "Anda telah absen!", "success");
@@ -84,7 +90,7 @@ const Home = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="p-[0.1em] bg-white rounded-full">
-              <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8"/>
+              <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
             </span>
             <span className="ml-2 text-md font-bold text-black">
               Absensi Karyawan
