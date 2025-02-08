@@ -8,6 +8,7 @@ import { setIsLoading } from "../../../slice/appSlice";
 import { setCookie } from "../../utils/cookies";
 import Swal from "sweetalert2";
 import { getPersonalKaryawan } from "../../firebase/service";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
@@ -42,7 +43,7 @@ export default function LoginPage() {
         GG SUSPENSION
       </motion.h1>
       <motion.p
-        className="text-xl text-center max-w-md mb-4"
+        className="text-xl text-center max-w-md mb-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
@@ -78,7 +79,7 @@ export default function LoginPage() {
         <p>LOGIN</p>
         <img src="/LOGO%20GOOGLE.png" alt="" className="w-5" />
       </motion.button>
-      {/* </Link> */}
+      <p className="mt-8">Belum punya Akun? <Link to={"/register"}  className="underline text-blue-600">Register</Link ></p>
     </div>
   );
 }
