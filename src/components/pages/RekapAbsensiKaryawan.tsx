@@ -70,7 +70,7 @@ export default function RekapAbsensiKaryawan() {
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto">
       <Link
         to="/absensi-karyawan"
-        className="mt-4 flex w-1/2 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-800 justify-center items-center"
+        className="mt-4 flex w-full tablet:w-1/2 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-800 justify-center items-center"
       >
         ⬅ Kembali ke Daftar Karyawan
       </Link>
