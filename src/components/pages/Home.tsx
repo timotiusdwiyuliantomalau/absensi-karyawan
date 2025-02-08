@@ -10,7 +10,7 @@ import { getCookie, removeCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
-import { Clock5, Clock8, LogOutIcon } from "lucide-react";
+import { Clock5, Clock8 } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const Home = () => {
