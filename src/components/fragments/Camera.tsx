@@ -1,18 +1,18 @@
-import { useRef, useCallback } from 'react';
-import Webcam from 'react-webcam';
-import { Camera as CameraIcon } from 'lucide-react';
-import { useDispatch } from 'react-redux';
-import { setImgURL } from '../../../slice/appSlice';
+import { useRef } from "react";
+import Webcam from "react-webcam";
+import { Camera as CameraIcon } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setImgURL } from "../../../slice/appSlice";
 
 const Camera = () => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const webcamRef = useRef<Webcam>(null);
-  const capture = useCallback(() => {
+  const capture = () => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
-      dispatch(setImgURL(imageSrc))
+      dispatch(setImgURL(imageSrc));
     }
-  }, []);
+  };
 
   return (
     <div className="relative w-full max-w-md mx-auto">

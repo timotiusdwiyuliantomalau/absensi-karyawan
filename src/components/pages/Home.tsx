@@ -58,7 +58,7 @@ const Home = () => {
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
-      if (location.length == 0) {
+      if(location.length == 0) {
         alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
         return setIsSubmit(false);
       }
