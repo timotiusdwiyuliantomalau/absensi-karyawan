@@ -6,6 +6,7 @@ import { getCookie } from "./utils/cookies";
 import Home from "./components/pages/Home";
 import DaftarKaryawan from "./components/pages/DaftarKaryawan";
 import KaryawanDetail from "./components/pages/KaryawanDetail";
+import RekapAbsensiKaryawan from "./components/pages/RekapAbsensiKaryawan";
 
 const isLoggedIn = getCookie("myData");
 const router = createHashRouter([
@@ -30,6 +31,7 @@ const router = createHashRouter([
     element: <KaryawanDetail />,
   },
   { path: "/register-form", element: <FormRegister /> },
+  { path: "/rekap-absensi-karyawan", element: <RekapAbsensiKaryawan /> },
 ]);
 
 const App = () => {

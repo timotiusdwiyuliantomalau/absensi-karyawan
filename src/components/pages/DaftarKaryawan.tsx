@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getDaftarKaryawan } from "../../firebase/service";
 import { RiAccountPinCircleLine } from "react-icons/ri";
 import { GrUserWorker } from "react-icons/gr";
 import { Link } from "react-router-dom";
-import { debounce } from "lodash";
 
 const DaftarKaryawan = () => {
-  const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
+  const [selectedBranch, setSelectedBranch] = useState("ALL");
 
   const branches = [
     "ALL",
@@ -21,26 +20,21 @@ const DaftarKaryawan = () => {
   ];
   const [query, setQuery] = useState("");
 
-  // Fungsi pencarian dengan debounce (500ms delay)
-  const handleSearch = useCallback(
-    debounce((searchTerm: any) => {
-      const res = daftarKaryawan.filter((karyawan: any) => {
-        return karyawan.nama
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      });
-      if (res.length > 0) {
-        return setDaftarKaryawan(res);
-      } 
-    }, 500),
-    []
-  );
-
   // Event handler input
   const handleChange = (event: any) => {
     setQuery(event.target.value);
-    handleSearch(event.target.value); // Panggil debounce function
-    
+    const res = daftarKaryawan.filter((karyawan: any) =>
+      karyawan.nama.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    if (res.length > 0) {
+      return setDaftarKaryawan(res);
+    }
+    if (event.target.value.length < 1) {
+      console.log("oke");
+      getDaftarKaryawan().then((res: any) => {
+        setDaftarKaryawan(res);
+      });
+    } // Panggil debounce function
   };
 
   useEffect(() => {
@@ -82,6 +76,8 @@ const DaftarKaryawan = () => {
           <div className="flex items-center gap-3">
             <GrUserWorker className="text-5xl text-white" />
             <h1 className="text-3xl font-bold text-white">Daftar Karyawan</h1>
+            <p className="text-5xl text-white">|</p>
+            <Link to={`/rekap-absensi-karyawan`} className="text-3xl font-bold text-white">Rekap Absensi</Link>
           </div>
 
           <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">

@@ -11,7 +11,7 @@ export default function KaryawanDetail() {
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
   const [absensiKaryawan, setAbsensiKaryawan] = useState<any>([]);
-  const jamMasuk="08.05";
+  const jamMasuk = "08.05";
 
   useEffect(() => {
     email &&
@@ -49,10 +49,32 @@ export default function KaryawanDetail() {
             <div className="flex flex-col gap-5">
               {absensiKaryawan.length > 0 &&
                 absensiKaryawan.map((item: any, index: number) => (
-                  <div key={index} className="bg-gray-100 p-3 rounded-xl">
-                    <img width={200} height={200} src={item.img} alt="foto-absensi" />
-                    <p><span className="font-semibold">Alamat : </span>{item.alamat}</p>
-                    {index==0?<p className={item.waktu<jamMasuk?"bg-green-300 font-semibold":"bg-red-500 rounded-lg font-semibold"}>{item.waktu}</p>:<p className="bg-green-500 rounded-lg font-semibold">{item.waktu}</p>}
+                  <div key={index} className="flex flex-col bg-gray-100 p-3 rounded-xl justify-center items-center">
+                    <img
+                      width={150}
+                      height={150}
+                      src={item.img}
+                      alt="foto-absensi"
+                    />
+                    <p>
+                      <span className="font-semibold">Alamat : </span>
+                      {item.alamat}
+                    </p>
+                    {index == 0 ? (
+                      <p
+                        className={`p-1
+                          ${item.waktu < jamMasuk
+                            ? "bg-green-300 font-semibold"
+                            : "bg-red-500 rounded-lg font-semibold"}
+                        `}
+                      >
+                        {item.waktu}
+                      </p>
+                    ) : (
+                      <p className="bg-green-500 rounded-lg font-semibold">
+                        {item.waktu}
+                      </p>
+                    )}
                   </div>
                 ))}
             </div>
