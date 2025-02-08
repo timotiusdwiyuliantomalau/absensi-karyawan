@@ -55,9 +55,9 @@ export default function LoginPage() {
         whileTap={{ scale: 0.9 }}
         className="flex gap-3 items-center px-6 py-2 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 mt-2"
         onClick={() => {
+          dispatch(setIsLoading());
           handleGoogleSignIn().then((data: any) => {
             getPersonalKaryawan(data.email).then((data: any) => {
-              dispatch(setIsLoading());
               setTimeout(() => {
                 dispatch(setIsLoading());
               }, 2000);
