@@ -192,7 +192,6 @@ const Home = () => {
                       {index == 0 ? "Absen Masuk" : "Absen Pulang"}
                     </span>
                     <span className="text-xs tablet:text-sm font-semibold">
-                      {item.waktu > jamPulang && <p>Terlambat</p>}
                       <span className="font-semibold">{item.waktu}</span>
                     </span>
                   </div>
