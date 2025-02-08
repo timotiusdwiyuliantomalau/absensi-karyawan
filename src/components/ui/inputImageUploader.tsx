@@ -39,7 +39,7 @@ export const uploadImage = async (
 
     const data = await response.json();
     if (data.success) {
-      return data.data.url;
+      return data.data;
     } else {
       alert("Upload gagal! Coba lagi.");
     }

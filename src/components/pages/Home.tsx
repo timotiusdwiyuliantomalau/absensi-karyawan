@@ -12,7 +12,6 @@ import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { Clock5, Clock8 } from "lucide-react";
 import { useSelector } from "react-redux";
-import { uploadImage } from "../ui/inputImageUploader";
 
 const Home = () => {
   // const [selfieImage, setSelfieImage] = useState<string>("");
@@ -59,8 +58,6 @@ const Home = () => {
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
-      uploadImage(imgURL,myProfile.email,new Date()
-      .toLocaleTimeString("en-GB", { hour12: false })).then((res: any) => {
         if (location.length == 0){
           alert(
             "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
@@ -68,14 +65,13 @@ const Home = () => {
           return setHasAbsent(false);
         };
         handleSubmitAbsensi(
-          { ...myProfile, alamat: location, waktu: currentTime, img: res },
+          { ...myProfile, alamat: location, waktu: currentTime, img:imgURL },
           formattedDate
         ).then((res: any) => {
           setDataAbsensiSemuaKaryawan(res);
           Swal.fire("Berhasil", "Anda telah absen!", "success");
           window.location.reload();
         });
-      });
     }
   }, [imgURL]);
 
