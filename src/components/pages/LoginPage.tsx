@@ -79,7 +79,12 @@ export default function LoginPage() {
         <p>LOGIN</p>
         <img src="/LOGO%20GOOGLE.png" alt="" className="w-5" />
       </motion.button>
-      <p className="mt-8">Belum punya Akun? <Link to={"/register"}  className="underline text-blue-600">Register</Link ></p>
+      <p className="mt-8">
+        Belum punya Akun?{" "}
+        <Link to={"/register"} className="underline text-blue-600">
+          Register
+        </Link>
+      </p>
     </div>
   );
 }

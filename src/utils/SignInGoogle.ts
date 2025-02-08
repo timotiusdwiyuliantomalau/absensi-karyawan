@@ -1,7 +1,6 @@
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from "../firebase/init";
 
-// Create a provider instance
 const provider = new GoogleAuthProvider();
 export const handleGoogleRegister = async () => {
   try {
@@ -19,7 +18,6 @@ export const handleGoogleSignIn = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     return user;
-    
   } catch (error) {
     console.error("Error signing in:", error);
   }

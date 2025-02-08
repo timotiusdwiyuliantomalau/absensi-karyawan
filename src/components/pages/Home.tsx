@@ -84,7 +84,7 @@ const Home = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="p-[0.1em] bg-white rounded-full">
-              <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
+              <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8"/>
             </span>
             <span className="ml-2 text-md font-bold text-black">
               Absensi Karyawan
@@ -94,7 +94,7 @@ const Home = () => {
                 removeCookie("myData");
                 window.location.reload();
               }}
-              className="absolute right-5 text-black p-1 rounded-lg font-bold"
+              className="absolute right-5 text-white px-2 py-1 rounded-lg font-bold bg-blue-600"
             >
               Logout
             </button>
