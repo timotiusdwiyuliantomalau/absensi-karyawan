@@ -60,7 +60,7 @@ const Home = () => {
       setDataAbsensiSemuaKaryawan([]);
       if (location.length == 0) {
         alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
-        return setHasAbsent(false);
+        return setIsSubmit(false);
       }
       handleSubmitAbsensi(
         { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
