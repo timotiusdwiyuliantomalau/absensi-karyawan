@@ -28,9 +28,10 @@ export default function RekapAbsensiKaryawan() {
   useEffect(() => {
     getDataAbsensi(formattedDate + "-1").then((absensi1: any) => {
       getDataAbsensi(formattedDate + "-2").then((absensi2: any) => {
-        let absensi: any;
+        let absensi: any=[];
         if (absensi1) absensi = absensi1.data;
         if (absensi1 && absensi2) absensi = absensi1.data.concat(absensi2.data);
+
         getDaftarKaryawan().then((res: any) => {
           if (selectedBranch === "ALL") {
             let daftarKaryawanSementara = res;
