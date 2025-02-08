@@ -3,8 +3,7 @@ import Cookies from "js-cookie";
 
 // Set a cookie
 export const setCookie = (key:string, value:string) => {
-  Cookies.set(key, value, { expires:1 });
-  return "oke"
+  Cookies.set(key, value, { expires: 30 });
 };
 
 // Get a cookie

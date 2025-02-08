@@ -6,11 +6,11 @@ import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
 import { Link } from "react-router-dom";
-import { getCookie } from "../../utils/cookies";
+import { getCookie, removeCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
-import { Clock5, Clock8 } from "lucide-react";
+import { Clock5, Clock8, LogOutIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const Home = () => {
@@ -58,20 +58,18 @@ const Home = () => {
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
-        if (location.length == 0){
-          alert(
-            "ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
-          );
-          return setHasAbsent(false);
-        };
-        handleSubmitAbsensi(
-          { ...myProfile, alamat: location, waktu: currentTime, img:imgURL },
-          formattedDate
-        ).then((res: any) => {
-          setDataAbsensiSemuaKaryawan(res);
-          Swal.fire("Berhasil", "Anda telah absen!", "success");
-          window.location.reload();
-        });
+      if (location.length == 0) {
+        alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
+        return setHasAbsent(false);
+      }
+      handleSubmitAbsensi(
+        { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
+        formattedDate
+      ).then((res: any) => {
+        setDataAbsensiSemuaKaryawan(res);
+        Swal.fire("Berhasil", "Anda telah absen!", "success");
+        window.location.reload();
+      });
     }
   }, [imgURL]);
 
@@ -89,8 +87,17 @@ const Home = () => {
               <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
             </span>
             <span className="ml-2 text-md font-bold text-black">
-              Absensi Pegawai GG Suspension
+              Absensi Karyawan
             </span>
+            <button
+              onClick={() => {
+                removeCookie("myData");
+                window.location.reload();
+              }}
+              className="absolute right-5 text-black p-1 rounded-lg font-bold"
+            >
+              Logout
+            </button>
           </div>
           <i className="fas fa-bell"></i>
         </div>
@@ -145,7 +152,7 @@ const Home = () => {
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
-        {isCamera && <Camera ></Camera>}
+        {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
           <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>
           <span className="text-sm flex gap-3">
