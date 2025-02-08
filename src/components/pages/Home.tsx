@@ -40,7 +40,7 @@ const Home = () => {
     getDataAbsensi(formattedDate + "-1").then((res1: any) => {
       getDataAbsensi(formattedDate + "-2").then((res2: any) => {
         let res;
-        if(res1) res = res1.data;
+        if (res1) res = res1.data;
         if (res1 && res2) res = res1.data.concat(res2.data);
         setHasAbsent(false);
         if (!res) return setDataAbsensiSemuaKaryawan([]);
@@ -51,9 +51,8 @@ const Home = () => {
         if (dataAbsensi.length < 2) {
           setHasAbsent(false);
           if (dataAbsensi.length == 1 && currentTime <= jamPulang)
-            if (currentTime >= jamPulang)
-              return setHasAbsent(true);
-              setHasAbsent(false);
+            return setHasAbsent(true);
+          if (currentTime >= jamPulang) setHasAbsent(false);
         } else {
           setHasAbsent(true);
         }
