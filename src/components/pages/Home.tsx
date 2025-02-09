@@ -37,7 +37,6 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
-    setDataAbsensiSemuaKaryawan([]);
     result &&
       getDataAbsensi(
         "absensi-karyawan-" + formattedDate,
