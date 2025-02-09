@@ -12,6 +12,7 @@ import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { Clock5, Clock8 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { uploadImage } from "../ui/inputImageUploader";
 
 const Home = () => {
   // const [selfieImage, setSelfieImage] = useState<string>("");
@@ -67,13 +68,15 @@ const Home = () => {
         alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
         return setIsSubmit(false);
       }
-      handleSubmitAbsensi(
-        { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
-        formattedDate + "-" + `${currentTime >= jamPulang ? 2 : 1}`
-      ).then((res: any) => {
-        setDataAbsensiSemuaKaryawan(res);
-        Swal.fire("Berhasil", "Anda telah absen!", "success");
-        window.location.reload();
+      uploadImage(imgURL, myProfile?.email, currentTime).then((res) => {
+        handleSubmitAbsensi(
+          { ...myProfile, alamat: location, waktu: currentTime, img: res },
+          formattedDate + "-" + `${currentTime >= jamPulang ? 2 : 1}`
+        ).then((res: any) => {
+          setDataAbsensiSemuaKaryawan(res);
+          Swal.fire("Berhasil", "Anda telah absen!", "success");
+          window.location.reload();
+        });
       });
     }
   }, [imgURL]);
