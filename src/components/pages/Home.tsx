@@ -21,7 +21,7 @@ const Home = () => {
   const [myProfile, setMyProfile] = useState<any>(null);
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
-const [hasAbsent, setHasAbsent] = useState<boolean>(false);
+const [hasAbsent, setHasAbsent] = useState<boolean>(true);
   const jamMasuk = "08:05";
   const jamPulang = "17:00";
   const date = new Date();
