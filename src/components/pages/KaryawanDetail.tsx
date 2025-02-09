@@ -20,7 +20,7 @@ export default function KaryawanDetail() {
         if (data !== "TIDAK ADA DATA") {
           const response = data;
           email &&
-            getDataAbsensi(formattedDate).then((res) => {
+            getDataAbsensi("absensi-karyawan-"+formattedDate,email).then((res) => {
               if (res) {
                 const dataAbsensi = res.data.filter(
                   (result: any) => response?.email == result.email
@@ -71,7 +71,7 @@ export default function KaryawanDetail() {
                         {item.waktu}
                       </p>
                     ) : (
-                      <p className="bg-green-500 rounded-lg font-semibold">
+                      <p className="bg-green-500 p-1 rounded-lg font-semibold">
                         {item.waktu}
                       </p>
                     )}
