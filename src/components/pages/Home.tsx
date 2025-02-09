@@ -15,14 +15,13 @@ import { useSelector } from "react-redux";
 import { uploadImage } from "../ui/inputImageUploader";
 
 const Home = () => {
-  // const [selfieImage, setSelfieImage] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isCamera, setIsCamera] = useState<boolean>(false);
   const [myProfile, setMyProfile] = useState<any>(null);
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
-  const [hasAbsent, setHasAbsent] = useState<boolean>(true);
+const [hasAbsent, setHasAbsent] = useState<boolean>(false);
   const jamMasuk = "08:05";
   const jamPulang = "17:00";
   const date = new Date();
@@ -38,16 +37,15 @@ const Home = () => {
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
-    getDataAbsensi(formattedDate + "-1").then((res1: any) => {
-      getDataAbsensi(formattedDate + "-2").then((res2: any) => {
-        let res;
-        if (res1) res = res1.data;
-        if (res1 && res2) res = res1.data.concat(res2.data);
+    setDataAbsensiSemuaKaryawan([]);
+    result &&
+      getDataAbsensi(
+        "absensi-karyawan-" + formattedDate,
+        JSON.parse(result).email
+      ).then((res: any) => {
         setHasAbsent(false);
         if (!res) return setDataAbsensiSemuaKaryawan([]);
-        const dataAbsensi = res.filter(
-          (data: any) => result && data.email == JSON.parse(result).email
-        );
+        const dataAbsensi = res.data;
         setDataAbsensiSemuaKaryawan(dataAbsensi);
         if (dataAbsensi.length < 2) {
           setHasAbsent(false);
@@ -58,7 +56,7 @@ const Home = () => {
           setHasAbsent(true);
         }
       });
-    });
+
     if (imgURL.length > 0) {
       setIsSubmit(true);
       setIsCamera(false);
@@ -68,10 +66,10 @@ const Home = () => {
         alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
         return setIsSubmit(false);
       }
-      uploadImage(imgURL, myProfile?.email, currentTime).then((res) => {
+      uploadImage(imgURL, myProfile?.email, currentTime).then(() => {
         handleSubmitAbsensi(
-          { ...myProfile, alamat: location, waktu: currentTime, img: res },
-          formattedDate + "-" + `${currentTime >= jamPulang ? 2 : 1}`
+          { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
+          "absensi-karyawan-" + formattedDate
         ).then((res: any) => {
           setDataAbsensiSemuaKaryawan(res);
           Swal.fire("Berhasil", "Anda telah absen!", "success");
