@@ -20,7 +20,6 @@ const DaftarKaryawan = () => {
   ];
   const [query, setQuery] = useState("");
 
-  // Event handler input
   const handleChange = (event: any) => {
     setQuery(event.target.value);
     const res = daftarKaryawan.filter((karyawan: any) =>
