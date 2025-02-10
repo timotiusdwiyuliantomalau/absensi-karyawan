@@ -71,7 +71,7 @@ const Kalender = () => {
       : (currentDate.getMonth() + 1).toString();
 
   return (
-    <div className="max-w-4xl mx-auto min-h-screen px-4 mt-6">
+    <div className="max-w-4xl mx-auto min-h-screen px-4 mt-10">
       <h1 className="text-center text-3xl font-bold mb-3 flex items-center justify-center gap-2">
         <CalendarDays></CalendarDays>
         <span>Kalender Kerja</span>
