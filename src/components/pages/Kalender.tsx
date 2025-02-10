@@ -54,7 +54,6 @@ const Kalender = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-console.log(formatDate(daysInMonth[0]))
   useEffect(() => {
     getHariLibur().then((res) => {
       setLibur(res.data);
@@ -125,17 +124,17 @@ console.log(formatDate(daysInMonth[0]))
                   {date.getDate()}
                 </span>
               </div>))}
-              <div className="text-right mb-1 flex justify-end">
-                <span
+              <div className="mb-1 flex justify-end w-full">
+                <div
                   className={`text-lg ${
                     isSameDay(date, new Date())
-                      ? "text-lg bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
-                      : "text-lg bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
+                      ? "bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
+                      : "bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
                   }
                   `}
                 >
                   {date.getDate()}
-                </span>
+                </div>
               </div>
             </div>
           );
