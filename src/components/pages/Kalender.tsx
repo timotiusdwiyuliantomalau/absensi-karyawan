@@ -76,7 +76,7 @@ const Kalender = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
       <p className="text-center flex gap-2 items-center text-sm font-semibold text-blue-500 bg-white">{tanggalHariIni}</p>
-      <div className="flex text-sm bg-white">
+      <div className="flex items-center text-sm bg-white">
         <h1 className="font-semibold">
           {format(currentDate, "MMMM yyyy")}
         </h1>
@@ -85,13 +85,13 @@ const Kalender = () => {
             onClick={handlePrevMonth}
             className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <ChevronLeftIcon className="w-2 text-gray-600" />
+            <ChevronLeftIcon className="w-3 text-gray-600" />
           </button>
           <button
             onClick={handleNextMonth}
             className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <ChevronRightIcon className="w-2 text-gray-600" />
+            <ChevronRightIcon className="w-3 text-gray-600" />
           </button>
         </div>
         </div>
