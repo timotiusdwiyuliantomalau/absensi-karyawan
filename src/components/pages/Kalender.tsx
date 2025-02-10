@@ -11,7 +11,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CalendarDays } from "lucide-react";
 import axios from "axios";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
-import { FaCalendar } from "react-icons/fa";
 
 const Kalender = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
