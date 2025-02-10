@@ -156,7 +156,7 @@ const Kalender = () => {
         {libur.reverse().map((event: any, index: number) => (
           <div key={index}>
             {event.holiday_date.substring(7, 5) === MONTH && (
-              <div className="flex gap-2 text-lg">
+              <div className="flex gap-2 text-sm">
                 <p>
                   {event.holiday_date.substring(8, 10)}{" "}
                   {format(currentDate, "MMM")}
