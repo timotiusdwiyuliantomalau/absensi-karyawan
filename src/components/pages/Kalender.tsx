@@ -10,6 +10,8 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CalendarDays } from "lucide-react";
 import axios from "axios";
+import { tanggalHariIni } from "../../utils/tanggalSekarang";
+import { FaCalendar } from "react-icons/fa";
 
 const Kalender = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -70,9 +72,12 @@ const Kalender = () => {
         <CalendarDays></CalendarDays>
         <span>Kalender Kerja</span>
       </h1>
+      
       {/* Header */}
-      <div className="flex items-center justify-center">
-        <h1 className="text-xl font-semibold p-3 rounded-xl">
+      <div className="flex items-center justify-between">
+      <p className="text-center flex gap-2 items-center text-sm font-semibold text-blue-500 bg-white">{tanggalHariIni}</p>
+      <div className="flex text-sm bg-white">
+        <h1 className="font-semibold">
           {format(currentDate, "MMMM yyyy")}
         </h1>
         <div className="flex">
@@ -80,20 +85,21 @@ const Kalender = () => {
             onClick={handlePrevMonth}
             className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <ChevronLeftIcon className="w-4 text-gray-600" />
+            <ChevronLeftIcon className="w-2 text-gray-600" />
           </button>
           <button
             onClick={handleNextMonth}
             className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <ChevronRightIcon className="w-4 text-gray-600" />
+            <ChevronRightIcon className="w-2 text-gray-600" />
           </button>
+        </div>
         </div>
       </div>
 
       {/* Days Grid */}
       <div className="grid grid-cols-7 gap-2 mb-2 text-lg">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+        {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map((day) => (
           <div key={day} className="text-center text-gray-500 font-medium py-2">
             {day}
           </div>
@@ -144,14 +150,14 @@ const Kalender = () => {
         })}
       </div>
       <div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center mt-4">
           <p className="w-3 h-3 rounded-full bg-red-500"></p>{" "}
-          <p className="font-bold">LIBUR :</p>
+          <p className="font-bold text-lg">LIBUR :</p>
         </div>
         {libur.reverse().map((event: any, index: number) => (
           <div key={index}>
             {event.holiday_date.substring(7, 5) === MONTH && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 text-lg">
                 <p>
                   {event.holiday_date.substring(8, 10)}{" "}
                   {format(currentDate, "MMM")}
