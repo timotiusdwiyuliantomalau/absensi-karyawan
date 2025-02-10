@@ -50,12 +50,11 @@ const Kalender = () => {
   }
   function formatDate(date: any) {
     const year = date.getFullYear();
-    // getMonth() menghasilkan angka 0-11, sehingga kita perlu menambahkan 1
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-
+console.log(formatDate(daysInMonth[0]))
   useEffect(() => {
     getHariLibur().then((res) => {
       setLibur(res.data);
@@ -130,8 +129,8 @@ const Kalender = () => {
                 <span
                   className={`text-lg ${
                     isSameDay(date, new Date())
-                      ? "bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
-                      : "bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
+                      ? "text-lg bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
+                      : "text-lg bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
                   }
                   `}
                 >
@@ -143,10 +142,10 @@ const Kalender = () => {
         })}
       </div>
       <div>
-        <p className="flex gap-2 items-center">
-          <div className="w-3 h-3 rounded-full bg-red-500"></div>{" "}
+        <div className="flex gap-2 items-center">
+          <p className="w-3 h-3 rounded-full bg-red-500"></p>{" "}
           <p className="font-bold">LIBUR :</p>
-        </p>
+        </div>
         {libur.reverse().map((event: any, index: number) => (
           <div key={index}>
             {event.holiday_date.substring(7, 5) === MONTH && (
