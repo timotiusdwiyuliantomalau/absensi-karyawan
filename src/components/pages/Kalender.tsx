@@ -9,8 +9,9 @@ import {
 } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CalendarDays } from "lucide-react";
-import axios from "axios";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
+import { getHariLibur } from "../../firebase/service";
+// import Swal from "sweetalert2";
 
 const Kalender = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -42,13 +43,17 @@ const Kalender = () => {
       setEvents([...events, { date: selectedDate, text: newEvent }]);
       setNewEvent("");
       setShowModal(false);
+    //   libur.push({
+    //     holiday_date: formatDate(selectedDate),
+    //     holiday_name: newEvent,
+    //   });
+    //   libur.length > 0 &&
+    //     addHariLibur("hari-libur", { data: libur }).then(() => {
+    //       Swal.fire("Berhasil", "Anda telah menambahkan libur/event!", "success");
+    //     });
     }
   };
 
-  async function getHariLibur() {
-    const libur = await axios.get("https://api-harilibur.vercel.app/api");
-    return libur;
-  }
   function formatDate(date: any) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -71,28 +76,28 @@ const Kalender = () => {
         <CalendarDays></CalendarDays>
         <span>Kalender Kerja</span>
       </h1>
-      
+
       {/* Header */}
       <div className="flex items-center justify-between">
-      <p className="text-center flex gap-2 items-center text-sm font-semibold text-blue-500 bg-white">{tanggalHariIni}</p>
-      <div className="flex items-center text-sm bg-white">
-        <h1 className="font-semibold">
-          {format(currentDate, "MMMM yyyy")}
-        </h1>
-        <div className="flex">
-          <button
-            onClick={handlePrevMonth}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
-            <ChevronLeftIcon className="w-3 text-gray-600" />
-          </button>
-          <button
-            onClick={handleNextMonth}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
-            <ChevronRightIcon className="w-3 text-gray-600" />
-          </button>
-        </div>
+        <p className="text-center flex gap-2 items-center text-sm font-semibold text-blue-500 bg-white">
+          {tanggalHariIni}
+        </p>
+        <div className="flex items-center text-sm bg-white">
+          <h1 className="font-semibold">{format(currentDate, "MMMM yyyy")}</h1>
+          <div className="flex">
+            <button
+              onClick={handlePrevMonth}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <ChevronLeftIcon className="w-3 text-gray-600" />
+            </button>
+            <button
+              onClick={handleNextMonth}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <ChevronRightIcon className="w-3 text-gray-600" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -106,7 +111,7 @@ const Kalender = () => {
       </div>
 
       <div className="grid grid-cols-7 gap-2">
-        {daysInMonth.map((date: any,i:number) => {
+        {daysInMonth.map((date: any, i: number) => {
           return (
             <div
               key={i}
@@ -120,9 +125,12 @@ const Kalender = () => {
                 }`}
             >
               {libur.map(
-                (event: any,i:number) =>
+                (event: any, i: number) =>
                   event.holiday_date == formatDate(date) && (
-                    <div key={i} className="absolute right-1 w-full text-right mb-1 flex justify-end">
+                    <div
+                      key={i}
+                      className="absolute right-1 w-full text-right mb-1 flex justify-end"
+                    >
                       <span
                         className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center z-10
                   `}
@@ -170,7 +178,7 @@ const Kalender = () => {
 
       {/* Modal Add Event */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-96">
             <h2 className="text-xl font-bold mb-4">
               Add Event - {format(selectedDate, "MMM dd, yyyy")}

@@ -20,7 +20,7 @@ export async function getDaftarKaryawan() {
   }
 }
 
-export async function handleSubmitAbsensi(data: any, collectionName:string) {
+export async function handleSubmitAbsensi(data: any, collectionName: string) {
   const result: any = await getDoc(doc(firestore, collectionName, data.email));
   data = {
     email: data.email,
@@ -66,11 +66,9 @@ export async function getPersonalKaryawan(email: string | null) {
   }
 }
 
-export async function getDataAbsensi(collectionName: string,email: string) {
+export async function getDataAbsensi(collectionName: string, email: string) {
   try {
-    const result: any = await getDoc(
-      doc(firestore, collectionName, email)
-    );
+    const result: any = await getDoc(doc(firestore, collectionName, email));
     return result.data();
   } catch (error) {
     return { error };
@@ -79,11 +77,19 @@ export async function getDataAbsensi(collectionName: string,email: string) {
 
 export async function getDataSemuaAbsensiKaryawan(collectionName: string) {
   try {
-    const result: any = await getDocs(
-      collection(firestore, collectionName)
-    );
-    return result.docs.map((doc:any) => doc.data());
+    const result: any = await getDocs(collection(firestore, collectionName));
+    return result.docs.map((doc: any) => doc.data());
   } catch (error) {
     return { error };
   }
+}
+
+export async function addHariLibur(collectionName: string, data: any) {
+  const newDocRef = doc(firestore, collectionName, "libur");
+    await setDoc(newDocRef, data);
+    return { message: "Berhail register!" };
+}
+export async function getHariLibur() {
+  const result: any = await getDoc(doc(firestore, "hari-libur", "libur"));
+  return result.data();
 }
