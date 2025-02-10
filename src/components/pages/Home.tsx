@@ -144,8 +144,9 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
             { icon: <FaCalendar />, text: "Kalender" },
             { icon: <FaClock />, text: "Lembur" },
           ].map((item, index) => (
-            <Link
-              to={"/"}
+            <div key={index}>
+            {item.text == "Kalender" ?<Link
+              to={"/kalender"}
               key={index}
               className="bg-white p-4 rounded-lg flex flex-col "
             >
@@ -153,7 +154,17 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
               <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
                 {item.text}
               </div>
-            </Link>
+            </Link>:<Link
+            to={"/"}
+            key={index}
+            className="bg-white p-4 rounded-lg flex flex-col "
+          >
+            <div className="flex justify-center text-2xl">{item.icon}</div>
+            <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
+              {item.text}
+            </div>
+          </Link>}
+          </div>
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
