@@ -61,12 +61,16 @@ const Kalender = () => {
       setLibur(res.data);
     });
   }, []);
+  const MONTH =
+    currentDate.getMonth().toString().length < 2
+      ? "0" + (currentDate.getMonth() + 1).toString()
+      : (currentDate.getMonth() + 1).toString();
 
   return (
     <div className="max-w-4xl mx-auto min-h-screen p-4 flex flex-col justify-center">
       <h1 className="text-center text-3xl font-bold mb-3 flex items-center justify-center gap-2">
         <CalendarDays></CalendarDays>
-        <span>Kalender</span>
+        <span>Kalender Kerja</span>
       </h1>
       {/* Header */}
       <div className="flex items-center justify-center">
@@ -104,7 +108,7 @@ const Kalender = () => {
             <div
               key={date}
               onClick={() => handleDateClick(date)}
-              className={`min-h-24 p-2 border rounded-lg cursor-pointer hover:bg-gray-50
+              className={`p-2 relative border rounded-lg cursor-pointer hover:bg-gray-100
                 ${isSameMonth(date, currentDate) ? "bg-white" : "bg-gray-100"}
                 ${
                   selectedDate && isSameDay(date, selectedDate)
@@ -112,35 +116,50 @@ const Kalender = () => {
                     : ""
                 }`}
             >
+              {libur.map((event:any)=>(
+                event.holiday_date==formatDate(date) &&
+              <div className="absolute right-2 w-full text-right mb-1 flex justify-end">
+                <span
+                  className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center
+                  `}
+                >
+                  {date.getDate()}
+                </span>
+              </div>))}
               <div className="text-right mb-1 flex justify-end">
                 <span
                   className={`text-lg ${
                     isSameDay(date, new Date())
                       ? "bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
-                      : "text-black rounded-full w-7 h-7 flex items-center justify-center"
+                      : "bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
                   }
                   `}
                 >
                   {date.getDate()}
                 </span>
               </div>
-              <div className="space-y-1">
-                {libur.map((event: any, index: number) => (
-                  <div key={index}>
-                    {event.holiday_date === formatDate(date) && (
-                      <div
-                        key={index}
-                        className="text-[8px] tablet:text-sm tablet: bg-red-500 p-1 rounded text-white font-semibold "
-                      >
-                        {event.holiday_name}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
             </div>
           );
         })}
+      </div>
+      <div>
+        <p className="flex gap-2 items-center">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>{" "}
+          <p className="font-bold">LIBUR :</p>
+        </p>
+        {libur.reverse().map((event: any, index: number) => (
+          <div key={index}>
+            {event.holiday_date.substring(7, 5) === MONTH && (
+              <div className="flex gap-2">
+                <p>
+                  {event.holiday_date.substring(8, 10)}{" "}
+                  {format(currentDate, "MMM")}
+                </p>{" "}
+                :<p>{event.holiday_name}</p>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Modal Add Event */}
