@@ -106,7 +106,7 @@ const Kalender = () => {
             <div
               key={i}
               onClick={() => handleDateClick(date)}
-              className={`p-2 relative border rounded-lg cursor-pointer hover:bg-gray-100
+              className={`p-2 h-12 relative border rounded-lg cursor-pointer hover:bg-gray-100
                 ${isSameMonth(date, currentDate) ? "bg-white" : "bg-gray-100"}
                 ${
                   selectedDate && isSameDay(date, selectedDate)
@@ -117,9 +117,9 @@ const Kalender = () => {
               {libur.map(
                 (event: any,i:number) =>
                   event.holiday_date == formatDate(date) && (
-                    <div key={i} className="absolute right-2 w-full text-right mb-1 flex justify-end">
+                    <div key={i} className="absolute right-1 w-full text-right mb-1 flex justify-end">
                       <span
-                        className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center
+                        className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center z-10
                   `}
                       >
                         {date.getDate()}
@@ -127,9 +127,9 @@ const Kalender = () => {
                     </div>
                   )
               )}
-              <div className="mb-1 flex justify-end w-full">
+              <div className="absolute right-1 w-full text-right mb-1 flex justify-end">
                 <div
-                  className={`text-lg ${
+                  className={`text-lg  ${
                     isSameDay(date, new Date())
                       ? "bg-blue-500 text-white rounded-full w-7 h-7 flex items-center justify-center"
                       : "bg-black text-white rounded-full w-7 h-7 flex items-center justify-center"
