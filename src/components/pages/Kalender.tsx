@@ -51,7 +51,7 @@ const Kalender = () => {
   function formatDate(date: any) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const day = String(date.getDate());
     return `${year}-${month}-${day}`;
   }
   useEffect(() => {
@@ -101,10 +101,10 @@ const Kalender = () => {
       </div>
 
       <div className="grid grid-cols-7 gap-2">
-        {daysInMonth.map((date: any) => {
+        {daysInMonth.map((date: any,i:number) => {
           return (
             <div
-              key={date}
+              key={i}
               onClick={() => handleDateClick(date)}
               className={`p-2 relative border rounded-lg cursor-pointer hover:bg-gray-100
                 ${isSameMonth(date, currentDate) ? "bg-white" : "bg-gray-100"}
@@ -114,16 +114,19 @@ const Kalender = () => {
                     : ""
                 }`}
             >
-              {libur.map((event:any)=>(
-                event.holiday_date==formatDate(date) &&
-              <div className="absolute right-2 w-full text-right mb-1 flex justify-end">
-                <span
-                  className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center
+              {libur.map(
+                (event: any,i:number) =>
+                  event.holiday_date == formatDate(date) && (
+                    <div key={i} className="absolute right-2 w-full text-right mb-1 flex justify-end">
+                      <span
+                        className={`text-lg bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center
                   `}
-                >
-                  {date.getDate()}
-                </span>
-              </div>))}
+                      >
+                        {date.getDate()}
+                      </span>
+                    </div>
+                  )
+              )}
               <div className="mb-1 flex justify-end w-full">
                 <div
                   className={`text-lg ${
