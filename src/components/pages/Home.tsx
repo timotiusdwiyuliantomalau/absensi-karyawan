@@ -93,7 +93,7 @@ const Home = () => {
 
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
-      {isModal && <ModalKunjungan></ModalKunjungan>}
+      {isModal && <ModalKunjungan data={{ ...myProfile, alamat: location, waktu: currentTime, img: imgURL }}></ModalKunjungan>}
       {isSubmit && <LoadingElement></LoadingElement>}
       <div className="bg-orange-500 text-white px-4 pt-4 pb-7 rounded-b-3xl flex flex-col">
         <div className="flex justify-between items-center">

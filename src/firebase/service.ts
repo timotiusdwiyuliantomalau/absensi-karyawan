@@ -86,15 +86,24 @@ export async function getDataSemuaAbsensiKaryawan(collectionName: string) {
 
 export async function addHariLibur(collectionName: string, data: any) {
   const newDocRef = doc(firestore, collectionName, "libur");
-    await setDoc(newDocRef, data);
-    return { message: "Berhail register!" };
+  await setDoc(newDocRef, data);
+  return { message: "Berhail register!" };
 }
 export async function getHariLibur() {
   const result: any = await getDoc(doc(firestore, "hari-libur", "libur"));
   return result.data();
 }
 export async function setKunjungan(collectionName: string, data: any) {
+  data = {
+    email: data.email,
+    alamat: data.alamat,
+    divisi: data.divisi,
+    nama: data.nama,
+    waktu: data.waktu,
+    img: data.img,
+    deskripsi_kunjungan: data.deskripsi_kunjungan,
+  };
   const newDocRef = doc(firestore, collectionName, data.email);
-    await setDoc(newDocRef, data);
-    return { message: "Berhasil!" };
+  await setDoc(newDocRef, {data});
+  return { message: "Berhasil!" };
 }
