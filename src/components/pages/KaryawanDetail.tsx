@@ -64,7 +64,7 @@ export default function KaryawanDetail() {
                       <p
                         className={`p-1
                           ${item.waktu < jamMasuk
-                            ? "bg-green-300 font-semibold"
+                            ? "bg-green-300 font-semibold rounded-lg"
                             : "bg-red-500 rounded-lg font-semibold"}
                         `}
                       >
@@ -79,7 +79,7 @@ export default function KaryawanDetail() {
                 ))}
             </div>
             <Link
-              to="/absensi-karyawan"
+              to="/daftar-karyawan"
               className="mt-6 inline-block px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition"
             >
               ⬅ Kembali ke Daftar Karyawan
