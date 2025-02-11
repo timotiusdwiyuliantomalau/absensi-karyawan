@@ -12,7 +12,7 @@ export default function ModalKunjungan() {
     <main className="bg-black/50 w-full min-h-full fixed z-10 justify-center items-center flex">
     <form onSubmit={handleSubmit} className="bg-white rounded-xl p-4 w-3/4 h-3/4 tablet:w-1/2 tablet:h-1/3 z-10 flex flex-col gap-2">
     <GrClose onClick={() => {dispatch(setIsModal())}} className="self-end text-lg tablet:text-2xl cursor-pointer"></GrClose>
-      <h1 className="text-center font-bold text-sm tablet:text-2xl">Deskripsi Kunjungan</h1>
+      <h1 className="text-center font-bold text-lg tablet:text-2xl">Deskripsi Kunjungan</h1>
       <textarea name="deskripsi_kunjungan" id="message" rows={4} className="block p-2.5 w-full text-sm tablet:text-lg bg-gray-100 rounded-lg" autoFocus placeholder="Tuliskan deskripsi kunjungan mu..."></textarea>
       <button type="submit" className="bg-orange-500 text-black font-semibold rounded-lg py-1">KIRIM</button>
     </form>
