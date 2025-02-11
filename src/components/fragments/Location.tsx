@@ -21,7 +21,6 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
         async (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          
           // Get address using reverse geocoding
           try {
             const response = await fetch(
@@ -33,7 +32,7 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
               ...prev!,
               address
             }));
-            onLocationUpdate?.(address);
+            onLocationUpdate?.(latitude.toString());
           } catch (err) {
             console.error("Error fetching address:", err);
           }
