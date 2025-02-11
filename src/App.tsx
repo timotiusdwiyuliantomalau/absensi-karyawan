@@ -8,6 +8,7 @@ import DaftarKaryawan from "./components/pages/DaftarKaryawan";
 import KaryawanDetail from "./components/pages/KaryawanDetail";
 import RekapAbsensiKaryawan from "./components/pages/RekapAbsensiKaryawan";
 import Kalender from "./components/pages/Kalender";
+import ModalKunjungan from "./components/pages/ModalKunjungan";
 
 const isLoggedIn = getCookie("myData");
 const router = createHashRouter([
@@ -24,16 +25,17 @@ const router = createHashRouter([
     element: isLoggedIn ? <Home></Home> : <Navigate to="/" />,
   },
   {
-    path: "/absensi-karyawan",
+    path: "/daftar-karyawan",
     element: <DaftarKaryawan />,
   },
   {
-    path: "/absensi-karyawan/:email",
+    path: "/daftar-karyawan/:email",
     element: <KaryawanDetail />,
   },
   { path: "/register-form", element: <FormRegister /> },
   { path: "/rekap-absensi-karyawan", element: <RekapAbsensiKaryawan /> },
   { path: "/kalender", element: <Kalender /> },
+  { path: "/kunjungan", element: <ModalKunjungan /> },
 ]);
 
 const App = () => {

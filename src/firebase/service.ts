@@ -93,3 +93,8 @@ export async function getHariLibur() {
   const result: any = await getDoc(doc(firestore, "hari-libur", "libur"));
   return result.data();
 }
+export async function setKunjungan(collectionName: string, data: any) {
+  const newDocRef = doc(firestore, collectionName, data.email);
+    await setDoc(newDocRef, data);
+    return { message: "Berhasil!" };
+}

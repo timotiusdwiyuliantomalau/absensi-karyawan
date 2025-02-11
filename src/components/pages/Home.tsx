@@ -1,4 +1,9 @@
-import { FaUsers, FaCalendarAlt, FaCalendar, FaClock } from "react-icons/fa";
+import {
+  FaUsers,
+  FaCalendarAlt,
+  FaCalendar,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
 import Camera from "../fragments/Camera";
 import { useEffect, useState } from "react";
 import Location from "../fragments/Location";
@@ -11,8 +16,10 @@ import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { Clock5, Clock8 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { uploadImage } from "../ui/inputImageUploader";
+import ModalKunjungan from "./ModalKunjungan";
+import { setIsModal } from "../../../slice/appSlice";
 
 const Home = () => {
   const [location, setLocation] = useState<string>("");
@@ -21,7 +28,7 @@ const Home = () => {
   const [myProfile, setMyProfile] = useState<any>(null);
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
-const [hasAbsent, setHasAbsent] = useState<boolean>(true);
+  const [hasAbsent, setHasAbsent] = useState<boolean>(true);
   const jamMasuk = "08:05";
   const jamPulang = "17:00";
   const date = new Date();
@@ -33,6 +40,8 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
     .toLocaleTimeString("en-GB", { hour12: false })
     .substring(0, 5);
   const imgURL = useSelector((state: any) => state.slice.imgURL);
+  const dispatch = useDispatch();
+  const isModal = useSelector((state: any) => state.slice.isModal);
 
   useEffect(() => {
     const result = getCookie("myData");
@@ -84,6 +93,7 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
 
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
+      {isModal && <ModalKunjungan></ModalKunjungan>}
       {isSubmit && <LoadingElement></LoadingElement>}
       <div className="bg-orange-500 text-white px-4 pt-4 pb-7 rounded-b-3xl flex flex-col">
         <div className="flex justify-between items-center">
@@ -139,32 +149,43 @@ const [hasAbsent, setHasAbsent] = useState<boolean>(true);
       <div className="p-4">
         <div className="grid grid-cols-4 gap-3 tablet:gap-5 text-center text-black mb-5">
           {[
-            { icon: <FaUsers />, text: "Daftar Karyawan" },
-            { icon: <FaCalendarAlt />, text: "Izin Cuti" },
-            { icon: <FaCalendar />, text: "Kalender" },
-            { icon: <FaClock />, text: "Lembur" },
+            {
+              icon: <FaUsers />,
+              text: "Daftar Karyawan",
+              link: "/daftar-karyawan",
+            },
+            { icon: <FaCalendarAlt />, text: "Izin Cuti", link: "/izin" },
+            { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
+            { icon: <FaMapMarkedAlt />, text: "Kunjungan", link: "/kunjungan" },
           ].map((item, index) => (
             <div key={index}>
-            {item.text == "Kalender" ?<Link
-              to={"/kalender"}
-              key={index}
-              className="bg-white p-4 rounded-lg flex flex-col "
-            >
-              <div className="flex justify-center text-2xl">{item.icon}</div>
-              <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
-                {item.text}
-              </div>
-            </Link>:<Link
-            to={"/"}
-            key={index}
-            className="bg-white p-4 rounded-lg flex flex-col "
-          >
-            <div className="flex justify-center text-2xl">{item.icon}</div>
-            <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
-              {item.text}
+              {item.text == "Kunjungan" ? (
+                <div
+                  className="bg-white p-4 rounded-lg flex flex-col cursor-pointer"
+                  onClick={() => dispatch(setIsModal())}
+                >
+                  <div className="flex justify-center text-2xl">
+                    {item.icon}
+                  </div>
+                  <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
+                    {item.text}
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  to={item.link}
+                  key={index}
+                  className="bg-white p-4 rounded-lg flex flex-col "
+                >
+                  <div className="flex justify-center text-2xl">
+                    {item.icon}
+                  </div>
+                  <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
+                    {item.text}
+                  </div>
+                </Link>
+              )}
             </div>
-          </Link>}
-          </div>
           ))}
         </div>
         <Location onLocationUpdate={handleLocationUpdate} />
