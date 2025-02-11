@@ -11,7 +11,7 @@ export default function KaryawanDetail() {
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
   const [absensiKaryawan, setAbsensiKaryawan] = useState<any>([]);
-  const jamMasuk = "08.05";
+  const jamMasuk = "08:05";
 
   useEffect(() => {
     email &&
