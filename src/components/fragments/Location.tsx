@@ -20,8 +20,9 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
+          // setLocation({ latitude, longitude });
           // Get address using reverse geocoding
+          onLocationUpdate?.(latitude.toString());
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
@@ -32,7 +33,6 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
               ...prev!,
               address
             }));
-            onLocationUpdate?.(latitude.toString());
           } catch (err) {
             console.error("Error fetching address:", err);
           }
