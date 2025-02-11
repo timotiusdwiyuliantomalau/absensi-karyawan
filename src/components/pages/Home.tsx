@@ -71,7 +71,7 @@ const Home = () => {
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
       if (location.length == 0) {
-        alert("ALAMAT BELUM TERDETEKSI! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
+        alert("TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
         return setIsSubmit(false);
       }
       uploadImage(imgURL, myProfile?.email, currentTime).then(() => {
