@@ -106,3 +106,8 @@ export async function setKunjungan(collectionName: string, data: any) {
   await addDoc(collection(firestore, collectionName), data);
   return { message: data };
 }
+
+export async function getDataKunjungan(collectionName: string) {
+  const result: any = await getDocs(collection(firestore, collectionName));
+  return result.docs.map((doc: any) => doc.data());
+}

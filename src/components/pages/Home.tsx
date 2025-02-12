@@ -22,6 +22,7 @@ import ModalKunjungan from "./ModalKunjungan";
 import { setIsModal } from "../../../slice/appSlice";
 import { RootState } from "../../../slice/store";
 import { handleSignOut } from "../../utils/SignInGoogle";
+import DataKunjungan from "../fragments/DataKunjungan";
 
 const Home = () => {
   const [location, setLocation] = useState<string>("");
@@ -66,6 +67,7 @@ const Home = () => {
     "davin.ggmedia@gmail.com",
     "aulyasari85@gmail.com",
     "jokowaloyo1999@gmail.com",
+    "xii8a.timotiusdym20@gmail.com"
   ];
   isAuthorize.forEach((karyawan: any) => {
     karyawan == myProfile?.email &&
@@ -222,7 +224,7 @@ const Home = () => {
                     setIsCamera(true);
                     setIsKunjungan(true);
                     if (location.length == 0) {
-                      alert(
+                      return alert(
                         "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
                       );
                     }
@@ -295,6 +297,7 @@ const Home = () => {
             </div>
           )}
         </div>
+        {arrayFeature.length==4&&<DataKunjungan email={myProfile?.email}></DataKunjungan>}
       </div>
     </div>
   );
