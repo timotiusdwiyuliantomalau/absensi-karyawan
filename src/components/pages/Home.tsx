@@ -21,6 +21,7 @@ import { uploadImage } from "../ui/inputImageUploader";
 import ModalKunjungan from "./ModalKunjungan";
 import { setIsModal } from "../../../slice/appSlice";
 import { RootState } from "../../../slice/store";
+import { handleSignOut } from "../../utils/SignInGoogle";
 
 const Home = () => {
   const [location, setLocation] = useState<string>("");
@@ -54,12 +55,26 @@ const Home = () => {
     { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
     { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
   ];
-  myProfile?.kunjungan &&
-    arrayFeature.push({
-      icon: <FaMapMarkedAlt />,
-      text: "Kunjungan",
-      link: "/kunjungan",
-    });
+  let isAuthorize = [
+    "rivkigunawan88@gmail.com",
+    "sardigunawangarage@gmail.com",
+    "angjarwo05@gmail.com",
+    "ruhyatdede767@gmail.com",
+    "robbyr673@gmail.com",
+    "teguhpriyanto387@gmail.com",
+    "david.bongkeng0069@gmail.com",
+    "davin.ggmedia@gmail.com",
+    "aulyasari85@gmail.com",
+    "jokowaloyo1999@gmail.com",
+  ];
+  isAuthorize.forEach((karyawan: any) => {
+    karyawan == myProfile?.email &&
+      arrayFeature.push({
+        icon: <FaMapMarkedAlt />,
+        text: "Kunjungan",
+        link: "/kunjungan",
+      });
+  });
 
   useEffect(() => {
     const result = getCookie("myData");
@@ -140,8 +155,8 @@ const Home = () => {
             </span>
             <button
               onClick={() => {
+                handleSignOut();
                 removeCookie("myData");
-                window.location.reload();
               }}
               className="absolute right-5 text-white px-2 py-1 rounded-lg font-bold bg-blue-600"
             >
