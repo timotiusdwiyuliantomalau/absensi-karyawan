@@ -45,17 +45,22 @@ const Home = () => {
   const isModal = useSelector((state: any) => state.slice.isModal);
   const [isKunjungan, setIsKunjungan] = useState(false);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
-  let arrayFeature=[
+  let arrayFeature = [
     {
       icon: <FaUsers />,
       text: "Daftar Karyawan",
       link: "/",
     },
     { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-    { icon: <FaCalendarAlt />, text: "Izin", link: "/izin" },
+    { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
   ];
-  myProfile?.kunjungan&&arrayFeature.push({ icon: <FaMapMarkedAlt />, text: "Kunjungan", link: "/kunjungan" });
-    
+  myProfile?.kunjungan &&
+    arrayFeature.push({
+      icon: <FaMapMarkedAlt />,
+      text: "Kunjungan",
+      link: "/kunjungan",
+    });
+
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
@@ -179,7 +184,7 @@ const Home = () => {
       <div className="p-4">
         <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
           {arrayFeature.map((item, index) => (
-            <div key={index} >
+            <div key={index}>
               {item.text != "Kunjungan" && (
                 <div>
                   <Link
@@ -195,7 +200,7 @@ const Home = () => {
                   </Link>
                 </div>
               )}
-              {item.text == "Kunjungan" &&(
+              {item.text == "Kunjungan" && (
                 <div
                   className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
                   onClick={() => {
@@ -276,7 +281,6 @@ const Home = () => {
           )}
         </div>
       </div>
-
     </div>
   );
 };
