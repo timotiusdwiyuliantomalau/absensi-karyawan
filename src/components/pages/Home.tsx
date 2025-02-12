@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uploadImage } from "../ui/inputImageUploader";
 import ModalKunjungan from "./ModalKunjungan";
 import { setIsModal } from "../../../slice/appSlice";
+import { RootState } from "../../../slice/store";
 
 const Home = () => {
   const [location, setLocation] = useState<string>("");
@@ -42,7 +43,19 @@ const Home = () => {
   const imgURL = useSelector((state: any) => state.slice.imgURL);
   const dispatch = useDispatch();
   const isModal = useSelector((state: any) => state.slice.isModal);
-
+  const [isKunjungan, setIsKunjungan] = useState(false);
+  const isLoading = useSelector((state: RootState) => state.slice.isLoading);
+  let arrayFeature=[
+    {
+      icon: <FaUsers />,
+      text: "Daftar Karyawan",
+      link: "/",
+    },
+    { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
+    { icon: <FaCalendarAlt />, text: "Izin", link: "/izin" },
+  ];
+  myProfile?.kunjungan&&arrayFeature.push({ icon: <FaMapMarkedAlt />, text: "Kunjungan", link: "/kunjungan" });
+    
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));
@@ -65,13 +78,19 @@ const Home = () => {
         }
       });
 
+    if (isKunjungan && imgURL.length > 0) {
+      dispatch(setIsModal());
+      return;
+    }
     if (imgURL.length > 0) {
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
       if (location.length == 0) {
-        alert("TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!");
+        alert(
+          "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
+        );
         return setIsSubmit(false);
       }
       uploadImage(imgURL, myProfile?.email, currentTime).then(() => {
@@ -85,7 +104,7 @@ const Home = () => {
         });
       });
     }
-  }, [imgURL]);
+  }, [imgURL, isKunjungan]);
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
@@ -93,7 +112,17 @@ const Home = () => {
 
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
-      {isModal && <ModalKunjungan data={{ ...myProfile, alamat: location, waktu: currentTime, img: imgURL }}></ModalKunjungan>}
+      {isLoading && <LoadingElement />}
+      {isModal && (
+        <ModalKunjungan
+          data={{
+            ...myProfile,
+            alamat: location,
+            waktu: currentTime,
+            img: imgURL,
+          }}
+        ></ModalKunjungan>
+      )}
       {isSubmit && <LoadingElement></LoadingElement>}
       <div className="bg-orange-500 text-white px-4 pt-4 pb-7 rounded-b-3xl flex flex-col">
         <div className="flex justify-between items-center">
@@ -146,44 +175,46 @@ const Home = () => {
           </button>
         </div>
       </div>
+
       <div className="p-4">
-        <div className="grid grid-cols-4 gap-3 tablet:gap-5 text-center text-black mb-5">
-          {[
-            {
-              icon: <FaUsers />,
-              text: "Daftar Karyawan",
-              link: "/daftar-karyawan",
-            },
-            { icon: <FaCalendarAlt />, text: "Izin Cuti", link: "/izin" },
-            { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-            { icon: <FaMapMarkedAlt />, text: "Kunjungan", link: "/kunjungan" },
-          ].map((item, index) => (
-            <div key={index}>
-              {item.text == "Kunjungan" ? (
+        <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
+          {arrayFeature.map((item, index) => (
+            <div key={index} >
+              {item.text != "Kunjungan" && (
+                <div>
+                  <Link
+                    to={item.link}
+                    className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em]"
+                  >
+                    <div className="flex justify-center text-2xl">
+                      {item.icon}
+                    </div>
+                    <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
+                      {item.text}
+                    </div>
+                  </Link>
+                </div>
+              )}
+              {item.text == "Kunjungan" &&(
                 <div
-                  className="bg-white p-4 rounded-lg flex flex-col cursor-pointer"
-                  onClick={() => dispatch(setIsModal())}
+                  className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
+                  onClick={() => {
+                    setIsCamera(true);
+                    setIsKunjungan(true);
+                    if (location.length == 0) {
+                      alert(
+                        "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
+                      );
+                    }
+                  }}
                 >
                   <div className="flex justify-center text-2xl">
                     {item.icon}
                   </div>
-                  <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
+                  <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
                     {item.text}
                   </div>
                 </div>
-              ) : (
-                <Link
-                  to={item.link}
-                  key={index}
-                  className="bg-white p-4 rounded-lg flex flex-col "
-                >
-                  <div className="flex justify-center text-2xl">
-                    {item.icon}
-                  </div>
-                  <div className="mt-2 text-sm font-medium h-5 flex items-center justify-center">
-                    {item.text}
-                  </div>
-                </Link>
               )}
             </div>
           ))}
@@ -245,6 +276,7 @@ const Home = () => {
           )}
         </div>
       </div>
+
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import { GrClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { setIsModal } from "../../../slice/appSlice";
-// import { setKunjungan } from "../../firebase/service";
+import { setIsLoading, setIsModal } from "../../../slice/appSlice";
+import { setKunjungan } from "../../firebase/service";
+import Swal from "sweetalert2";
 
 export default function ModalKunjungan(data: any) {
   const dispatch = useDispatch();
@@ -12,13 +13,17 @@ export default function ModalKunjungan(data: any) {
   const formattedDate = `${day}-${month}-${year}`;
   function handleSubmit(e: any) {
     e.preventDefault();
-    console.log(formattedDate),data;
-    // setKunjungan("kunjungan" + formattedDate, {
-    //   ...data,
-    //   deskripsi_kunjungan: e.target.deskripsi_kunjungan.value,
-    // }).then((res: any) => {
-    //   console.log(res);
-    // });
+    dispatch(setIsLoading());
+    setKunjungan("kunjungan-karyawan-" + formattedDate, {
+      ...data.data,
+      deskripsi_kunjungan: e.target.deskripsi_kunjungan.value,
+    }).then((res: any) => {
+      dispatch(setIsLoading());
+      res && Swal.fire("Berhasil", "Anda telah mengisi kunjungan!", "success");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    });
   }
   return (
     <main className="bg-black/50 w-full min-h-full fixed z-10 justify-center items-center flex">

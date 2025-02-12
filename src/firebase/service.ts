@@ -96,14 +96,13 @@ export async function getHariLibur() {
 export async function setKunjungan(collectionName: string, data: any) {
   data = {
     email: data.email,
-    alamat: data.alamat,
-    divisi: data.divisi,
-    nama: data.nama,
-    waktu: data.waktu,
-    img: data.img,
-    deskripsi_kunjungan: data.deskripsi_kunjungan,
+    alamat: data.alamat || "Alamat tidak tersedia",
+    divisi: data.divisi || "Divisi tidak diketahui",
+    nama: data.nama || "Nama tidak tersedia",
+    waktu: data.waktu || new Date().toISOString(),
+    img: data.img || "default_image_url",
+    deskripsi_kunjungan: data.deskripsi_kunjungan || "Deskripsi tidak tersedia",
   };
-  const newDocRef = doc(firestore, collectionName, data.email);
-  await setDoc(newDocRef, {data});
-  return { message: "Berhasil!" };
+  await addDoc(collection(firestore, collectionName), data);
+  return { message: data };
 }
