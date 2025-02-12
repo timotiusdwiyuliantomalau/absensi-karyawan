@@ -100,7 +100,7 @@ const Home = () => {
         }
       });
 
-    if (isKunjungan && imgURL.length > 0) {
+    if (isKunjungan&&imgURL.length > 0) {
       dispatch(setIsModal());
       return;
     }
@@ -222,12 +222,12 @@ const Home = () => {
                   className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
                   onClick={() => {
                     setIsCamera(true);
-                    setIsKunjungan(true);
                     if (location.length == 0) {
                       return alert(
                         "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
                       );
                     }
+                    setIsKunjungan(true);
                   }}
                 >
                   <div className="flex justify-center text-2xl">

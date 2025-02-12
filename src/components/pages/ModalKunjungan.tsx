@@ -13,6 +13,11 @@ export default function ModalKunjungan(data: any) {
   const formattedDate = `${day}-${month}-${year}`;
   function handleSubmit(e: any) {
     e.preventDefault();
+    if (!data.data.alamat) {
+      return alert(
+        "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
+      );
+    }
     dispatch(setIsLoading());
     setKunjungan("kunjungan-karyawan-" + formattedDate, {
       ...data.data,

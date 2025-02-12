@@ -18,8 +18,8 @@ export default function DataKunjungan({ email }: any) {
   }, []);
   return (
     <>
-    {data.length>0&&(<main className="bg-yellow-400 rounded-full py-4 px-5 mt-5">
-      <div className="flex flex-col gap-2">
+    {data.length>0&&(<main className="bg-yellow-400 rounded-lg py-4 px-5 mt-5">
+      <div className="flex flex-col gap-4">
         {data.map((result: any, i: number) => (
           <div key={i}>
             <p className="text-lg flex gap-2 font-bold"><CheckBadgeIcon className="w-5 text-green-800"></CheckBadgeIcon> {result.deskripsi_kunjungan}</p>
