@@ -28,7 +28,7 @@ export default function RekapKunjunganKaryawan() {
       <div className="flex flex-col bg-white gap-5">
         {dataKunjungan ? (
           dataKunjungan.map((data: any, i: number) => (
-            <div key={i} className="bg-orange-400 p-4 rounded-xl">
+            <div key={i} className="bg-orange-400 p-4 rounded-xl flex flex-col">
               <span className="flex justify-between">
                 <p className="font-bold text-lg tablet:text-xl">
                   {data.nama.toUpperCase()}
