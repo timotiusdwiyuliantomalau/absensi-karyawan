@@ -134,7 +134,7 @@ export default function RekapAbsensiKaryawan() {
                         {index == 0 ? (
                           <p
                             className={`text-sm font-semibold tablet:text-lg ${
-                              absensi.waktu < "08:05"
+                              absensi.waktu <= "08:05"
                                 ? "bg-green-500"
                                 : "bg-red-500"
                             } p-2 w-fit rounded-lg`}
