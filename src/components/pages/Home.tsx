@@ -32,7 +32,7 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
   const [hasAbsent, setHasAbsent] = useState<boolean>(true);
-  const jamMasuk = "08:05";
+  const jamMasuk = "08:06";
   const jamPulang = "17:00";
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
