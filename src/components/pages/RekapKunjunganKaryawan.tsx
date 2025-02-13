@@ -35,8 +35,8 @@ export default function RekapKunjunganKaryawan() {
                 </p>
               </span>
               <p>{data.divisi.toUpperCase()}</p>
-              <p className="">{data.alamat}</p>
-              <p className="text-xl tablet:text-2xl font-bold text-center mb-1">
+              <p className="mb-1">{data.alamat}</p>
+              <p className="text-xl tablet:text-2xl font-bold text-center">
                 {data.deskripsi_kunjungan}
               </p>
               <p className="bg-blue-600 text-sm tablet:text-lg text-white font-semibold flex place-self-center w-fit p-1 rounded-lg mb-3">
