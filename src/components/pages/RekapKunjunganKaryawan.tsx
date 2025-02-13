@@ -36,10 +36,10 @@ export default function RekapKunjunganKaryawan() {
               </span>
               <p>{data.divisi.toUpperCase()}</p>
               <p className="">{data.alamat}</p>
-              <p className="text-sm tablet:text-2xl font-semibold text-center">
+              <p className="text-xl tablet:text-2xl font-bold text-center mb-1">
                 {data.deskripsi_kunjungan}
               </p>
-              <p className="bg-blue-600 text-white font-bold flex place-self-center w-fit p-1 rounded-lg mb-3">
+              <p className="bg-blue-600 text-sm tablet:text-lg text-white font-semibold flex place-self-center w-fit p-1 rounded-lg mb-3">
                 {data.waktu}
               </p>
               <img src={data.img} alt="" />
