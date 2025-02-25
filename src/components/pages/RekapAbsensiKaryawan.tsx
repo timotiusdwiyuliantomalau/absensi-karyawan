@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getDaftarKaryawan, getDataSemuaAbsensiKaryawan } from "../../firebase/service";
+import {
+  getDaftarKaryawan,
+  getDataSemuaAbsensiKaryawan,
+} from "../../firebase/service";
 import { Link } from "react-router-dom";
 import LoadingRefresh from "../ui/LoadingRefresh";
 
@@ -26,13 +29,14 @@ export default function RekapAbsensiKaryawan() {
   ];
 
   useEffect(() => {
-      getDataSemuaAbsensiKaryawan("absensi-karyawan-"+formattedDate).then((absensi: any) => {
-        let hasilAbsensi:any=[];
+    getDataSemuaAbsensiKaryawan("absensi-karyawan-" + formattedDate).then(
+      (absensi: any) => {
+        let hasilAbsensi: any = [];
         absensi.forEach((a: any) => {
-          a.data.forEach((res:any)=>{
-            hasilAbsensi.push(res)
-          })
-        })
+          a.data.forEach((res: any) => {
+            hasilAbsensi.push(res);
+          });
+        });
         absensi = hasilAbsensi;
         getDaftarKaryawan().then((res: any) => {
           if (selectedBranch === "ALL") {
@@ -71,7 +75,8 @@ export default function RekapAbsensiKaryawan() {
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           }
         });
-      });
+      }
+    );
   }, [selectedBranch]);
 
   return (

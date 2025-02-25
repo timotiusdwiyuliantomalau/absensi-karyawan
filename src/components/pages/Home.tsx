@@ -17,7 +17,6 @@ import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { Clock5, Clock8 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadImage } from "../ui/inputImageUploader";
 import ModalKunjungan from "./ModalKunjungan";
 import { setIsModal } from "../../../slice/appSlice";
 import { RootState } from "../../../slice/store";
@@ -67,7 +66,7 @@ const Home = () => {
     "davin.ggmedia@gmail.com",
     "aulyasari85@gmail.com",
     "jokowaloyo1999@gmail.com",
-    "xii8a.timotiusdym20@gmail.com"
+    "xii8a.timotiusdym20@gmail.com",
   ];
   isAuthorize.forEach((karyawan: any) => {
     karyawan == myProfile?.email &&
@@ -100,7 +99,7 @@ const Home = () => {
         }
       });
 
-    if (isKunjungan&&imgURL.length > 0) {
+    if (isKunjungan && imgURL.length > 0) {
       dispatch(setIsModal());
       return;
     }
@@ -115,15 +114,13 @@ const Home = () => {
         );
         return setIsSubmit(false);
       }
-      uploadImage(imgURL, myProfile?.email, currentTime).then(() => {
-        handleSubmitAbsensi(
-          { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
-          "absensi-karyawan-" + formattedDate
-        ).then((res: any) => {
-          setDataAbsensiSemuaKaryawan(res);
-          Swal.fire("Berhasil", "Anda telah absen!", "success");
-          window.location.reload();
-        });
+      handleSubmitAbsensi(
+        { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
+        "absensi-karyawan-" + formattedDate
+      ).then((res: any) => {
+        setDataAbsensiSemuaKaryawan(res);
+        Swal.fire("Berhasil", "Anda telah absen!", "success");
+        window.location.reload();
       });
     }
   }, [imgURL, isKunjungan]);
@@ -297,7 +294,9 @@ const Home = () => {
             </div>
           )}
         </div>
-        {arrayFeature.length==4&&<DataKunjungan email={myProfile?.email}></DataKunjungan>}
+        {arrayFeature.length == 4 && (
+          <DataKunjungan email={myProfile?.email}></DataKunjungan>
+        )}
       </div>
     </div>
   );
