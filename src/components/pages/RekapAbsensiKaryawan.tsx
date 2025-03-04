@@ -88,6 +88,7 @@ export default function RekapAbsensiKaryawan() {
     const sheetData = dataExcel.flatMap((item: any) => {
       return item.data.length>0?
       [
+        [""],
         ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
         ...item.data.map((row: any, i: number) => [
           i==0?"MASUK":"PULANG",
@@ -97,11 +98,10 @@ export default function RekapAbsensiKaryawan() {
           row.alamat,
           row.waktu,
         ]),
-        [""],
       ]:[
+        [""],
         ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
         ["", item.gerai, item.nama.toUpperCase(), item.posisi.toUpperCase(),"BELUM ABSEN", ""],
-        [""],
       ]
     });
 

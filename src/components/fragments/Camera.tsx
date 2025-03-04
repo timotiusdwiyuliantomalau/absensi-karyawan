@@ -17,6 +17,7 @@ const Camera = () => {
   return (
     <div className="relative w-full max-w-md mx-auto">
       <Webcam
+        mirrored
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
