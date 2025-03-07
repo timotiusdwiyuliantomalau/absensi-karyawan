@@ -17,7 +17,6 @@ export default function RekapAbsensiKaryawan() {
   const year = date.getFullYear();
   const [formattedDate, setFormattedDate] = useState(`${day}-${month}-${year}`);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
-
   const branches = [
     "ALL",
     "BEKASI",
@@ -135,6 +134,7 @@ export default function RekapAbsensiKaryawan() {
       <input
       value={formattedDate.split("-").reverse().join("-")}
         onChange={(e) => {
+          setDataAbsensiSemuaKaryawan([]);
           setFormattedDate(e.target.value.split("-").reverse().join("-"));
         }}
         type="date"
