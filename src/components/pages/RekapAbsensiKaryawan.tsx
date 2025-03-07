@@ -3,7 +3,6 @@ import {
   getDaftarKaryawan,
   getDataSemuaAbsensiKaryawan,
 } from "../../firebase/service";
-import { Link } from "react-router-dom";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { DownloadIcon } from "lucide-react";
 import * as XLSX from "xlsx";
@@ -16,7 +15,7 @@ export default function RekapAbsensiKaryawan() {
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
-  const formattedDate = `${day}-${month}-${year}`;
+  const [formattedDate, setFormattedDate] = useState(`${day}-${month}-${year}`);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
 
   const branches = [
@@ -79,30 +78,43 @@ export default function RekapAbsensiKaryawan() {
         });
       }
     );
-  }, [selectedBranch]);
+  }, [selectedBranch,formattedDate]);
 
   function handleExportExcel() {
     const dataExcel = dataAbsensiSemuaKaryawan.map((karyawan: any) => {
-      return { posisi: karyawan.divisi,nama:karyawan.nama,gerai: karyawan.gerai, data: karyawan.absensi };
+      return {
+        posisi: karyawan.divisi,
+        nama: karyawan.nama,
+        gerai: karyawan.gerai,
+        data: karyawan.absensi,
+      };
     });
     const sheetData = dataExcel.flatMap((item: any) => {
-      return item.data.length>0?
-      [
-        [""],
-        ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
-        ...item.data.map((row: any, i: number) => [
-          i==0?"MASUK":"PULANG",
-          item.gerai,
-          row.nama.toUpperCase(),
-          row.divisi.toUpperCase(),
-          row.alamat,
-          row.waktu,
-        ]),
-      ]:[
-        [""],
-        ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
-        ["", item.gerai, item.nama.toUpperCase(), item.posisi.toUpperCase(),"BELUM ABSEN", ""],
-      ]
+      return item.data.length > 0
+        ? [
+            [""],
+            ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
+            ...item.data.map((row: any, i: number) => [
+              i == 0 ? "MASUK" : "PULANG",
+              item.gerai,
+              row.nama.toUpperCase(),
+              row.divisi.toUpperCase(),
+              row.alamat,
+              row.waktu,
+            ]),
+          ]
+        : [
+            [""],
+            ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
+            [
+              "",
+              item.gerai,
+              item.nama.toUpperCase(),
+              item.posisi.toUpperCase(),
+              "BELUM ABSEN",
+              "",
+            ],
+          ];
     });
 
     function getFormattedDate(date: Date) {
@@ -119,13 +131,17 @@ export default function RekapAbsensiKaryawan() {
   }
 
   return (
-    <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto">
-      <Link
-        to="/daftar-karyawan"
-        className="mt-4 flex w-full tablet:w-1/2 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-800 justify-center items-center"
-      >
-        ⬅ Daftar Karyawan
-      </Link>
+    <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
+      <input
+      value={formattedDate.split("-").reverse().join("-")}
+        onChange={(e) => {
+          setFormattedDate(e.target.value.split("-").reverse().join("-"));
+        }}
+        type="date"
+        name=""
+        id=""
+        className="border-2 border-gray-300 p-2 rounded-xl text-black"
+      />
       <button
         className="flex gap-1 items-center mt-4 px-6 py-2 text-white bg-green-600 rounded-lg shadow-md hover:bg-green-800 justify-center"
         onClick={handleExportExcel}
