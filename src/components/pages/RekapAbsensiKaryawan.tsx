@@ -115,18 +115,10 @@ export default function RekapAbsensiKaryawan() {
             ],
           ];
     });
-
-    function getFormattedDate(date: Date) {
-      const day = ("0" + date.getDate()).slice(-2);
-      const month = ("0" + (date.getMonth() + 1)).slice(-2);
-      const year = date.getFullYear().toString().slice(-2);
-      return `${day}-${month}-${year}`;
-    }
-    const today = new Date();
     const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, `rekap-absensi-${getFormattedDate(today)}.xlsx`);
+    XLSX.writeFile(workbook, `rekap-absensi-${formattedDate}.xlsx`);
   }
 
   return (
