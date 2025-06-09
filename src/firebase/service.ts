@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -13,11 +14,23 @@ import { firestore } from "./init";
 export async function getDaftarKaryawan() {
   try {
     const snapshot = await getDocs(collection(firestore, "daftar-karyawan"));
-    const data = snapshot.docs.map((doc) => doc.data());
+    const data = snapshot.docs.map((doc) => {
+      return { ...doc.data(), id: doc.id };
+    });
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+}
+
+export async function getGerai(){
+  const result: any = await getDocs(collection(firestore, "gerai"));
+  return result.docs.map((doc: any) => doc.data());
+}
+
+export async function handleDeleteKaryawan(id:string) {
+  await deleteDoc(doc(firestore, "daftar-karyawan", id));
+  return { message: "Data berhasil dihapus!" };
 }
 
 export async function handleSubmitAbsensi(data: any, collectionName: string) {
