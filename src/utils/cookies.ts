@@ -1,17 +1,16 @@
 // src/cookieUtils.js
-import Cookies from "js-cookie";
 
 // Set a cookie
 export const setCookie = (key:string, value:string) => {
-  Cookies.set(key, value, { expires: 30 });
+  localStorage.setItem(key, value);
 };
 
 // Get a cookie
 export const getCookie = (key:string) => {
-  return Cookies.get(key);
+  return localStorage.getItem(key);
 };
 
 // Remove a cookie
 export const removeCookie = (key:string) => {
-  Cookies.remove(key);
+  localStorage.removeItem(key);
 };

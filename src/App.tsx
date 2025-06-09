@@ -2,7 +2,6 @@ import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import RegisterPage from "./components/pages/RegisterPage";
 import FormRegister from "./components/pages/FormRegister";
-import { getCookie } from "./utils/cookies";
 import Home from "./components/pages/Home";
 import DaftarKaryawan from "./components/pages/DaftarKaryawan";
 import KaryawanDetail from "./components/pages/KaryawanDetail";
@@ -11,7 +10,7 @@ import Kalender from "./components/pages/Kalender";
 import ModalKunjungan from "./components/pages/ModalKunjungan";
 import RekapKunjunganKaryawan from "./components/pages/RekapKunjunganKaryawan";
 
-const isLoggedIn = getCookie("myData");
+const isLoggedIn = localStorage.getItem("myData")&&JSON.parse(localStorage.getItem("myData")||"");
 const router = createHashRouter([
   {
     path: "/",
