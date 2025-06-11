@@ -7,14 +7,18 @@ import {
   Mail,
   Search,
   Building,
+  Edit,
 } from "lucide-react";
 import {
   getDaftarKaryawan,
   getGerai,
   handleAddKaryawan,
   handleDeleteKaryawan,
+  handleUpdateKaryawan,
 } from "../../firebase/service";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import { MdSend } from "react-icons/md";
 
 interface Employee {
   id: number;
@@ -39,6 +43,7 @@ const AdministrasiKaryawan: React.FC = () => {
     email: "",
     divisi: "",
   });
+  const [indexEdit, setIndexEdit] = useState(0);
 
   const handleAddEmployee = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,11 +52,14 @@ const AdministrasiKaryawan: React.FC = () => {
       gerai: newEmployee.gerai,
       divisi: newEmployee.divisi,
       email: newEmployee.email,
+    }).then((res: any) => {
+      if(res){
+        Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     });
-    Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
     // if (newEmployee.name && newEmployee.position && newEmployee.email) {
     //   const employee: Employee = {
     //     ...newEmployee,
@@ -92,10 +100,31 @@ const AdministrasiKaryawan: React.FC = () => {
     //   emp.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  function handleUpdateEmployee(e: any) {
+    e.preventDefault();
+    handleUpdateKaryawan(indexEdit, {
+      nama: e.target.nama.value,
+      gerai: e.target.gerai.value,
+      divisi: e.target.divisi.value,
+      email: e.target.email.value,
+    }).then((res: any) => {
+      if (res) {
+        Swal.fire("Berhasil", "Data Anda berhasil diubah!", "success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    });
+  }
+
+  function handleClickEdit(id: number) {
+    setIndexEdit(id);
+  }
+
   useEffect(() => {
     getGerai().then((res: any) => {
       setGerai(res);
-    })
+    });
     getDaftarKaryawan().then((res: any) => {
       setEmployees(res);
     });
@@ -117,10 +146,18 @@ const AdministrasiKaryawan: React.FC = () => {
                 </h1>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
-              <p className="text-white font-semibold">
-                {employees.length} Karyawan Aktif
-              </p>
+            <div className="grid gap-3">
+              <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
+                <p className="text-white font-semibold flex gap-2">
+                  <Users /> {employees.length} Karyawan Aktif
+                </p>
+              </div>
+              <Link
+                to="/rekap-absensi-karyawan"
+                className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl"
+              >
+                <p className="text-white font-semibold">Rekap Absensi Harian</p>
+              </Link>
             </div>
           </div>
         </div>
@@ -153,44 +190,54 @@ const AdministrasiKaryawan: React.FC = () => {
         {/* Employee Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredEmployees.map((employee) => (
-            <div
-              key={employee.id}
-              className="bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group"
-            >
-              <div className="bg-gradient-to-r from-orange-600 to-yellow-500 h-24 relative">
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="absolute bottom-4 right-4">
-                  <button
-                    onClick={() => handleDeleteEmployee(employee.id.toString())}
-                    className="bg-white/20 backdrop-blur-sm p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-300 group-hover:scale-110"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-6 -mt-8 relative">
-                <div className="bg-white w-16 h-16 rounded-xl shadow-lg flex items-center justify-center mb-4 border-4 border-orange-100">
-                  <User className="h-8 w-8 text-orange-500" />
-                </div>
-
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {employee.nama.toUpperCase()}
-                </h3>
-                <p className="text-orange-600 font-semibold mb-4 text-lg">
-                  {employee.divisi.toUpperCase()}
-                </p>
-
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 text-gray-600">
-                    <Building className="h-4 w-4 text-orange-400" />
-                    <span className="text-lg">{employee.gerai.toUpperCase()}</span>
+            <div key={employee.id}>
+              {employee.id !== indexEdit ? (
+                <div
+                  key={employee.id}
+                  className="bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group"
+                >
+                  <div className="bg-gradient-to-r from-orange-600 to-yellow-500 h-24 relative">
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <button
+                      onClick={() =>
+                        handleDeleteEmployee(employee.id.toString())
+                      }
+                      className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-300 group-hover:scale-110"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setIndexEdit(employee.id)}
+                      className="absolute bottom-4 right-[4em] bg-white/20 backdrop-blur-sm p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-300 group-hover:scale-110"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
                   </div>
-                  <div className="flex items-center space-x-3 text-gray-600">
-                    <Mail className="h-4 w-4 text-orange-400" />
-                    <span className="text-sm">{employee.email}</span>
-                  </div>
-                  {/* <div className="flex items-center space-x-3 text-gray-600">
+
+                  <div className="p-6 -mt-8 relative">
+                    <div className="bg-white w-16 h-16 rounded-xl shadow-lg flex items-center justify-center mb-4 border-4 border-orange-100">
+                      <User className="h-8 w-8 text-orange-500" />
+                    </div>
+
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {employee.nama.toUpperCase()}
+                    </h3>
+                    <p className="text-orange-600 font-semibold mb-4 text-lg">
+                      {employee.divisi.toUpperCase()}
+                    </p>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 text-gray-600">
+                        <Building className="h-4 w-4 text-orange-400" />
+                        <span className="text-lg">
+                          {employee.gerai.toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-3 text-gray-600">
+                        <Mail className="h-4 w-4 text-orange-400" />
+                        <span className="text-sm">{employee.email}</span>
+                      </div>
+                      {/* <div className="flex items-center space-x-3 text-gray-600">
                     <Phone className="h-4 w-4 text-orange-400" />
                     <span className="text-sm">{employee.phone}</span>
                   </div>
@@ -201,8 +248,118 @@ const AdministrasiKaryawan: React.FC = () => {
                       {new Date(employee.joinDate).toLocaleDateString("id-ID")}
                     </span>
                   </div> */}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <form
+                  onSubmit={handleUpdateEmployee}
+                  key={employee.id}
+                  className="bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 group"
+                >
+                  <div className="bg-gradient-to-r from-orange-600 to-yellow-500 h-24 relative">
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <button
+                      onClick={() =>
+                        handleDeleteEmployee(employee.id.toString())
+                      }
+                      className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-300 group-hover:scale-110"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleClickEdit(employee.id)}
+                      className="absolute bottom-4 right-[4em] bg-white/20 backdrop-blur-sm p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all duration-300 group-hover:scale-110"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="p-6 -mt-8 relative">
+                    <div className="bg-white w-16 h-16 rounded-xl shadow-lg flex items-center justify-center mb-4 border-4 border-orange-100">
+                      <User className="h-8 w-8 text-orange-500" />
+                    </div>
+                    <input
+                      type="text"
+                      defaultValue={employee.nama}
+                      name="nama"
+                      onChange={(e) =>
+                        setNewEmployee({
+                          ...newEmployee,
+                          nama: e.target.value,
+                        })
+                      }
+                      className="bg-orange-100 p-2 rounded-xl text-xl  text-gray-900 mb-2 w-full"
+                    />
+                    <input
+                      type="text"
+                      name="divisi"
+                      defaultValue={employee.divisi}
+                      onChange={(e) =>
+                        setNewEmployee({
+                          ...newEmployee,
+                          divisi: e.target.value,
+                        })
+                      }
+                      className="bg-orange-100 p-2 rounded-xl text-xl  text-gray-900 mb-2 w-full"
+                    />
+
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 text-gray-600">
+                        <Building className="h-4 w-4 text-orange-400" />
+                        <select
+                          name="gerai"
+                          defaultValue={employee.gerai.toLowerCase()}
+                          onChange={(e) =>
+                            setNewEmployee({
+                              ...newEmployee,
+                              gerai: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
+                          required
+                        >
+                          {gerai.map((gerai, index) => (
+                            <option key={index} value={gerai.nama}>
+                              {gerai.nama.toUpperCase()}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="flex items-center space-x-3 text-gray-600">
+                        <Mail className="h-4 w-4 text-orange-400" />
+                        <input
+                          name="email"
+                          type="text"
+                          defaultValue={employee.email.toUpperCase()}
+                          onChange={(e) =>
+                            setNewEmployee({
+                              ...newEmployee,
+                              email: e.target.value,
+                            })
+                          }
+                          className="bg-orange-100 p-2 rounded-xl text-xl  text-gray-900 mb-2 w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mx-10 mb-5 gap-2">
+                    <div
+                      onClick={() => setIndexEdit(0)}
+                      className="bg-gray-600 hover:cursor-pointer text-white p-3 rounded-xl text-xl gap-2 flex items-center"
+                    >
+                      BATAL
+                    </div>
+                    <button
+                      type="submit"
+                      className="bg-gradient-to-r from-orange-600 to-yellow-500 text-white p-3 rounded-xl text-xl gap-2 flex items-center"
+                    >
+                      UBAH
+                      <MdSend />
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           ))}
         </div>
@@ -255,7 +412,7 @@ const AdministrasiKaryawan: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Divisi
+                  Posisi
                 </label>
                 <input
                   type="text"
@@ -274,14 +431,14 @@ const AdministrasiKaryawan: React.FC = () => {
                 </label>
                 <select
                   value={newEmployee.gerai}
-                    onChange={(e) =>
+                  onChange={(e) =>
                     setNewEmployee({ ...newEmployee, gerai: e.target.value })
                   }
                   className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
                   required
                 >
                   <option value="">Pilih Gerai</option>
-                  {gerai.map((gerai,index) => (
+                  {gerai.map((gerai, index) => (
                     <option key={index} value={gerai.nama}>
                       {gerai.nama.toUpperCase()}
                     </option>

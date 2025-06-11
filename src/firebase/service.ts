@@ -7,9 +7,17 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { firestore } from "./init";
+
+interface Karyawan {
+  email: string;
+  nama: string;
+  gerai: string;
+  divisi: string;
+}
 
 export async function getDaftarKaryawan() {
   try {
@@ -23,14 +31,18 @@ export async function getDaftarKaryawan() {
   }
 }
 
-export async function getGerai(){
+export async function getGerai() {
   const result: any = await getDocs(collection(firestore, "gerai"));
   return result.docs.map((doc: any) => doc.data());
 }
 
-export async function handleDeleteKaryawan(id:string) {
+export async function handleDeleteKaryawan(id: string) {
   await deleteDoc(doc(firestore, "daftar-karyawan", id));
   return { message: "Data berhasil dihapus!" };
+}
+export async function handleUpdateKaryawan(id: number, data: Karyawan) {
+  await updateDoc(doc(firestore, "daftar-karyawan", id.toString()), { ...data });
+  return { message: "Data berhasil diubah!" };
 }
 
 export async function handleSubmitAbsensi(data: any, collectionName: string) {
