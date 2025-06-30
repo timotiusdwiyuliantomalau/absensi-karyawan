@@ -561,7 +561,7 @@ const AdministrasiKaryawan: React.FC = () => {
               <div className="flex space-x-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowAddForm(false)}
+                  onClick={() => setTambahGeraiForm(false)}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-xl font-semibold transition-colors"
                 >
                   Batal
