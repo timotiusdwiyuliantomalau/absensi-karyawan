@@ -10,6 +10,7 @@ import Kalender from "./components/pages/Kalender";
 import ModalKunjungan from "./components/pages/ModalKunjungan";
 import RekapKunjunganKaryawan from "./components/pages/RekapKunjunganKaryawan";
 import AdministrasiKaryawan from "./components/pages/AdministrasiKaryawan";
+import TambahGerai from "./components/pages/TambahGerai";
 
 const isLoggedIn = localStorage.getItem("myData")&&JSON.parse(localStorage.getItem("myData")||"");
 const router = createHashRouter([
@@ -39,6 +40,7 @@ const router = createHashRouter([
   { path: "/kunjungan", element: <ModalKunjungan /> },
   { path: "/rekap-kunjungan-karyawan", element: <RekapKunjunganKaryawan /> },
   { path: "/admin-karyawan", element: <AdministrasiKaryawan /> },
+  { path: "/tambah-gerai", element: <TambahGerai /> },
 ]);
 
 const App = () => {

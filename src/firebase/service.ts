@@ -36,6 +36,12 @@ export async function getGerai() {
   return result.docs.map((doc: any) => doc.data());
 }
 
+export async function addGerai(data: any) {
+  const result: any = await addDoc(collection(firestore, "gerai"), {...data});
+  console.log(result);
+}
+
+
 export async function handleDeleteKaryawan(id: string) {
   await deleteDoc(doc(firestore, "daftar-karyawan", id));
   return { message: "Data berhasil dihapus!" };

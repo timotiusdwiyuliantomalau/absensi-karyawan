@@ -10,6 +10,7 @@ import {
   Edit,
 } from "lucide-react";
 import {
+  addGerai,
   getDaftarKaryawan,
   getGerai,
   handleAddKaryawan,
@@ -36,6 +37,7 @@ const AdministrasiKaryawan: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [gerai, setGerai] = useState<Gerai[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [tambahGeraiForm, setTambahGeraiForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [newEmployee, setNewEmployee] = useState<Omit<Employee, "id">>({
     nama: "",
@@ -53,7 +55,7 @@ const AdministrasiKaryawan: React.FC = () => {
       divisi: newEmployee.divisi,
       email: newEmployee.email,
     }).then((res: any) => {
-      if(res){
+      if (res) {
         Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
         setTimeout(() => {
           window.location.reload();
@@ -75,6 +77,19 @@ const AdministrasiKaryawan: React.FC = () => {
     //     department: "",
     //   });
     //   setShowAddForm(false);
+  };
+
+  const handleAddBranch = (e: any) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    addGerai({
+      nama: form.namaGerai.value,
+    }).then(() => {
+        Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+    });
   };
 
   const handleDeleteEmployee = (id: string) => {
@@ -123,6 +138,7 @@ const AdministrasiKaryawan: React.FC = () => {
 
   useEffect(() => {
     getGerai().then((res: any) => {
+      console.log(res);
       setGerai(res);
     });
     getDaftarKaryawan().then((res: any) => {
@@ -158,6 +174,14 @@ const AdministrasiKaryawan: React.FC = () => {
               >
                 <p className="text-white font-semibold">Rekap Absensi Harian</p>
               </Link>
+              <div
+                onClick={() => setTambahGeraiForm(true)}
+                className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl cursor-pointer"
+              >
+                <p className="text-white font-semibold text-center">
+                  Tambah Gerai
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -502,6 +526,51 @@ const AdministrasiKaryawan: React.FC = () => {
                   className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
                 >
                   Tambah Karyawan
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
+      {tambahGeraiForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <form
+            onSubmit={handleAddBranch}
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="bg-gradient-to-r from-orange-500 to-orange-700 p-6 rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-white flex items-center space-x-3">
+                <Plus className="h-6 w-6" />
+                <span>Tambah Gerai Baru</span>
+              </h2>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Nama Gerai
+                </label>
+                <input
+                  type="text"
+                  name="namaGerai"
+                  className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-500 focus:ring-0 transition-colors"
+                  required
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-xl font-semibold transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  Tambah Gerai
                 </button>
               </div>
             </div>
