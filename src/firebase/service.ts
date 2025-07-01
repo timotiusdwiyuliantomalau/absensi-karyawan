@@ -65,10 +65,10 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
   let snapshot = result.data();
   snapshot?.data.push(data);
   if (snapshot) {
-    const newDocRef = doc(firestore, collectionName, data.email);
+    const newDocRef = doc(firestore, collectionName, data.email.toLowerCase());
     await setDoc(newDocRef, snapshot);
   } else {
-    const newDocRef = doc(firestore, collectionName, data.email);
+    const newDocRef = doc(firestore, collectionName, data.email.toLowerCase());
     await setDoc(newDocRef, { data: [data] });
   }
 }
