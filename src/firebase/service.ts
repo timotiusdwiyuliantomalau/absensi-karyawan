@@ -109,7 +109,7 @@ export async function getPersonalKaryawan(email: string | null) {
 
 export async function getDataAbsensi(collectionName: string, email: string) {
   try {
-    const result: any = await getDoc(doc(firestore, collectionName, email));
+    const result: any = await getDoc(doc(firestore, collectionName, email.toLowerCase()));
     return result.data();
   } catch (error) {
     return { error };
