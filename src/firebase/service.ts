@@ -55,7 +55,7 @@ export async function handleUpdateKaryawan(id: number, data: Karyawan) {
 export async function handleSubmitAbsensi(data: any, collectionName: string) {
   const result: any = await getDoc(doc(firestore, collectionName, data.email.toLowerCase()));
   data = {
-    email: data.email,
+    email: data.email.toLowerCase(),
     alamat: data.alamat,
     divisi: data.divisi,
     nama: data.nama,
