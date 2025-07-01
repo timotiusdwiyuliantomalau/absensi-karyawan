@@ -37,22 +37,23 @@ export async function getGerai() {
 }
 
 export async function addGerai(data: any) {
-  const result: any = await addDoc(collection(firestore, "gerai"), {...data});
+  const result: any = await addDoc(collection(firestore, "gerai"), { ...data });
   console.log(result);
 }
-
 
 export async function handleDeleteKaryawan(id: string) {
   await deleteDoc(doc(firestore, "daftar-karyawan", id));
   return { message: "Data berhasil dihapus!" };
 }
 export async function handleUpdateKaryawan(id: number, data: Karyawan) {
-  await updateDoc(doc(firestore, "daftar-karyawan", id.toString()), { ...data });
+  await updateDoc(doc(firestore, "daftar-karyawan", id.toString()), {
+    ...data,
+  });
   return { message: "Data berhasil diubah!" };
 }
 
 export async function handleSubmitAbsensi(data: any, collectionName: string) {
-  const result: any = await getDoc(doc(firestore, collectionName, data.email));
+  const result: any = await getDoc(doc(firestore, collectionName, data.email.toLowerCase()));
   data = {
     email: data.email,
     alamat: data.alamat,
@@ -83,24 +84,22 @@ export async function handleAddKaryawan(data: any) {
 
 export async function getPersonalKaryawan(email: string | null) {
   try {
-    let snapshot:any;
+    let snapshot: any;
+    snapshot = await getDocs(
+      query(
+        collection(firestore, "daftar-karyawan"),
+        where("email", "==", email?.toUpperCase())
+      )
+    );
+    if (snapshot.docs.length === 0)
       snapshot = await getDocs(
         query(
           collection(firestore, "daftar-karyawan"),
-          where("email", "==", email?.toUpperCase())
+          where("email", "==", email?.toLowerCase())
         )
       );
-      console.log(snapshot.docs.length);
-      if(snapshot.docs.length === 0)
-      snapshot = await getDocs(
-        query(
-          collection(firestore, "daftar-karyawan"),
-          where("email", "==", email)
-        )
-      );
-    
     if (snapshot.docs.length === 0) return "TIDAK ADA DATA";
-    const data = snapshot.docs.map((doc:any) => (doc.id, doc.data()));
+    const data = snapshot.docs.map((doc: any) => (doc.id, doc.data()));
     return data.length > 1 ? data[1] : data[0];
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -109,7 +108,9 @@ export async function getPersonalKaryawan(email: string | null) {
 
 export async function getDataAbsensi(collectionName: string, email: string) {
   try {
-    const result: any = await getDoc(doc(firestore, collectionName, email.toLowerCase()));
+    const result: any = await getDoc(
+      doc(firestore, collectionName, email.toLowerCase())
+    );
     return result.data();
   } catch (error) {
     return { error };
