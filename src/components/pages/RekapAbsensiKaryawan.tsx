@@ -31,6 +31,7 @@ export default function RekapAbsensiKaryawan() {
   useEffect(() => {
     getDataSemuaAbsensiKaryawan("absensi-karyawan-" + formattedDate).then(
       (absensi: any) => {
+        console.log("absensi = ", absensi);
         let hasilAbsensi: any = [];
         absensi.forEach((a: any) => {
           a.data.forEach((res: any) => {
@@ -51,7 +52,7 @@ export default function RekapAbsensiKaryawan() {
             });
             const hasilMultiAbsensi = arr.map((k: any) => ({
               ...k,
-              absensi: absensi.filter((a: any) => a.email === k.email),
+              absensi: absensi.filter((a: any) => a.email === k.email.toLowerCase()),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           } else {
@@ -120,7 +121,6 @@ export default function RekapAbsensiKaryawan() {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, `rekap-absensi-${formattedDate}.xlsx`);
   }
-
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input

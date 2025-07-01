@@ -83,14 +83,24 @@ export async function handleAddKaryawan(data: any) {
 
 export async function getPersonalKaryawan(email: string | null) {
   try {
-    const snapshot = await getDocs(
-      query(
-        collection(firestore, "daftar-karyawan"),
-        where("email", "==", email)
-      )
-    );
-    if (snapshot.empty) return "TIDAK ADA DATA";
-    const data = snapshot.docs.map((doc) => (doc.id, doc.data()));
+    let snapshot:any;
+    if(email?.toUpperCase()==email){
+      snapshot = await getDocs(
+        query(
+          collection(firestore, "daftar-karyawan"),
+          where("email", "==", email?.toUpperCase())
+        )
+      );
+    }else{
+      snapshot = await getDocs(
+        query(
+          collection(firestore, "daftar-karyawan"),
+          where("email", "==", email?.toLowerCase())
+        )
+      );
+    }
+    if (snapshot) return "TIDAK ADA DATA";
+    const data = snapshot.docs.map((doc:any) => (doc.id, doc.data()));
     return data.length > 1 ? data[1] : data[0];
   } catch (error) {
     console.error("Error fetching data:", error);
