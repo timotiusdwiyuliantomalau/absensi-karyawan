@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   getDaftarKaryawan,
   getDataSemuaAbsensiKaryawan,
+  getGerai,
 } from "../../firebase/service";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { DownloadIcon } from "lucide-react";
@@ -17,21 +18,17 @@ export default function RekapAbsensiKaryawan() {
   const year = date.getFullYear();
   const [formattedDate, setFormattedDate] = useState(`${day}-${month}-${year}`);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
-  const branches = [
-    "ALL",
-    "BEKASI",
-    "TANGERANG",
-    "DEPOK",
-    "JAKTIM",
-    "JAKSEL",
-    "CIKARANG",
-    "BOGOR",
-  ];
+  const [branches, setBranches] = useState(["ALL"]);
 
   useEffect(() => {
+    getGerai().then((branch: any) => {
+      const listBranch = branch.map((branch: any) =>
+        branch.nama.toUpperCase()
+      );
+      setBranches(["ALL", ...listBranch]);
+    });
     getDataSemuaAbsensiKaryawan("absensi-karyawan-" + formattedDate).then(
       (absensi: any) => {
-        console.log("absensi = ", absensi);
         let hasilAbsensi: any = [];
         absensi.forEach((a: any) => {
           a.data.forEach((res: any) => {
@@ -52,7 +49,9 @@ export default function RekapAbsensiKaryawan() {
             });
             const hasilMultiAbsensi = arr.map((k: any) => ({
               ...k,
-              absensi: absensi.filter((a: any) => a.email === k.email.toLowerCase()),
+              absensi: absensi.filter(
+                (a: any) => a.email === k.email.toLowerCase()
+              ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           } else {
@@ -71,14 +70,14 @@ export default function RekapAbsensiKaryawan() {
             );
             const hasilMultiAbsensi = listKaryawan.map((k: any) => ({
               ...k,
-              absensi: absensi.filter((a: any) => a.email === k.email),
+              absensi: absensi.filter((a: any) => a.email.toLowerCase() === k.email.toLowerCase()),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           }
         });
       }
     );
-  }, [selectedBranch,formattedDate]);
+  }, [selectedBranch, formattedDate]);
 
   function handleExportExcel() {
     const dataExcel = dataAbsensiSemuaKaryawan.map((karyawan: any) => {
@@ -124,7 +123,7 @@ export default function RekapAbsensiKaryawan() {
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input
-      value={formattedDate.split("-").reverse().join("-")}
+        value={formattedDate.split("-").reverse().join("-")}
         onChange={(e) => {
           setDataAbsensiSemuaKaryawan([]);
           setFormattedDate(e.target.value.split("-").reverse().join("-"));

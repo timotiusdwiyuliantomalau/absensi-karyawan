@@ -19,7 +19,8 @@ import {
 } from "../../firebase/service";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { MdSend } from "react-icons/md";
+import { MdNumbers, MdSend } from "react-icons/md";
+import RandomDigits from "../../utils/RandomNumber";
 
 interface Employee {
   id: number;
@@ -27,6 +28,7 @@ interface Employee {
   gerai: string;
   divisi: string;
   email: string;
+  kode: string
 }
 interface Gerai {
   id: number;
@@ -44,6 +46,7 @@ const AdministrasiKaryawan: React.FC = () => {
     gerai: "",
     email: "",
     divisi: "",
+    kode: ""
   });
   const [indexEdit, setIndexEdit] = useState(0);
 
@@ -54,6 +57,7 @@ const AdministrasiKaryawan: React.FC = () => {
       gerai: newEmployee.gerai,
       divisi: newEmployee.divisi,
       email: newEmployee.email,
+      kode:RandomDigits.generate(8)
     }).then((res: any) => {
       if (res) {
         Swal.fire("Berhasil", "Data Anda berhasil terdaftar", "success");
@@ -260,6 +264,10 @@ const AdministrasiKaryawan: React.FC = () => {
                       <div className="flex items-center space-x-3 text-gray-600">
                         <Mail className="h-4 w-4 text-orange-400" />
                         <span className="text-sm">{employee.email}</span>
+                      </div>
+                      <div className="flex items-center space-x-3 text-gray-600">
+                        <MdNumbers className="h-5 w-5 text-orange-400" />
+                        <span className="text-lg">{employee.kode}</span>
                       </div>
                       {/* <div className="flex items-center space-x-3 text-gray-600">
                     <Phone className="h-4 w-4 text-orange-400" />

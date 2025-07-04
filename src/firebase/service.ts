@@ -11,6 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { firestore } from "./init";
+import Swal from "sweetalert2";
 
 interface Karyawan {
   email: string;
@@ -21,7 +22,7 @@ interface Karyawan {
 
 export async function getDaftarKaryawan() {
   try {
-    const snapshot = await getDocs(collection(firestore, "daftar-karyawan"));
+    const snapshot = await getDocs(collection(firestore, "daftar-pegawai"));
     const data = snapshot.docs.map((doc) => {
       return { ...doc.data(), id: doc.id };
     });
@@ -37,16 +38,15 @@ export async function getGerai() {
 }
 
 export async function addGerai(data: any) {
-  const result: any = await addDoc(collection(firestore, "gerai"), { ...data });
-  console.log(result);
+  await addDoc(collection(firestore, "gerai"), { ...data });
 }
 
 export async function handleDeleteKaryawan(id: string) {
-  await deleteDoc(doc(firestore, "daftar-karyawan", id));
+  await deleteDoc(doc(firestore, "daftar-pegawai", id));
   return { message: "Data berhasil dihapus!" };
 }
 export async function handleUpdateKaryawan(id: number, data: Karyawan) {
-  await updateDoc(doc(firestore, "daftar-karyawan", id.toString()), {
+  await updateDoc(doc(firestore, "daftar-pegawai", id.toString()), {
     ...data,
   });
   return { message: "Data berhasil diubah!" };
@@ -75,7 +75,9 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
 
 export async function handleAddKaryawan(data: any) {
   try {
-    await addDoc(collection(firestore, "daftar-karyawan"), data);
+    const isKodeExist= await getDocs(query(collection(firestore, "daftar-pegawai"), where("kode", "==", data.kode)));
+    if(isKodeExist.docs.length>0) return Swal.fire("Error", "Kode sudah terpakai!", "error");
+    await addDoc(collection(firestore, "daftar-pegawai"), data);
     return { message: "Berhail register!" };
   } catch (err) {
     console.error(err);
@@ -87,14 +89,14 @@ export async function getPersonalKaryawan(email: string | null) {
     let snapshot: any;
     snapshot = await getDocs(
       query(
-        collection(firestore, "daftar-karyawan"),
+        collection(firestore, "daftar-pegawai"),
         where("email", "==", email?.toUpperCase())
       )
     );
     if (snapshot.docs.length === 0)
       snapshot = await getDocs(
         query(
-          collection(firestore, "daftar-karyawan"),
+          collection(firestore, "daftar-pegawai"),
           where("email", "==", email?.toLowerCase())
         )
       );
