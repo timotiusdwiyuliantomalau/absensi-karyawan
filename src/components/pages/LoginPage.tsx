@@ -16,7 +16,7 @@ export default function LoginPage() {
   useEffect(() => {
   }, []);
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#fd4f15] to-[#ed9111] text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[rgb(245,72,14)] to-[#ee910f] text-white">
       {isLoading && <LoadingElement />}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
@@ -41,17 +41,17 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        Absensi Karyawan GG Suspension
+        Absensi Karyawan
       </motion.h1>
       <motion.form
         onSubmit={(e) => handleSubmit(e)}
         className="flex flex-col gap-1"
       >
-        <motion.div className="flex gap-4">
+        <motion.div className="grid gap-1">
           <motion.label className="text-xl font-semibold">
             Kode Karyawan :{" "}
           </motion.label>
-          <motion.input name="kode" type="text" pattern="[0-9]{8}" className="px-4 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95"></motion.input>
+          <motion.input name="kode" type="text" pattern="[0-9]{8}" className="px-4 rounded-xl bg-white/10 backdrop-blur-lg shadow-lg border border-white/20 text-white font-semibold text-lg transition-transform transform hover:scale-105 active:scale-95 w-fit"></motion.input>
         </motion.div>
         <motion.button
           whileHover={{ scale: 1.1 }}
