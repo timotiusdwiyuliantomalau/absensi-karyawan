@@ -31,6 +31,8 @@ Backend sistem sederhana untuk mengelola transaksi yang dibangun menggunakan Gol
 - MySQL 8.0
 - Docker & Docker Compose (opsional)
 
+> **🪟 Windows Users:** Lihat [WINDOWS_SETUP.md](WINDOWS_SETUP.md) untuk panduan khusus Windows dengan batch files dan PowerShell scripts.
+
 ## 🚀 Quick Start
 
 ### 1. Clone Repository
