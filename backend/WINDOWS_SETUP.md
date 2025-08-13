@@ -108,7 +108,32 @@ error during connect: This error may indicate that the docker daemon is not runn
 ### Issue 4: Port 3306 Already in Use
 **Solution:** Project sudah dikonfigurasi menggunakan port 3307
 
-### Issue 5: Database Access Denied
+### Issue 5: CGO/SQLite Error (Windows Specific)
+```
+Binary was compiled with 'CGO_ENABLED=0', go-sqlite3 requires cgo to work
+```
+
+**Root Cause:** Windows Go builds often have CGO disabled by default, but SQLite requires CGO.
+
+**Solutions:**
+```cmd
+# Option A: Use Docker for testing (Recommended)
+scripts\test-docker.bat
+
+# Option B: Install GCC and enable CGO
+# Install TDM-GCC: https://jmeubank.github.io/tdm-gcc/
+set CGO_ENABLED=1
+scripts\test-windows.bat
+
+# Option C: Use mock tests only
+go test ./internal/config -v
+go test ./internal/models -v
+
+# Option D: Use WSL (Windows Subsystem for Linux)
+wsl -- go test ./... -v
+```
+
+### Issue 6: Database Access Denied
 **Solutions:**
 ```cmd
 # Option A: Use app_user (default .env)
@@ -137,16 +162,39 @@ Menu options:
 5. Connect to MySQL
 6. Remove all containers and volumes
 
-## 🧪 Testing Commands
+## 🧪 Testing Commands (Windows Solutions)
 
+### Option 1: Smart Testing Script (Recommended)
 ```cmd
-# Run all tests
+# Automatically detects CGO issues and provides solutions
 scripts\test.bat
+```
 
-# Run tests with coverage
-go test ./... -cover
+### Option 2: Docker Testing (Most Reliable)
+```cmd
+# Runs tests in Linux container with full CGO support
+scripts\test-docker.bat
+```
 
-# Generate HTML coverage report
+### Option 3: Windows CGO Setup
+```cmd
+# If you have GCC installed (TDM-GCC/MinGW-w64)
+scripts\test-windows.bat
+```
+
+### Option 4: Mock/Unit Tests Only
+```cmd
+# Quick validation without database integration
+go test ./internal/config -v
+go test ./internal/models -v
+```
+
+### Coverage Analysis
+```cmd
+# Docker-based coverage (most accurate)
+docker run --rm -v "%cd%":/app -w /app golang:1.21 go test ./... -cover
+
+# Local coverage (if CGO works)
 go test ./... -coverprofile=coverage.out
 go tool cover -html=coverage.out -o coverage.html
 ```
