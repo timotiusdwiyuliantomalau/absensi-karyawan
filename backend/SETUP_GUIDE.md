@@ -114,7 +114,33 @@ curl -X POST http://localhost:8080/transactions \
 
 ## 🔧 Common Issues & Solutions
 
-### Issue 1: Port Already in Use
+### Issue 1: Access Denied for User (Error 1045)
+```
+Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+```
+
+**Solutions:**
+```bash
+# Option A: Use app_user instead of root
+# .env file should have:
+DB_USER=app_user
+DB_PASSWORD=password
+
+# Option B: Use root user with .env.root
+cp .env.root .env
+
+# Option C: Reset MySQL container completely
+docker compose down -v
+docker compose up -d
+
+# Option D: Create user manually
+docker exec transaction_mysql mysql -u root -ppassword -e "
+CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON transaction_db.* TO 'app_user'@'%';
+FLUSH PRIVILEGES;"
+```
+
+### Issue 2: Port Already in Use
 ```
 Error: bind: Only one usage of each socket address is normally permitted
 ```

@@ -1,12 +1,20 @@
 -- Initial database setup script
 -- This script is executed when the MySQL container starts
 
--- Create the main database (already created by environment variable)
--- CREATE DATABASE IF NOT EXISTS transaction_db;
+-- Use the transaction database
+USE transaction_db;
 
--- Create application user if not exists
+-- Create application user if not exists (with different host patterns)
 CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'password';
+CREATE USER IF NOT EXISTS 'app_user'@'localhost' IDENTIFIED BY 'password';
+
+-- Grant all privileges on the database
 GRANT ALL PRIVILEGES ON transaction_db.* TO 'app_user'@'%';
+GRANT ALL PRIVILEGES ON transaction_db.* TO 'app_user'@'localhost';
+
+-- Also ensure root can connect from anywhere
+ALTER USER 'root'@'%' IDENTIFIED BY 'password';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';
 
 -- Flush privileges to ensure changes take effect
 FLUSH PRIVILEGES;

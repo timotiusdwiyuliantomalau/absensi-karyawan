@@ -101,3 +101,13 @@ migrate:
 seed:
 	@echo "Seeding database with sample data..."
 	@$(GOCMD) run scripts/seed.go
+
+## setup: Run automated setup script
+setup:
+	@chmod +x scripts/setup.sh
+	@./scripts/setup.sh
+
+## fix-db: Fix database connection issues
+fix-db:
+	@echo "Fixing database connection..."
+	@docker exec transaction_mysql mysql -u root -ppassword -e "CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON transaction_db.* TO 'app_user'@'%'; FLUSH PRIVILEGES;" || echo "Failed to create user"
