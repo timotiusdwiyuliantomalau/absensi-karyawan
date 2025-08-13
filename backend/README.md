@@ -66,10 +66,15 @@ LOG_LEVEL=info
 
 ### 3. Database Setup (Menggunakan Docker)
 
-**Opsi A: Gunakan Docker Compose**
+**Opsi A: Gunakan Docker Compose** (Port 3307 untuk menghindari konflik)
 ```bash
 docker-compose up -d
 ```
+
+**Jika Port 3306 Sudah Digunakan:**
+- Docker sudah menggunakan port 3307 secara default
+- Aplikasi sudah dikonfigurasi untuk menggunakan port 3307
+- Jika masih ada masalah, lihat `SETUP_GUIDE.md`
 
 **Opsi B: Setup MySQL Manual**
 ```sql
@@ -78,6 +83,8 @@ CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON transaction_db.* TO 'app_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
+
+> **⚠️ Troubleshooting:** Jika mengalami masalah setup, baca `SETUP_GUIDE.md` untuk panduan lengkap.
 
 ### 4. Install Dependencies
 

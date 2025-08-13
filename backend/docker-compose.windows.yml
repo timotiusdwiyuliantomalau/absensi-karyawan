@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: transaction_mysql
+    container_name: transaction_mysql_windows
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -9,9 +9,9 @@ services:
       MYSQL_USER: app_user
       MYSQL_PASSWORD: password
     ports:
-      - "3307:3306"  # Changed to 3307 to avoid conflict
+      - "3308:3306"  # Different port for Windows users
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data_windows:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
@@ -20,4 +20,4 @@ services:
       retries: 10
 
 volumes:
-  mysql_data:
+  mysql_data_windows:
