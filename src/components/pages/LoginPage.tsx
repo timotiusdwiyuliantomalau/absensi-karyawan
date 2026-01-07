@@ -2,19 +2,15 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../slice/store";
 import { LoadingElement } from "../ui/LoadingElement";
-import { useEffect } from "react";
 import { handleLogin } from "../../utils/auth";
 
 export default function LoginPage() {
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
-
   function handleSubmit(e: any) {
     e.preventDefault();
     handleLogin(e.target.kode.value);
   }
   
-  useEffect(() => {
-  }, []);
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[rgb(245,72,14)] to-[#ee910f] text-white">
       {isLoading && <LoadingElement />}

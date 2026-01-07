@@ -21,7 +21,6 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
         async (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          
           // Get address using reverse geocoding
           try {
             const response = await fetch(

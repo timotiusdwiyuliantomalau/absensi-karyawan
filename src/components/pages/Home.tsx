@@ -5,7 +5,7 @@ import {
   FaMapMarkedAlt,
 } from "react-icons/fa";
 import Camera from "../fragments/Camera";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
 import Swal from "sweetalert2";
@@ -45,6 +45,8 @@ const Home = () => {
   const dispatch = useDispatch();
   const isModal = useSelector((state: any) => state.slice.isModal);
   const [isKunjungan, setIsKunjungan] = useState(false);
+  const [overtimePresent, setOvertimePresent] = useState(false);
+  const [isOvertime, setIsOvertime] = useState(false);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
   let arrayFeature = [
     {
@@ -88,13 +90,17 @@ const Home = () => {
         setHasAbsent(false);
         if (!res) return setDataAbsensiSemuaKaryawan([]);
         const dataAbsensi = res.data;
+        const hasOvertime=dataAbsensi.filter((absensi:any)=>absensi.overtime=='yes');
+        hasOvertime.length>0&&setIsOvertime(true);
         setDataAbsensiSemuaKaryawan(dataAbsensi);
         if (dataAbsensi.length < 2) {
           setHasAbsent(false);
           if (dataAbsensi.length == 1 && currentTime <= jamPulang)
             return setHasAbsent(true);
           if (currentTime >= jamPulang) setHasAbsent(false);
-        } else {
+        } else if( dataAbsensi.length == 2&&hasOvertime.length>0) {
+          setHasAbsent(false);
+        }else{
           setHasAbsent(true);
         }
       });
@@ -115,15 +121,66 @@ const Home = () => {
         return setIsSubmit(false);
       }
       handleSubmitAbsensi(
-        { ...myProfile, alamat: location, waktu: currentTime, img: imgURL },
+        {
+          ...myProfile,
+          alamat: location,
+          waktu: currentTime,
+          img: imgURL,
+          overtime: overtimePresent ? "yes" : "no",
+        },
         "absensi-karyawan-" + formattedDate
       ).then((res: any) => {
         setDataAbsensiSemuaKaryawan(res);
-        Swal.fire("Berhasil", "Anda telah absen!", "success");
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan]);
+  }, [imgURL, isKunjungan, overtimePresent]);
+  
+  const handleAbsent = useCallback((): void => {
+    if (currentTime >= "18:00"&&!isOvertime){
+
+      const showAbsenForm = async (): Promise<void> => {
+        const { value: formValues } = await Swal.fire<any>({
+          title: "Absen Pulang / Lembur?",
+          html: `
+        <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+          <option value="">-- Pilih Jenis Absen --</option>
+          <option value="lembur">Absen Lembur</option>
+          <option value="pulang">Absen Pulang</option>
+        </select>
+      `,
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: "Submit",
+          cancelButtonText: "Batal",
+          confirmButtonColor: "#667eea",
+          cancelButtonColor: "#d33",
+          preConfirm: () => {
+            const selectElement = document.getElementById(
+              "swal-select"
+            ) as HTMLSelectElement;
+            const selectValue = selectElement?.value;
+            if (!selectValue) {
+              Swal.showValidationMessage("Silakan pilih jenis absen!");
+              return false;
+            }
+            return {
+              jenisAbsen: selectValue,
+            };
+          },
+        });
+        if (formValues) {
+          formValues.jenisAbsen === "lembur"
+            ? setOvertimePresent(true)
+            : setOvertimePresent(false);
+          return setIsCamera(true);
+        }
+      };
+      showAbsenForm();
+    } else {
+      setIsCamera(true);
+    }
+  }, [currentTime,isOvertime]);
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
@@ -184,14 +241,19 @@ const Home = () => {
         </div>
         <div className="mt-4 flex justify-center">
           <button
+            onClick={handleAbsent}
             disabled={hasAbsent}
-            onClick={() => setIsCamera(true)}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
           >
-            Absen Sekarang
+            {currentTime <= jamPulang ? "Absen Masuk" : "Absensi Pulang"}
           </button>
+        </div>
+        <div className="flex justify-center mt-10">
+          <p className="text-white font-bold text-lg">
+            ( Absen Lembur akan muncul pada jam 18:00 )
+          </p>
         </div>
       </div>
 
@@ -256,28 +318,42 @@ const Home = () => {
           {dataAbsensiSemuaKaryawan ? (
             dataAbsensiSemuaKaryawan.map((item: any, index: number) => (
               <div key={index}>
-                {index == 0 ? (
-                  <div
-                    className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${
-                      item.waktu < jamMasuk ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
-                    <span className="font-bold py-2">
-                      {index == 0 ? "Absen Masuk" : "Absen Pulang"}
-                    </span>
-                    <span className="text-xs tablet:text-sm font-semibold">
-                      {item.waktu > jamMasuk && <p>Terlambat</p>}
-                      <span className="font-semibold">{item.waktu}</span>
-                    </span>
+                {item.overtime == "no" ? (
+                  <div key={index}>
+                    {index == 0 ? (
+                      <div
+                        className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${
+                          item.waktu < jamMasuk ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      >
+                        <span className="font-bold py-2">
+                          {index == 0 ? "Absen Masuk" : "Absen"}
+                        </span>
+                        <span className="text-xs tablet:text-sm font-semibold">
+                          {item.waktu > jamMasuk && <p>Terlambat</p>}
+                          <span className="font-semibold">{item.waktu}</span>
+                        </span>
+                      </div>
+                    ) : (
+                      <div
+                        key={index}
+                        className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-500`}
+                      >
+                        <span className="font-bold py-2">
+                          {index == 0 ? "Absen Masuk" : "Absen Pulang"}
+                        </span>
+                        <span className="text-xs tablet:text-sm font-semibold">
+                          <span className="font-semibold">{item.waktu}</span>
+                        </span>
+                      </div>
+                    )}
+                    <div></div>
                   </div>
                 ) : (
                   <div
-                    key={index}
-                    className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-500`}
+                    className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-blue-500`}
                   >
-                    <span className="font-bold py-2">
-                      {index == 0 ? "Absen Masuk" : "Absen Pulang"}
-                    </span>
+                    <span className="font-bold py-2">Absen Lembur</span>
                     <span className="text-xs tablet:text-sm font-semibold">
                       <span className="font-semibold">{item.waktu}</span>
                     </span>

@@ -41,6 +41,7 @@ export async function addGerai(data: any) {
   await addDoc(collection(firestore, "gerai"), { ...data });
 }
 
+
 export async function handleDeleteKaryawan(id: string) {
   await deleteDoc(doc(firestore, "daftar-pegawai", id));
   return { message: "Data berhasil dihapus!" };
@@ -60,6 +61,7 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     divisi: data.divisi,
     nama: data.nama,
     waktu: data.waktu,
+    overtime: data.overtime,
     img: data.img,
   };
   let snapshot = result.data();

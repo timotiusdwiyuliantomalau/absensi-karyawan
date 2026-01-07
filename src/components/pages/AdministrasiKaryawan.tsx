@@ -66,21 +66,6 @@ const AdministrasiKaryawan: React.FC = () => {
         }, 1000);
       }
     });
-    // if (newEmployee.name && newEmployee.position && newEmployee.email) {
-    //   const employee: Employee = {
-    //     ...newEmployee,
-    //     id: Date.now(),
-    //   };
-    //   setEmployees([...employees, employee]);
-    //   setNewEmployee({
-    //     name: "",
-    //     position: "",
-    //     email: "",
-    //     phone: "",
-    //     joinDate: "",
-    //     department: "",
-    //   });
-    //   setShowAddForm(false);
   };
 
   const handleAddBranch = (e: any) => {
@@ -142,7 +127,6 @@ const AdministrasiKaryawan: React.FC = () => {
 
   useEffect(() => {
     getGerai().then((res: any) => {
-      console.log(res);
       setGerai(res);
     });
     getDaftarKaryawan().then((res: any) => {

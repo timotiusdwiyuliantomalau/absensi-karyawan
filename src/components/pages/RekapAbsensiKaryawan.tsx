@@ -22,9 +22,7 @@ export default function RekapAbsensiKaryawan() {
 
   useEffect(() => {
     getGerai().then((branch: any) => {
-      const listBranch = branch.map((branch: any) =>
-        branch.nama.toUpperCase()
-      );
+      const listBranch = branch.map((branch: any) => branch.nama.toUpperCase());
       setBranches(["ALL", ...listBranch]);
     });
     getDataSemuaAbsensiKaryawan("absensi-karyawan-" + formattedDate).then(
@@ -70,7 +68,9 @@ export default function RekapAbsensiKaryawan() {
             );
             const hasilMultiAbsensi = listKaryawan.map((k: any) => ({
               ...k,
-              absensi: absensi.filter((a: any) => a.email.toLowerCase() === k.email.toLowerCase()),
+              absensi: absensi.filter(
+                (a: any) => a.email.toLowerCase() === k.email.toLowerCase()
+              ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           }
@@ -79,47 +79,248 @@ export default function RekapAbsensiKaryawan() {
     );
   }, [selectedBranch, formattedDate]);
 
-  function handleExportExcel() {
-    const dataExcel = dataAbsensiSemuaKaryawan.map((karyawan: any) => {
-      return {
-        posisi: karyawan.divisi,
-        nama: karyawan.nama,
-        gerai: karyawan.gerai,
-        data: karyawan.absensi,
-      };
-    });
-    const sheetData = dataExcel.flatMap((item: any) => {
-      return item.data.length > 0
-        ? [
-            [""],
-            ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
-            ...item.data.map((row: any, i: number) => [
-              i == 0 ? "MASUK" : "PULANG",
-              item.gerai,
-              row.nama.toUpperCase(),
-              row.divisi.toUpperCase(),
-              row.alamat,
-              row.waktu,
-            ]),
-          ]
-        : [
-            [""],
-            ["ABSEN", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"],
-            [
-              "",
-              item.gerai,
-              item.nama.toUpperCase(),
-              item.posisi.toUpperCase(),
-              "BELUM ABSEN",
-              "",
-            ],
-          ];
-    });
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+  const handleExportExcel = () => {
+    const data = dataAbsensiSemuaKaryawan;
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, `rekap-absensi-${formattedDate}.xlsx`);
-  }
+
+    // Get current date
+    const today = new Date();
+    const dateStr = today.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+
+    // Process data
+    const karyawanMasuk: any[] = [];
+    const karyawanPulang: any[] = [];
+    const karyawanLembur: any[] = [];
+    const karyawanTidakMasuk: any[] = [];
+
+    data.forEach((karyawan: any) => {
+      if (karyawan.absensi.length === 0) {
+        // Karyawan tidak masuk
+        karyawanTidakMasuk.push({
+          gerai: karyawan.gerai.toUpperCase(),
+          nama: karyawan.nama.toUpperCase(),
+          posisi: karyawan.divisi.toUpperCase(),
+        });
+      } else {
+        // Karyawan masuk (first entry)
+        const firstAbsen = karyawan.absensi[0];
+        karyawanMasuk.push({
+          gerai: karyawan.gerai.toUpperCase(),
+          nama: karyawan.nama.toUpperCase(),
+          posisi: karyawan.divisi.toUpperCase(),
+          alamat: firstAbsen.alamat.toUpperCase(),
+          waktu: firstAbsen.waktu,
+        });
+
+        // Check for pulang and lembur
+        karyawan.absensi.forEach((absen: any) => {
+          const [hours, minutes] = absen.waktu.split(":").map(Number);
+          const waktuMinutes = hours * 60 + minutes;
+          const batasWaktu = 17 * 60; // 17:00
+
+          // Karyawan lembur
+          if (absen.overtime === "yes") {
+            karyawanLembur.push({
+              gerai: karyawan.gerai.toUpperCase(),
+              nama: karyawan.nama.toUpperCase(),
+              posisi: karyawan.divisi.toUpperCase(),
+              alamat: absen.alamat.toUpperCase(),
+              waktu: absen.waktu,
+            });
+          }
+
+          // Karyawan pulang
+          if (waktuMinutes >= batasWaktu && absen.overtime === "no") {
+            karyawanPulang.push({
+              gerai: karyawan.gerai.toUpperCase(),
+              nama: karyawan.nama.toUpperCase(),
+              posisi: karyawan.divisi.toUpperCase(),
+              alamat: absen.alamat.toUpperCase(),
+              waktu: absen.waktu,
+            });
+          }
+        });
+      }
+    });
+
+    // Create worksheet data
+    const worksheetData: any[] = [];
+
+    // Title
+    worksheetData.push([`REKAP ABSENSI ${dateStr.toUpperCase()}`]);
+    worksheetData.push([]);
+
+    // Tabel Karyawan Masuk
+    worksheetData.push(["KARYAWAN MASUK"]);
+    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    karyawanMasuk.forEach((k, idx) => {
+      worksheetData.push([
+        idx + 1,
+        k.gerai,
+        k.nama,
+        k.posisi,
+        k.alamat,
+        k.waktu,
+      ]);
+    });
+    worksheetData.push([]);
+
+    // Tabel Karyawan Pulang
+    const pulangStartRow = worksheetData.length;
+    worksheetData.push(["KARYAWAN PULANG"]);
+    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    karyawanPulang.forEach((k, idx) => {
+      worksheetData.push([
+        idx + 1,
+        k.gerai,
+        k.nama,
+        k.posisi,
+        k.alamat,
+        k.waktu,
+      ]);
+    });
+    worksheetData.push([]);
+
+    // Tabel Karyawan Lembur
+    const lemburStartRow = worksheetData.length;
+    worksheetData.push(["KARYAWAN LEMBUR"]);
+    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    karyawanLembur.forEach((k, idx) => {
+      worksheetData.push([
+        idx + 1,
+        k.gerai,
+        k.nama,
+        k.posisi,
+        k.alamat,
+        k.waktu,
+      ]);
+    });
+    worksheetData.push([]);
+
+    // Tabel Karyawan Tidak Masuk
+    const tidakMasukStartRow = worksheetData.length;
+    worksheetData.push(["KARYAWAN TIDAK MASUK"]);
+    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI"]);
+    karyawanTidakMasuk.forEach((k, idx) => {
+      worksheetData.push([idx + 1, k.gerai, k.nama, k.posisi]);
+    });
+
+    // Create worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Set column widths
+    worksheet["!cols"] = [
+      { wch: 5 }, // NO
+      { wch: 15 }, // GERAI
+      { wch: 30 }, // NAMA
+      { wch: 25 }, // POSISI
+      { wch: 60 }, // ALAMAT
+      { wch: 10 }, // WAKTU
+    ];
+
+    // Apply styles
+    const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
+
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!worksheet[cellAddress]) continue;
+
+        // Initialize cell style
+        if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+
+        // Add center alignment to all cells
+        worksheet[cellAddress].s.alignment = {
+          horizontal: "center",
+          vertical: "center",
+        };
+
+        // Add borders to all cells with data
+        worksheet[cellAddress].s.border = {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        };
+
+        // Title styling
+        if (R === 0) {
+          worksheet[cellAddress].s.font = { bold: true, sz: 16 };
+          worksheet[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          };
+        }
+
+        // Karyawan Masuk header (green)
+        if (R === 3) {
+          worksheet[cellAddress].s.fill = { fgColor: { rgb: "00B050" } };
+          worksheet[cellAddress].s.font = {
+            bold: true,
+            color: { rgb: "FFFFFF" },
+          };
+          worksheet[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          };
+        }
+
+        // Karyawan Pulang header (green)
+        if (R === pulangStartRow + 1) {
+          worksheet[cellAddress].s.fill = { fgColor: { rgb: "00B050" } };
+          worksheet[cellAddress].s.font = {
+            bold: true,
+            color: { rgb: "FFFFFF" },
+          };
+          worksheet[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          };
+        }
+
+        // Karyawan Lembur header (yellow)
+        if (R === lemburStartRow + 1) {
+          worksheet[cellAddress].s.fill = { fgColor: { rgb: "FFFF00" } };
+          worksheet[cellAddress].s.font = { bold: true };
+          worksheet[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          };
+        }
+
+        // Karyawan Tidak Masuk header (red)
+        if (R === tidakMasukStartRow + 1) {
+          worksheet[cellAddress].s.fill = { fgColor: { rgb: "FF0000" } };
+          worksheet[cellAddress].s.font = {
+            bold: true,
+            color: { rgb: "FFFFFF" },
+          };
+          worksheet[cellAddress].s.alignment = {
+            horizontal: "center",
+            vertical: "center",
+          };
+        }
+      }
+    }
+
+    // Merge title cell
+    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Absensi");
+
+    // Generate filename
+    const filename = `Rekap_Absensi_${today.getFullYear()}_${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}_${String(today.getDate()).padStart(2, "0")}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(workbook, filename);
+  };
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input
