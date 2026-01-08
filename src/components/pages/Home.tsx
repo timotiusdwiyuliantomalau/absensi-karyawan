@@ -137,8 +137,7 @@ const Home = () => {
   }, [imgURL, isKunjungan, overtimePresent]);
   
   const handleAbsent = useCallback((): void => {
-    if (currentTime >= "18:00"&&!isOvertime){
-
+    if (currentTime >= "18:00"&&!isOvertime&&currentTime<="18:15"){
       const showAbsenForm = async (): Promise<void> => {
         const { value: formValues } = await Swal.fire<any>({
           title: "Absen Pulang / Lembur?",
