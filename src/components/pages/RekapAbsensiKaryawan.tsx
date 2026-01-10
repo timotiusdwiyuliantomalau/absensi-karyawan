@@ -83,14 +83,6 @@ export default function RekapAbsensiKaryawan() {
     const data = dataAbsensiSemuaKaryawan;
     const workbook = XLSX.utils.book_new();
 
-    // Get current date
-    const today = new Date();
-    const dateStr = today.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-
     // Process data
     const karyawanMasuk: any[] = [];
     const karyawanPulang: any[] = [];
@@ -119,9 +111,8 @@ export default function RekapAbsensiKaryawan() {
         // Check for pulang and lembur
         karyawan.absensi.forEach((absen: any) => {
           const [hours, minutes] = absen.waktu.split(":").map(Number);
-          const waktuMinutes = hours * 60 + minutes;
+          const waktuMinutes = hours * 60 + minutes;[]
           const batasWaktu = 17 * 60; // 17:00
-
           // Karyawan lembur
           if (absen.overtime === "yes") {
             karyawanLembur.push({
@@ -134,7 +125,7 @@ export default function RekapAbsensiKaryawan() {
           }
 
           // Karyawan pulang
-          if (waktuMinutes >= batasWaktu && absen.overtime === "no") {
+          if (waktuMinutes >= batasWaktu&&!absen.overtime||waktuMinutes >= batasWaktu && absen.overtime === "no") {
             karyawanPulang.push({
               gerai: karyawan.gerai.toUpperCase(),
               nama: karyawan.nama.toUpperCase(),
@@ -151,11 +142,11 @@ export default function RekapAbsensiKaryawan() {
     const worksheetData: any[] = [];
 
     // Title
-    worksheetData.push([`REKAP ABSENSI ${dateStr.toUpperCase()}`]);
+    worksheetData.push([`REKAP ABSENSI ${formattedDate.toUpperCase()}`]);
     worksheetData.push([]);
 
     // Tabel Karyawan Masuk
-    worksheetData.push(["KARYAWAN MASUK"]);
+    worksheetData.push(["ABSEN KARYAWAN MASUK"]);
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
     karyawanMasuk.forEach((k, idx) => {
       worksheetData.push([
@@ -171,7 +162,7 @@ export default function RekapAbsensiKaryawan() {
 
     // Tabel Karyawan Pulang
     const pulangStartRow = worksheetData.length;
-    worksheetData.push(["KARYAWAN PULANG"]);
+    worksheetData.push(["ABSEN KARYAWAN PULANG"]);
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
     karyawanPulang.forEach((k, idx) => {
       worksheetData.push([
@@ -187,7 +178,7 @@ export default function RekapAbsensiKaryawan() {
 
     // Tabel Karyawan Lembur
     const lemburStartRow = worksheetData.length;
-    worksheetData.push(["KARYAWAN LEMBUR"]);
+    worksheetData.push(["ABSEN KARYAWAN LEMBUR"]);
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
     karyawanLembur.forEach((k, idx) => {
       worksheetData.push([
@@ -203,7 +194,7 @@ export default function RekapAbsensiKaryawan() {
 
     // Tabel Karyawan Tidak Masuk
     const tidakMasukStartRow = worksheetData.length;
-    worksheetData.push(["KARYAWAN TIDAK MASUK"]);
+    worksheetData.push(["ABSEN KARYAWAN TIDAK MASUK"]);
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI"]);
     karyawanTidakMasuk.forEach((k, idx) => {
       worksheetData.push([idx + 1, k.gerai, k.nama, k.posisi]);
@@ -314,9 +305,7 @@ export default function RekapAbsensiKaryawan() {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Absensi");
 
     // Generate filename
-    const filename = `Rekap_Absensi_${today.getFullYear()}_${String(
-      today.getMonth() + 1
-    ).padStart(2, "0")}_${String(today.getDate()).padStart(2, "0")}.xlsx`;
+    const filename = `Rekap_Absensi_${formattedDate}.xlsx`;
 
     // Download file
     XLSX.writeFile(workbook, filename);
