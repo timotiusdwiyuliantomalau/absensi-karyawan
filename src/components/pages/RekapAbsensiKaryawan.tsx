@@ -6,11 +6,11 @@ import {
 } from "../../firebase/service";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { DownloadIcon } from "lucide-react";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
 
 export default function RekapAbsensiKaryawan() {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] = useState<any>(
-    []
+    [],
   );
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
@@ -41,14 +41,15 @@ export default function RekapAbsensiKaryawan() {
             daftarKaryawanSementara.forEach((karyawan: any) => {
               if (arr.length === 0) return arr.push(karyawan);
               res = arr.filter(
-                (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+                (filterKaryawan: any) =>
+                  filterKaryawan.email === karyawan.email,
               );
               if (res.length === 0) arr.push(karyawan);
             });
             const hasilMultiAbsensi = arr.map((k: any) => ({
               ...k,
               absensi: absensi.filter(
-                (a: any) => a.email === k.email.toLowerCase()
+                (a: any) => a.email === k.email.toLowerCase(),
               ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
@@ -58,24 +59,25 @@ export default function RekapAbsensiKaryawan() {
             daftarKaryawanSementara.forEach((karyawan: any) => {
               if (arr.length === 0) return arr.push(karyawan);
               res = arr.filter(
-                (filterKaryawan: any) => filterKaryawan.email === karyawan.email
+                (filterKaryawan: any) =>
+                  filterKaryawan.email === karyawan.email,
               );
               if (res.length === 0) arr.push(karyawan);
             });
             const listKaryawan = arr.filter(
               (karyawan: any) =>
-                karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase()
+                karyawan.gerai.toLowerCase() === selectedBranch.toLowerCase(),
             );
             const hasilMultiAbsensi = listKaryawan.map((k: any) => ({
               ...k,
               absensi: absensi.filter(
-                (a: any) => a.email.toLowerCase() === k.email.toLowerCase()
+                (a: any) => a.email.toLowerCase() === k.email.toLowerCase(),
               ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
           }
         });
-      }
+      },
     );
   }, [selectedBranch, formattedDate]);
 
@@ -91,14 +93,12 @@ export default function RekapAbsensiKaryawan() {
 
     data.forEach((karyawan: any) => {
       if (karyawan.absensi.length === 0) {
-        // Karyawan tidak masuk
         karyawanTidakMasuk.push({
           gerai: karyawan.gerai.toUpperCase(),
           nama: karyawan.nama.toUpperCase(),
           posisi: karyawan.divisi.toUpperCase(),
         });
       } else {
-        // Karyawan masuk (first entry)
         const firstAbsen = karyawan.absensi[0];
         karyawanMasuk.push({
           gerai: karyawan.gerai.toUpperCase(),
@@ -108,12 +108,11 @@ export default function RekapAbsensiKaryawan() {
           waktu: firstAbsen.waktu,
         });
 
-        // Check for pulang and lembur
         karyawan.absensi.forEach((absen: any) => {
           const [hours, minutes] = absen.waktu.split(":").map(Number);
-          const waktuMinutes = hours * 60 + minutes;[]
-          const batasWaktu = 17 * 60; // 17:00
-          // Karyawan lembur
+          const waktuMinutes = hours * 60 + minutes;
+          const batasWaktu = 17 * 60;
+
           if (absen.overtime === "yes") {
             karyawanLembur.push({
               gerai: karyawan.gerai.toUpperCase(),
@@ -124,8 +123,10 @@ export default function RekapAbsensiKaryawan() {
             });
           }
 
-          // Karyawan pulang
-          if (waktuMinutes >= batasWaktu&&!absen.overtime||waktuMinutes >= batasWaktu && absen.overtime === "no") {
+          if (
+            waktuMinutes >= batasWaktu &&
+            (!absen.overtime || absen.overtime === "no")
+          ) {
             karyawanPulang.push({
               gerai: karyawan.gerai.toUpperCase(),
               nama: karyawan.nama.toUpperCase(),
@@ -138,6 +139,23 @@ export default function RekapAbsensiKaryawan() {
       }
     });
 
+    // Function to group by gerai
+    const groupByGerai = (items: any[]) => {
+      const grouped: { [key: string]: any[] } = {};
+      items.forEach((item) => {
+        if (!grouped[item.gerai]) {
+          grouped[item.gerai] = [];
+        }
+        grouped[item.gerai].push(item);
+      });
+      return grouped;
+    };
+
+    const masukByGerai = groupByGerai(karyawanMasuk);
+    const pulangByGerai = groupByGerai(karyawanPulang);
+    const lemburByGerai = groupByGerai(karyawanLembur);
+    const tidakMasukByGerai = groupByGerai(karyawanTidakMasuk);
+
     // Create worksheet data
     const worksheetData: any[] = [];
 
@@ -146,59 +164,97 @@ export default function RekapAbsensiKaryawan() {
     worksheetData.push([]);
 
     // Tabel Karyawan Masuk
+    const masukTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN MASUK"]);
+    const masukHeaderRow = worksheetData.length;
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
-    karyawanMasuk.forEach((k, idx) => {
-      worksheetData.push([
-        idx + 1,
-        k.gerai,
-        k.nama,
-        k.posisi,
-        k.alamat,
-        k.waktu,
-      ]);
-    });
+
+    let counterMasuk = 1;
+    const masukDataStartRow = worksheetData.length;
+    Object.keys(masukByGerai)
+      .sort()
+      .forEach((gerai) => {
+        masukByGerai[gerai].forEach((k, idx) => {
+          worksheetData.push([
+            counterMasuk++,
+            idx === 0 ? k.gerai : "",
+            k.nama,
+            k.posisi,
+            k.alamat,
+            k.waktu,
+          ]);
+        });
+      });
     worksheetData.push([]);
 
     // Tabel Karyawan Pulang
-    const pulangStartRow = worksheetData.length;
+    const pulangTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN PULANG"]);
+    const pulangHeaderRow = worksheetData.length;
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
-    karyawanPulang.forEach((k, idx) => {
-      worksheetData.push([
-        idx + 1,
-        k.gerai,
-        k.nama,
-        k.posisi,
-        k.alamat,
-        k.waktu,
-      ]);
-    });
+
+    let counterPulang = 1;
+    const pulangDataStartRow = worksheetData.length;
+    Object.keys(pulangByGerai)
+      .sort()
+      .forEach((gerai) => {
+        pulangByGerai[gerai].forEach((k, idx) => {
+          worksheetData.push([
+            counterPulang++,
+            idx === 0 ? k.gerai : "",
+            k.nama,
+            k.posisi,
+            k.alamat,
+            k.waktu,
+          ]);
+        });
+      });
     worksheetData.push([]);
 
     // Tabel Karyawan Lembur
-    const lemburStartRow = worksheetData.length;
+    const lemburTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN LEMBUR"]);
+    const lemburHeaderRow = worksheetData.length;
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
-    karyawanLembur.forEach((k, idx) => {
-      worksheetData.push([
-        idx + 1,
-        k.gerai,
-        k.nama,
-        k.posisi,
-        k.alamat,
-        k.waktu,
-      ]);
-    });
+
+    let counterLembur = 1;
+    const lemburDataStartRow = worksheetData.length;
+    Object.keys(lemburByGerai)
+      .sort()
+      .forEach((gerai) => {
+        lemburByGerai[gerai].forEach((k, idx) => {
+          worksheetData.push([
+            counterLembur++,
+            idx === 0 ? k.gerai : "",
+            k.nama,
+            k.posisi,
+            k.alamat,
+            k.waktu,
+          ]);
+        });
+      });
     worksheetData.push([]);
 
     // Tabel Karyawan Tidak Masuk
-    const tidakMasukStartRow = worksheetData.length;
+    const tidakMasukTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN TIDAK MASUK"]);
+    const tidakMasukHeaderRow = worksheetData.length;
     worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI"]);
-    karyawanTidakMasuk.forEach((k, idx) => {
-      worksheetData.push([idx + 1, k.gerai, k.nama, k.posisi]);
-    });
+
+    let counterTidakMasuk = 1;
+    const tidakMasukDataStartRow = worksheetData.length;
+    Object.keys(tidakMasukByGerai)
+      .sort()
+      .forEach((gerai) => {
+        tidakMasukByGerai[gerai].forEach((k, idx) => {
+          worksheetData.push([
+            counterTidakMasuk++,
+            idx === 0 ? k.gerai : "",
+            k.nama,
+            k.posisi,
+          ]);
+        });
+      });
 
     // Create worksheet
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -213,93 +269,290 @@ export default function RekapAbsensiKaryawan() {
       { wch: 10 }, // WAKTU
     ];
 
-    // Apply styles
-    const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
+    // Initialize merges
+    if (!worksheet["!merges"]) worksheet["!merges"] = [];
 
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-        if (!worksheet[cellAddress]) continue;
+    // Helper functions
+    const getCellRef = (row: number, col: number) =>
+      XLSX.utils.encode_cell({ r: row, c: col });
 
-        // Initialize cell style
-        if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+    const applyCellStyle = (cellRef: string, style: any) => {
+      if (!worksheet[cellRef]) worksheet[cellRef] = { v: "", t: "s" };
+      worksheet[cellRef].s = style;
+    };
 
-        // Add center alignment to all cells
-        worksheet[cellAddress].s.alignment = {
-          horizontal: "center",
-          vertical: "center",
-        };
+    const getMerges = () => {
+      if (!worksheet["!merges"]) worksheet["!merges"] = [];
+      return worksheet["!merges"];
+    };
 
-        // Add borders to all cells with data
-        worksheet[cellAddress].s.border = {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        };
+    // Helper function to check if time is late (> 08:05)
+    const isLate = (waktu: string): boolean => {
+      const [hours, minutes] = waktu.split(":").map(Number);
+      const waktuMinutes = hours * 60 + minutes;
+      const batasWaktuMasuk = 8 * 60 + 5; // 08:05
+      return waktuMinutes > batasWaktuMasuk;
+    };
 
-        // Title styling
-        if (R === 0) {
-          worksheet[cellAddress].s.font = { bold: true, sz: 16 };
-          worksheet[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          };
-        }
+    // Define colors
+    const COLORS = {
+      PRIMARY_GREEN: "00B050",
+      LIGHT_GREEN: "92D050",
+      YELLOW: "FFC000",
+      LIGHT_YELLOW: "FFFF99",
+      RED: "FF0000",
+      LIGHT_RED: "FF9999",
+      WHITE: "FFFFFF",
+      BLACK: "000000",
+      HEADER_GRAY: "595959",
+    };
 
-        // Karyawan Masuk header (green)
-        if (R === 3) {
-          worksheet[cellAddress].s.fill = { fgColor: { rgb: "00B050" } };
-          worksheet[cellAddress].s.font = {
-            bold: true,
-            color: { rgb: "FFFFFF" },
-          };
-          worksheet[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          };
-        }
+    // Define styles
+    const titleStyle = {
+      font: { name: "Calibri", sz: 16, bold: true },
+      fill: { fgColor: { rgb: COLORS.WHITE } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "medium", color: { rgb: COLORS.BLACK } },
+        bottom: { style: "medium", color: { rgb: COLORS.BLACK } },
+        left: { style: "medium", color: { rgb: COLORS.BLACK } },
+        right: { style: "medium", color: { rgb: COLORS.BLACK } },
+      },
+    };
 
-        // Karyawan Pulang header (green)
-        if (R === pulangStartRow + 1) {
-          worksheet[cellAddress].s.fill = { fgColor: { rgb: "00B050" } };
-          worksheet[cellAddress].s.font = {
-            bold: true,
-            color: { rgb: "FFFFFF" },
-          };
-          worksheet[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          };
-        }
+    const sectionTitleStyle = (bgColor: string) => ({
+      font: { name: "Calibri", sz: 12, bold: true },
+      fill: { fgColor: { rgb: bgColor } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "medium", color: { rgb: COLORS.BLACK } },
+        bottom: { style: "medium", color: { rgb: COLORS.BLACK } },
+        left: { style: "medium", color: { rgb: COLORS.BLACK } },
+        right: { style: "medium", color: { rgb: COLORS.BLACK } },
+      },
+    });
 
-        // Karyawan Lembur header (yellow)
-        if (R === lemburStartRow + 1) {
-          worksheet[cellAddress].s.fill = { fgColor: { rgb: "FFFF00" } };
-          worksheet[cellAddress].s.font = { bold: true };
-          worksheet[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          };
-        }
+    const tableHeaderStyle = (bgColor: string, fontColor: string) => ({
+      font: { name: "Calibri", sz: 11, bold: true, color: { rgb: fontColor } },
+      fill: { fgColor: { rgb: bgColor } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "medium", color: { rgb: COLORS.BLACK } },
+        bottom: { style: "medium", color: { rgb: COLORS.BLACK } },
+        left: { style: "thin", color: { rgb: COLORS.BLACK } },
+        right: { style: "thin", color: { rgb: COLORS.BLACK } },
+      },
+    });
 
-        // Karyawan Tidak Masuk header (red)
-        if (R === tidakMasukStartRow + 1) {
-          worksheet[cellAddress].s.fill = { fgColor: { rgb: "FF0000" } };
-          worksheet[cellAddress].s.font = {
-            bold: true,
-            color: { rgb: "FFFFFF" },
-          };
-          worksheet[cellAddress].s.alignment = {
-            horizontal: "center",
-            vertical: "center",
-          };
-        }
+    const dataRowStyle = {
+      font: { name: "Calibri", sz: 10 },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        bottom: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        left: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        right: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+      },
+    };
+
+    // Style untuk row yang terlambat (waktu > 08:05)
+    const lateRowStyle = {
+      font: {
+        name: "Calibri",
+        sz: 10,
+        bold: true,
+        color: { rgb: COLORS.WHITE },
+      },
+      fill: { fgColor: { rgb: COLORS.RED } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        bottom: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        left: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        right: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+      },
+    };
+
+    // Style untuk row yang tepat waktu (waktu <= 08:05)
+    const onTimeRowStyle = {
+      font: {
+        name: "Calibri",
+        sz: 10,
+        bold: true,
+        color: { rgb: COLORS.WHITE },
+      },
+      fill: { fgColor: { rgb: COLORS.PRIMARY_GREEN } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        bottom: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        left: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+        right: { style: "thin", color: { rgb: COLORS.HEADER_GRAY } },
+      },
+    };
+
+    // Apply styles - Title
+    for (let col = 0; col < 6; col++) {
+      applyCellStyle(getCellRef(0, col), titleStyle);
+    }
+
+    // Apply styles - Karyawan Masuk (dengan conditional styling berdasarkan waktu)
+    for (let col = 0; col < 6; col++) {
+      applyCellStyle(
+        getCellRef(masukTitleRow, col),
+        sectionTitleStyle(COLORS.LIGHT_GREEN),
+      );
+      applyCellStyle(
+        getCellRef(masukHeaderRow, col),
+        tableHeaderStyle(COLORS.PRIMARY_GREEN, COLORS.WHITE),
+      );
+    }
+
+    // Apply conditional styling untuk data Karyawan Masuk
+    let masukRowIndex = 0;
+    Object.keys(masukByGerai)
+      .sort()
+      .forEach((gerai) => {
+        masukByGerai[gerai].forEach((k) => {
+          const currentRow = masukDataStartRow + masukRowIndex;
+          const waktuKaryawan = k.waktu;
+          const styleToApply = isLate(waktuKaryawan)
+            ? lateRowStyle
+            : onTimeRowStyle;
+
+          for (let col = 0; col < 6; col++) {
+            applyCellStyle(getCellRef(currentRow, col), styleToApply);
+          }
+          masukRowIndex++;
+        });
+      });
+
+    // Apply styles - Karyawan Pulang
+    for (let col = 0; col < 6; col++) {
+      applyCellStyle(
+        getCellRef(pulangTitleRow, col),
+        sectionTitleStyle(COLORS.LIGHT_GREEN),
+      );
+      applyCellStyle(
+        getCellRef(pulangHeaderRow, col),
+        tableHeaderStyle(COLORS.PRIMARY_GREEN, COLORS.WHITE),
+      );
+    }
+    for (let row = pulangDataStartRow; row < lemburTitleRow - 1; row++) {
+      for (let col = 0; col < 6; col++) {
+        applyCellStyle(getCellRef(row, col), dataRowStyle);
       }
     }
 
-    // Merge title cell
-    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+    // Apply styles - Karyawan Lembur
+    for (let col = 0; col < 6; col++) {
+      applyCellStyle(
+        getCellRef(lemburTitleRow, col),
+        sectionTitleStyle(COLORS.LIGHT_YELLOW),
+      );
+      applyCellStyle(
+        getCellRef(lemburHeaderRow, col),
+        tableHeaderStyle(COLORS.YELLOW, COLORS.BLACK),
+      );
+    }
+    for (let row = lemburDataStartRow; row < tidakMasukTitleRow - 1; row++) {
+      for (let col = 0; col < 6; col++) {
+        applyCellStyle(getCellRef(row, col), dataRowStyle);
+      }
+    }
+
+    // Apply styles - Karyawan Tidak Masuk
+    for (let col = 0; col < 4; col++) {
+      applyCellStyle(
+        getCellRef(tidakMasukTitleRow, col),
+        sectionTitleStyle(COLORS.LIGHT_RED),
+      );
+      applyCellStyle(
+        getCellRef(tidakMasukHeaderRow, col),
+        tableHeaderStyle(COLORS.RED, COLORS.WHITE),
+      );
+    }
+    for (let row = tidakMasukDataStartRow; row < worksheetData.length; row++) {
+      for (let col = 0; col < 4; col++) {
+        applyCellStyle(getCellRef(row, col), dataRowStyle);
+      }
+    }
+
+    // Add merges for titles
+    getMerges().push({ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } });
+    getMerges().push({
+      s: { r: masukTitleRow, c: 0 },
+      e: { r: masukTitleRow, c: 5 },
+    });
+    getMerges().push({
+      s: { r: pulangTitleRow, c: 0 },
+      e: { r: pulangTitleRow, c: 5 },
+    });
+    getMerges().push({
+      s: { r: lemburTitleRow, c: 0 },
+      e: { r: lemburTitleRow, c: 5 },
+    });
+    getMerges().push({
+      s: { r: tidakMasukTitleRow, c: 0 },
+      e: { r: tidakMasukTitleRow, c: 3 },
+    });
+
+    // Add merges for gerai cells
+    let currentRow = masukDataStartRow;
+    Object.keys(masukByGerai)
+      .sort()
+      .forEach((gerai) => {
+        const count = masukByGerai[gerai].length;
+        if (count > 1) {
+          getMerges().push({
+            s: { r: currentRow, c: 1 },
+            e: { r: currentRow + count - 1, c: 1 },
+          });
+        }
+        currentRow += count;
+      });
+
+    currentRow = pulangDataStartRow;
+    Object.keys(pulangByGerai)
+      .sort()
+      .forEach((gerai) => {
+        const count = pulangByGerai[gerai].length;
+        if (count > 1) {
+          getMerges().push({
+            s: { r: currentRow, c: 1 },
+            e: { r: currentRow + count - 1, c: 1 },
+          });
+        }
+        currentRow += count;
+      });
+
+    currentRow = lemburDataStartRow;
+    Object.keys(lemburByGerai)
+      .sort()
+      .forEach((gerai) => {
+        const count = lemburByGerai[gerai].length;
+        if (count > 1) {
+          getMerges().push({
+            s: { r: currentRow, c: 1 },
+            e: { r: currentRow + count - 1, c: 1 },
+          });
+        }
+        currentRow += count;
+      });
+
+    currentRow = tidakMasukDataStartRow;
+    Object.keys(tidakMasukByGerai)
+      .sort()
+      .forEach((gerai) => {
+        const count = tidakMasukByGerai[gerai].length;
+        if (count > 1) {
+          getMerges().push({
+            s: { r: currentRow, c: 1 },
+            e: { r: currentRow + count - 1, c: 1 },
+          });
+        }
+        currentRow += count;
+      });
 
     // Add worksheet to workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Absensi");
@@ -310,6 +563,7 @@ export default function RekapAbsensiKaryawan() {
     // Download file
     XLSX.writeFile(workbook, filename);
   };
+
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input
