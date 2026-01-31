@@ -84,7 +84,6 @@ export default function RekapAbsensiKaryawan() {
   const handleExportExcel = () => {
     const data = dataAbsensiSemuaKaryawan;
     const workbook = XLSX.utils.book_new();
-
     // Process data
     const karyawanMasuk: any[] = [];
     const karyawanPulang: any[] = [];
@@ -626,6 +625,14 @@ export default function RekapAbsensiKaryawan() {
                         alt=""
                       />
                       <span>
+                        {absensi.alasan_izin_kerja && <span>
+                        <p className="font-semibold text-sm tablet:text-lg">
+                          Alasan Izin :{" "}
+                        </p>
+                        <p className="text-sm tablet:text-lg">
+                          {absensi.alasan_izin_kerja.toUpperCase()}
+                        </p>
+                        </span>}
                         <p className="font-semibold text-sm tablet:text-lg">
                           Alamat :{" "}
                         </p>
@@ -637,10 +644,10 @@ export default function RekapAbsensiKaryawan() {
                             className={`text-sm font-semibold tablet:text-lg ${
                               absensi.waktu < "08:06"
                                 ? "bg-green-500"
-                                : "bg-red-500"
-                            } p-2 w-fit rounded-lg`}
+                                : "bg-red-500" 
+                            } ${absensi.alasan_izin_kerja ? "bg-yellow-500" : ""} p-2 w-fit rounded-lg`}
                           >
-                            {absensi.waktu}
+                            {absensi.alasan_izin_kerja&&"IZIN"} {absensi.waktu}
                           </p>
                         ) : (
                           <p className="text-sm font-semibold tablet:text-lg bg-green-500 p-2 w-fit rounded-lg">

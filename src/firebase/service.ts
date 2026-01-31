@@ -61,6 +61,7 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     divisi: data.divisi,
     nama: data.nama,
     waktu: data.waktu,
+    alasan_izin_kerja: data.alasan_izin_kerja,
     overtime: data.overtime,
     img: data.img,
   };

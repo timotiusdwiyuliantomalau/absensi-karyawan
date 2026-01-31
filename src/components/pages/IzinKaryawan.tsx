@@ -1,29 +1,21 @@
-import {
-  FaUsers,
-  FaCalendarAlt,
-  FaCalendar,
-  FaMapMarkedAlt,
-} from "react-icons/fa";
+import { FaCalendar } from "react-icons/fa";
 import Camera from "../fragments/Camera";
 import { useCallback, useEffect, useState } from "react";
 import Location from "../fragments/Location";
 import { getDataAbsensi, handleSubmitAbsensi } from "../../firebase/service";
-import Swal from "sweetalert2";
 import { LoadingElement } from "../ui/LoadingElement";
-import { Link } from "react-router-dom";
 import { getCookie, removeCookie } from "../../utils/cookies";
 import { MdAccountCircle } from "react-icons/md";
 import LoadingRefresh from "../ui/LoadingRefresh";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { Clock5, Clock8 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ModalKunjungan from "./ModalKunjungan";
-import { setIsModal } from "../../../slice/appSlice";
 import { RootState } from "../../../slice/store";
 import { handleSignOut } from "../../utils/SignInGoogle";
-import DataKunjungan from "../fragments/DataKunjungan";
+import Swal from "sweetalert2";
 
-const Home = () => {
+const IzinKaryawan = () => {
   const [location, setLocation] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [isCamera, setIsCamera] = useState<boolean>(false);
@@ -42,42 +34,43 @@ const Home = () => {
     .toLocaleTimeString("en-GB", { hour12: false })
     .substring(0, 5);
   const imgURL = useSelector((state: any) => state.slice.imgURL);
-  const dispatch = useDispatch();
   const isModal = useSelector((state: any) => state.slice.isModal);
-  const [isKunjungan, setIsKunjungan] = useState(false);
-  const [overtimePresent, setOvertimePresent] = useState(false);
-  const [isOvertime, setIsOvertime] = useState(false);
+  const [alasanIzinKerja, setAlasanIzinKerja] = useState<string>("");
+  // const dispatch = useDispatch();
+  // const [isKunjungan, setIsKunjungan] = useState(false);
+  // const [overtimePresent, setOvertimePresent] = useState(false);
+  // const [isOvertime, setIsOvertime] = useState(false);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
-  let arrayFeature = [
-    {
-      icon: <FaUsers />,
-      text: "Daftar Karyawan",
-      link: "/",
-    },
-    { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-    { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
-  ];
-  let isAuthorize = [
-    "rivkigunawan88@gmail.com",
-    "sardigunawangarage@gmail.com",
-    "angjarwo05@gmail.com",
-    "ruhyatdede767@gmail.com",
-    "robbyr673@gmail.com",
-    "teguhpriyanto387@gmail.com",
-    "david.bongkeng0069@gmail.com",
-    "davin.ggmedia@gmail.com",
-    "aulyasari85@gmail.com",
-    "jokowaloyo1999@gmail.com",
-    "xii8a.timotiusdym20@gmail.com",
-  ];
-  isAuthorize.forEach((karyawan: any) => {
-    karyawan == myProfile?.email &&
-      arrayFeature.push({
-        icon: <FaMapMarkedAlt />,
-        text: "Kunjungan",
-        link: "/kunjungan",
-      });
-  });
+  // let arrayFeature = [
+  //   {
+  //     icon: <FaUsers />,
+  //     text: "Daftar Karyawan",
+  //     link: "/",
+  //   },
+  //   { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
+  //   { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
+  // ];
+  // let isAuthorize = [
+  //   "rivkigunawan88@gmail.com",
+  //   "sardigunawangarage@gmail.com",
+  //   "angjarwo05@gmail.com",
+  //   "ruhyatdede767@gmail.com",
+  //   "robbyr673@gmail.com",
+  //   "teguhpriyanto387@gmail.com",
+  //   "david.bongkeng0069@gmail.com",
+  //   "davin.ggmedia@gmail.com",
+  //   "aulyasari85@gmail.com",
+  //   "jokowaloyo1999@gmail.com",
+  //   "xii8a.timotiusdym20@gmail.com",
+  // ];
+  // isAuthorize.forEach((karyawan: any) => {
+  //   karyawan == myProfile?.email &&
+  //     arrayFeature.push({
+  //       icon: <FaMapMarkedAlt />,
+  //       text: "Kunjungan",
+  //       link: "/kunjungan",
+  //     });
+  // });
 
   useEffect(() => {
     const result = getCookie("myData");
@@ -95,7 +88,7 @@ const Home = () => {
         const hasOvertime = dataAbsensi.filter(
           (absensi: any) => absensi.overtime == "yes",
         );
-        hasOvertime.length > 0 && setIsOvertime(true);
+        // hasOvertime.length > 0 && setIsOvertime(true);
         setDataAbsensiSemuaKaryawan(dataAbsensi);
         dataAbsensi.forEach((karyawan: any) => {
           return karyawan["alasan_izin_kerja"] && setHasAbsent(true);
@@ -111,10 +104,10 @@ const Home = () => {
           setHasAbsent(true);
         }
       });
-    if (isKunjungan && imgURL.length > 0) {
-      dispatch(setIsModal());
-      return;
-    }
+    // if (isKunjungan && imgURL.length > 0) {
+    //   dispatch(setIsModal());
+    //   return;
+    // }
     if (imgURL.length > 0) {
       setIsSubmit(true);
       setIsCamera(false);
@@ -132,7 +125,8 @@ const Home = () => {
           alamat: location,
           waktu: currentTime,
           img: imgURL,
-          overtime: overtimePresent ? "yes" : "no",
+          alasan_izin_kerja: alasanIzinKerja,
+          overtime: "no",
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -140,52 +134,83 @@ const Home = () => {
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan, overtimePresent]);
+  }, [imgURL, alasanIzinKerja]);
 
-  const handleAbsent = useCallback((): void => {
-    if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
-      const showAbsenForm = async (): Promise<void> => {
-        const { value: formValues } = await Swal.fire<any>({
-          title: "Absen Pulang / Lembur?",
-          html: `
-        <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
-          <option value="">-- Pilih Jenis Absen --</option>
-          <option value="lembur">Absen Lembur</option>
-          <option value="pulang">Absen Pulang</option>
-        </select>
+  const handleIzinKerja = useCallback(async () => {
+    const { value: formValues } = await Swal.fire<any>({
+      title: "Alasan Izin Kerja",
+      html: `
+          <p style="font-size: 20px;font-style: italic;">Silakan isi alasan izin kerja</p>
+        <input id="alasan" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+        </input>
       `,
-          focusConfirm: false,
-          showCancelButton: true,
-          confirmButtonText: "Submit",
-          cancelButtonText: "Batal",
-          confirmButtonColor: "#667eea",
-          cancelButtonColor: "#d33",
-          preConfirm: () => {
-            const selectElement = document.getElementById(
-              "swal-select",
-            ) as HTMLSelectElement;
-            const selectValue = selectElement?.value;
-            if (!selectValue) {
-              Swal.showValidationMessage("Silakan pilih jenis absen!");
-              return false;
-            }
-            return {
-              jenisAbsen: selectValue,
-            };
-          },
-        });
-        if (formValues) {
-          formValues.jenisAbsen === "lembur"
-            ? setOvertimePresent(true)
-            : setOvertimePresent(false);
-          return setIsCamera(true);
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Kirim",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#667eea",
+      cancelButtonColor: "#d33",
+      preConfirm: () => {
+        const alasan = document.getElementById("alasan") as HTMLSelectElement;
+        const inputAlasan = alasan?.value;
+        if (!inputAlasan) {
+          Swal.showValidationMessage("Silakan input alasan!");
+          return false;
         }
-      };
-      showAbsenForm();
-    } else {
-      setIsCamera(true);
+        return {
+          inputAlasan,
+        };
+      },
+    });
+    if (formValues) {
+      setAlasanIzinKerja(formValues.inputAlasan);
+      return setIsCamera(true);
     }
-  }, [currentTime, isOvertime]);
+  }, []);
+  //   const handleAbsent = useCallback((): void => {
+  //     if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
+  //       const showAbsenForm = async (): Promise<void> => {
+  //         const { value: formValues } = await Swal.fire<any>({
+  //           title: "Absen Pulang / Lembur?",
+  //           html: `
+  //         <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+  //           <option value="">-- Pilih Jenis Absen --</option>
+  //           <option value="lembur">Absen Lembur</option>
+  //           <option value="pulang">Absen Pulang</option>
+  //         </select>
+  //       `,
+  //           focusConfirm: false,
+  //           showCancelButton: true,
+  //           confirmButtonText: "Submit",
+  //           cancelButtonText: "Batal",
+  //           confirmButtonColor: "#667eea",
+  //           cancelButtonColor: "#d33",
+  //           preConfirm: () => {
+  //             const selectElement = document.getElementById(
+  //               "swal-select",
+  //             ) as HTMLSelectElement;
+  //             const selectValue = selectElement?.value;
+  //             if (!selectValue) {
+  //               Swal.showValidationMessage("Silakan pilih jenis absen!");
+  //               return false;
+  //             }
+  //             return {
+  //               jenisAbsen: selectValue,
+  //             };
+  //           },
+  //         });
+  //         if (formValues) {
+  //           formValues.jenisAbsen === "lembur"
+  //             ? setOvertimePresent(true)
+  //             : setOvertimePresent(false);
+  //           return setIsCamera(true);
+  //         }
+  //       };
+  //       showAbsenForm();
+  //     } else {
+  //       setIsCamera(true);
+  //     }
+  //   }, [currentTime, isOvertime]);
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
@@ -246,27 +271,21 @@ const Home = () => {
         </div>
         <div className="mt-4 flex justify-center">
           <button
-            onClick={handleAbsent}
+            onClick={handleIzinKerja}
             disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
           >
-            {currentTime <= jamPulang ? "Absen Masuk" : "Absensi Pulang"}
+            Izin Kerja
           </button>
         </div>
-        <div className="flex justify-center mt-10">
-          <p className="text-white font-bold text-lg">
-            ( Absen Lembur akan muncul pada jam 18:00 )
-          </p>
-        </div>
       </div>
-
       <div className="p-4">
-        <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
+        {/* <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
           {arrayFeature.map((item, index) => (
             <div key={index}>
-              {item.text != "Kunjungan" && item.text != "Izin" ? (
+              {item.text != "Kunjungan" && (
                 <div>
                   <Link
                     to={item.link}
@@ -279,36 +298,6 @@ const Home = () => {
                       {item.text}
                     </div>
                   </Link>
-                </div>
-              ) : (
-                <div
-                  onClick={() => {
-                    Swal.fire({
-                      title: "Perhatian",
-                      text: "Anda harus menghubungi Whatsapp HR",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#25D366",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText:
-                        '<i class="fab fa-whatsapp"></i> Konfirmasi WA',
-                      cancelButtonText: "Batal",
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        // Redirect ke WhatsApp HR
-                        // Ganti nomor dengan nomor WA HR Anda
-                        window.open("https://wa.me/6285881197184", "_blank");
-                      }
-                    });
-                  }}
-                  className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em]"
-                >
-                  <div className="flex justify-center text-2xl">
-                    {item.icon}
-                  </div>
-                  <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
-                    {item.text}
-                  </div>
                 </div>
               )}
               {item.text == "Kunjungan" && (
@@ -334,7 +323,7 @@ const Home = () => {
               )}
             </div>
           ))}
-        </div>
+        </div> */}
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
@@ -413,12 +402,12 @@ const Home = () => {
             </div>
           )}
         </div>
-        {arrayFeature.length == 4 && (
+        {/* {arrayFeature.length == 4 && (
           <DataKunjungan email={myProfile?.email}></DataKunjungan>
-        )}
+        )} */}
       </div>
     </div>
   );
 };
 
-export default Home;
+export default IzinKaryawan;
