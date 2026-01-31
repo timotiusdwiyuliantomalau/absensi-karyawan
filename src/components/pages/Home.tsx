@@ -116,6 +116,7 @@ const Home = () => {
       return;
     }
     if (imgURL.length > 0) {
+      console.log(imgURL);
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);

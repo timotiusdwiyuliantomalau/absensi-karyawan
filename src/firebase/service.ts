@@ -55,7 +55,7 @@ export async function handleUpdateKaryawan(id: number, data: Karyawan) {
 
 export async function handleSubmitAbsensi(data: any, collectionName: string) {
   const result: any = await getDoc(doc(firestore, collectionName, data.email.toLowerCase()));
-  data = {
+  data = data.alasan_izin_kerja?{
     email: data.email.toLowerCase(),
     alamat: data.alamat,
     divisi: data.divisi,
@@ -64,6 +64,14 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     alasan_izin_kerja: data.alasan_izin_kerja,
     overtime: data.overtime,
     img: data.img,
+  }:{
+    email: data.email.toLowerCase(),
+    alamat: data.alamat,
+    divisi: data.divisi,
+    nama: data.nama,
+    waktu: data.waktu,
+    img: data.img,
+    overtime: data.overtime
   };
   let snapshot = result.data();
   snapshot?.data.push(data);
