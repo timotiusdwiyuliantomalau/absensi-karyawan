@@ -40,7 +40,7 @@ const router = createHashRouter([
   { path: "/kalender", element: <Kalender /> },
   { path: "/kunjungan", element: <ModalKunjungan /> },
   { path: "/rekap-kunjungan-karyawan", element: <RekapKunjunganKaryawan /> },
-  { path: "/admin-karyawan", element: <AdministrasiKaryawan /> },
+  { path: "/manajemen-karyawan", element: <AdministrasiKaryawan /> },
   { path: "/tambah-gerai", element: <TambahGerai /> },
   {path:"/izin-karyawan",element:<IzinKaryawan/>}
 ]);
