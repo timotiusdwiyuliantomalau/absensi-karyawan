@@ -49,7 +49,6 @@ const AdministrasiKaryawan: React.FC = () => {
     kode: ""
   });
   const [indexEdit, setIndexEdit] = useState(0);
-
   const handleAddEmployee = (e: React.FormEvent) => {
     e.preventDefault();
     handleAddKaryawan({

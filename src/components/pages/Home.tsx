@@ -23,6 +23,11 @@ import { RootState } from "../../../slice/store";
 import { handleSignOut } from "../../utils/SignInGoogle";
 import DataKunjungan from "../fragments/DataKunjungan";
 
+interface CoordinateData {
+  latitude: number;
+  longitude: number;
+}
+
 const Home = () => {
   const [location, setLocation] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -31,6 +36,10 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
   const [hasAbsent, setHasAbsent] = useState<boolean>(true);
+  const [coordinate, setCoordinate] = useState<CoordinateData>({
+    latitude: 0,
+    longitude: 0,
+  });
   const jamMasuk = "08:06";
   const jamPulang = "17:00";
   const date = new Date();
@@ -116,7 +125,6 @@ const Home = () => {
       return;
     }
     if (imgURL.length > 0) {
-      console.log(imgURL);
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
@@ -134,6 +142,7 @@ const Home = () => {
           waktu: currentTime,
           img: imgURL,
           overtime: overtimePresent ? "yes" : "no",
+          koordinat: `${coordinate.latitude}, ${coordinate.longitude}`,
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -141,7 +150,7 @@ const Home = () => {
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan, overtimePresent]);
+  }, [imgURL, isKunjungan, overtimePresent, coordinate]);
 
   const handleAbsent = useCallback((): void => {
     if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
@@ -190,6 +199,10 @@ const Home = () => {
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
+  };
+  
+  const handleCoordinateUpdate = (latitude: number, longitude: number) => {
+    setCoordinate({ latitude, longitude });
   };
 
   return (
@@ -248,7 +261,6 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -336,7 +348,10 @@ const Home = () => {
             </div>
           ))}
         </div>
-        <Location onLocationUpdate={handleLocationUpdate} />
+        <Location
+          onLocationUpdate={handleLocationUpdate}
+          onCoordinatesUpdate={handleCoordinateUpdate}
+        />
         {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
           <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>

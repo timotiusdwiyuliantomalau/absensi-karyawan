@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
-import Swal from "sweetalert2";
 
 interface LocationData {
   latitude: number;
@@ -10,9 +9,10 @@ interface LocationData {
 
 interface LocationProps {
   onLocationUpdate?: (address: string) => void;
+  onCoordinatesUpdate?: (latitude: number, longitude: number) => void;
 }
 
-const Location = ({ onLocationUpdate }: LocationProps) => {
+const Location = ({ onLocationUpdate, onCoordinatesUpdate }: LocationProps) => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -21,31 +21,18 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-          // Get address using reverse geocoding
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
             );
             const data = await response.json();
-            Swal.fire({
-              title: "Lokasi Ditemukan",
-              text: `${Object.keys(data)
-                .map((key) => `${key}: ${data[key]}`)
-                .join("\n")}`,
-              icon: "success",
-              confirmButtonText: "OK",
-            });
-            if (data.lat < -6.2767 || data.lat > -6.2764)
-              return setError(
-                "Gagal mendapatkan alamat, pastikan izin lokasi sudah diaktifkan dan coba lagi!",
-              );
             const address = data.display_name;
             setLocation((prev) => ({
               ...prev!,
               address,
             }));
             onLocationUpdate?.(address);
+            onCoordinatesUpdate?.(latitude, longitude);
           } catch (err) {
             console.error("Error fetching address:", err);
           }

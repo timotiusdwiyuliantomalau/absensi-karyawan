@@ -63,6 +63,7 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     waktu: data.waktu,
     alasan_izin_kerja: data.alasan_izin_kerja,
     overtime: data.overtime,
+    koordinat: data.koordinat,
     img: data.img,
   }:{
     email: data.email.toLowerCase(),
@@ -71,6 +72,7 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     nama: data.nama,
     waktu: data.waktu,
     img: data.img,
+    koordinat: data.koordinat,
     overtime: data.overtime
   };
   let snapshot = result.data();
