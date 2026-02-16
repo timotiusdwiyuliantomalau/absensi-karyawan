@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { MapPin } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { MapPin } from "lucide-react";
+import Swal from "sweetalert2";
 
 interface LocationData {
   latitude: number;
@@ -13,7 +14,7 @@ interface LocationProps {
 
 const Location = ({ onLocationUpdate }: LocationProps) => {
   const [location, setLocation] = useState<LocationData | null>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -24,13 +25,25 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
           // Get address using reverse geocoding
           try {
             const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
             );
             const data = await response.json();
+            Swal.fire({
+              title: "Lokasi Ditemukan",
+              text: `${Object.keys(data)
+                .map((key) => `${key}: ${data[key]}`)
+                .join("\n")}`,
+              icon: "success",
+              confirmButtonText: "OK",
+            });
+            if (data.lat < -6.2767 || data.lat > -6.2764)
+              return setError(
+                "Gagal mendapatkan alamat, pastikan izin lokasi sudah diaktifkan dan coba lagi!",
+              );
             const address = data.display_name;
-            setLocation(prev => ({
+            setLocation((prev) => ({
               ...prev!,
-              address
+              address,
             }));
             onLocationUpdate?.(address);
           } catch (err) {
@@ -38,9 +51,11 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
           }
         },
         (err) => {
-          setError("Aktifkan izin lokasi di HP, kemudian refresh kembali Website!");
+          setError(
+            "Aktifkan izin lokasi di HP, kemudian refresh kembali Website!",
+          );
           console.error(err);
-        }
+        },
       );
     } else {
       setError("Geolocation is not supported by your browser");
@@ -56,7 +71,8 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
       <MapPin className="w-4 h-4" />
       {location ? (
         <span className="truncate max-w-[300px]">
-          {location.address || `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}
+          {location.address ||
+            `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}
         </span>
       ) : (
         <span>Mencari lokasi Anda...</span>

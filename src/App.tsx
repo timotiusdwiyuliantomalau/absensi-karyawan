@@ -12,7 +12,6 @@ import RekapKunjunganKaryawan from "./components/pages/RekapKunjunganKaryawan";
 import AdministrasiKaryawan from "./components/pages/AdministrasiKaryawan";
 import TambahGerai from "./components/pages/TambahGerai";
 import IzinKaryawan from "./components/pages/IzinKaryawan";
-
 const isLoggedIn = localStorage.getItem("myData")&&JSON.parse(localStorage.getItem("myData")||"");
 const router = createHashRouter([
   {

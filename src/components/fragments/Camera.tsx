@@ -7,7 +7,7 @@ import { setImgURL } from "../../../slice/appSlice";
 const Camera = () => {
   const dispatch = useDispatch();
   const webcamRef = useRef<Webcam>(null);
-  const capture = () => {
+    const capture = () => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
       dispatch(setImgURL(imageSrc));
