@@ -259,7 +259,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            // disabled={hasAbsent}
+            disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
