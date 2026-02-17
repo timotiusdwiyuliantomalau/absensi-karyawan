@@ -197,13 +197,11 @@ const Home = () => {
     }
   }, [currentTime, isOvertime]);
 
-  const handleLocationUpdate = (address: string) => {
+  const handleLocationUpdate = (address: string, latitude: number, longitude: number) => {
     setLocation(address);
-  };
-  
-  const handleCoordinateUpdate = (latitude: number, longitude: number) => {
     setCoordinate({ latitude, longitude });
   };
+
 
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
@@ -261,7 +259,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            disabled={hasAbsent}
+            // disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -351,7 +349,6 @@ const Home = () => {
         </div>
         <Location
           onLocationUpdate={handleLocationUpdate}
-          onCoordinatesUpdate={handleCoordinateUpdate}
         />
         {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">

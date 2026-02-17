@@ -81,11 +81,10 @@ export default function RekapAbsensiKaryawan() {
     );
   }, [selectedBranch, formattedDate]);
 
- const handleExportExcel = () => {
-    console.log({dataAbsensiSemuaKaryawan});
+  const handleExportExcel = () => {
     const data = dataAbsensiSemuaKaryawan;
     const workbook = XLSX.utils.book_new();
-    
+
     // Process data
     const karyawanMasuk: any[] = [];
     const karyawanPulang: any[] = [];
@@ -495,8 +494,9 @@ export default function RekapAbsensiKaryawan() {
         tableHeaderStyle(COLORS.YELLOW, COLORS.BLACK),
       );
     }
-    
-    const lemburEndRow = karyawanIzin.length > 0 ? izinTitleRow! - 1 : tidakMasukTitleRow - 1;
+
+    const lemburEndRow =
+      karyawanIzin.length > 0 ? izinTitleRow! - 1 : tidakMasukTitleRow - 1;
     for (let row = lemburDataStartRow; row < lemburEndRow; row++) {
       for (let col = 0; col < 6; col++) {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
@@ -553,14 +553,14 @@ export default function RekapAbsensiKaryawan() {
       s: { r: lemburTitleRow, c: 0 },
       e: { r: lemburTitleRow, c: 5 },
     });
-    
+
     if (karyawanIzin.length > 0) {
       getMerges().push({
         s: { r: izinTitleRow!, c: 0 },
         e: { r: izinTitleRow!, c: 5 },
       });
     }
-    
+
     getMerges().push({
       s: { r: tidakMasukTitleRow, c: 0 },
       e: { r: tidakMasukTitleRow, c: 3 },
@@ -651,8 +651,7 @@ export default function RekapAbsensiKaryawan() {
 
     // Download file
     XLSX.writeFile(workbook, filename);
-};
-
+  };
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input
@@ -715,14 +714,16 @@ export default function RekapAbsensiKaryawan() {
                         alt=""
                       />
                       <span>
-                        {absensi.alasan_izin_kerja && <span>
-                        <p className="font-semibold text-sm tablet:text-lg">
-                          Alasan Izin :{" "}
-                        </p>
-                        <p className="text-sm tablet:text-lg">
-                          {absensi.alasan_izin_kerja.toUpperCase()}
-                        </p>
-                        </span>}
+                        {absensi.alasan_izin_kerja && (
+                          <span>
+                            <p className="font-semibold text-sm tablet:text-lg">
+                              Alasan Izin :{" "}
+                            </p>
+                            <p className="text-sm tablet:text-lg">
+                              {absensi.alasan_izin_kerja.toUpperCase()}
+                            </p>
+                          </span>
+                        )}
                         <p className="font-semibold text-sm tablet:text-lg">
                           Alamat :{" "}
                         </p>
@@ -734,10 +735,11 @@ export default function RekapAbsensiKaryawan() {
                             className={`text-sm font-semibold tablet:text-lg ${
                               absensi.waktu < "08:06"
                                 ? "bg-green-500"
-                                : "bg-red-500" 
+                                : "bg-red-500"
                             } ${absensi.alasan_izin_kerja ? "bg-yellow-500" : ""} p-2 w-fit rounded-lg`}
                           >
-                            {absensi.alasan_izin_kerja&&"IZIN"} {absensi.waktu}
+                            {absensi.alasan_izin_kerja && "IZIN"}{" "}
+                            {absensi.waktu}
                           </p>
                         ) : (
                           <p className="text-sm font-semibold tablet:text-lg bg-green-500 p-2 w-fit rounded-lg">

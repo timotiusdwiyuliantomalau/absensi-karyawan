@@ -8,11 +8,10 @@ interface LocationData {
 }
 
 interface LocationProps {
-  onLocationUpdate?: (address: string) => void;
-  onCoordinatesUpdate?: (latitude: number, longitude: number) => void;
+  onLocationUpdate?: (address: string, latitude: number, longitude: number) => void;
 }
 
-const Location = ({ onLocationUpdate, onCoordinatesUpdate }: LocationProps) => {
+const Location = ({ onLocationUpdate }: LocationProps) => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -31,8 +30,7 @@ const Location = ({ onLocationUpdate, onCoordinatesUpdate }: LocationProps) => {
               ...prev!,
               address,
             }));
-            onLocationUpdate?.(address);
-            onCoordinatesUpdate?.(latitude, longitude);
+            onLocationUpdate?.(address, latitude, longitude);
           } catch (err) {
             console.error("Error fetching address:", err);
           }
