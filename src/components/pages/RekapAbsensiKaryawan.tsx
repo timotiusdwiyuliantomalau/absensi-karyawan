@@ -25,6 +25,7 @@ export default function RekapAbsensiKaryawan() {
       const listBranch = branch.map((branch: any) => branch.nama.toUpperCase());
       setBranches(["ALL", ...listBranch]);
     });
+
     getDataSemuaAbsensiKaryawan("absensi-karyawan-" + formattedDate).then(
       (absensi: any) => {
         let hasilAbsensi: any = [];
@@ -124,7 +125,6 @@ export default function RekapAbsensiKaryawan() {
               waktu: absen.waktu,
             });
           }
-
           if (absen.overtime === "yes") {
             karyawanLembur.push({
               gerai: karyawan.gerai.toUpperCase(),
@@ -652,6 +652,12 @@ export default function RekapAbsensiKaryawan() {
     // Download file
     XLSX.writeFile(workbook, filename);
   };
+  // console.log(
+  //   dataAbsensiSemuaKaryawan.filter(
+  //     (a: any) => a.absensi.length > 1 && a.nama.toLowerCase(),
+  //   ),
+  // );
+
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
       <input
@@ -683,8 +689,8 @@ export default function RekapAbsensiKaryawan() {
             setSelectedBranch(e.target.value);
           }}
         >
-          {branches.map((branch) => (
-            <option key={branch} value={branch}>
+          {branches.map((branch,index) => (
+            <option key={index} value={branch}>
               {branch}
             </option>
           ))}

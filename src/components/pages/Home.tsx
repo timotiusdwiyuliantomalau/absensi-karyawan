@@ -131,7 +131,7 @@ const Home = () => {
       setDataAbsensiSemuaKaryawan([]);
       if (location.length == 0) {
         alert(
-          "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!",
+          "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
         );
         return setIsSubmit(false);
       }
@@ -150,7 +150,7 @@ const Home = () => {
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan, overtimePresent, coordinate]);
+  }, [imgURL, isKunjungan, overtimePresent]);
 
   const handleAbsent = useCallback((): void => {
     if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
@@ -201,7 +201,6 @@ const Home = () => {
     setLocation(address);
     setCoordinate({ latitude, longitude });
   };
-
 
   return (
     <div className="bg-gray-200 font-roboto min-h-screen">
@@ -259,7 +258,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            disabled={hasAbsent}
+            // disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}

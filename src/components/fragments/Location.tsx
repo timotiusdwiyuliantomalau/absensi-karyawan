@@ -8,7 +8,11 @@ interface LocationData {
 }
 
 interface LocationProps {
-  onLocationUpdate?: (address: string, latitude: number, longitude: number) => void;
+  onLocationUpdate?: (
+    address: string,
+    latitude: number,
+    longitude: number,
+  ) => void;
 }
 
 const Location = ({ onLocationUpdate }: LocationProps) => {
