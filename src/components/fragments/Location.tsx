@@ -20,7 +20,6 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
           // Get address using reverse geocoding
           try {
             const response = await fetch(
