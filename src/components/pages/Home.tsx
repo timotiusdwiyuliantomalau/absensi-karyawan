@@ -23,6 +23,11 @@ import { RootState } from "../../../slice/store";
 import { handleSignOut } from "../../utils/SignInGoogle";
 import DataKunjungan from "../fragments/DataKunjungan";
 
+interface CoordinateData {
+  latitude: number;
+  longitude: number;
+}
+
 const Home = () => {
   const [location, setLocation] = useState<string>("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -31,6 +36,10 @@ const Home = () => {
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] =
     useState<any>(undefined);
   const [hasAbsent, setHasAbsent] = useState<boolean>(true);
+  const [coordinate, setCoordinate] = useState<CoordinateData>({
+    latitude: 0,
+    longitude: 0,
+  });
   const jamMasuk = "08:06";
   const jamPulang = "17:00";
   const date = new Date();
@@ -116,14 +125,13 @@ const Home = () => {
       return;
     }
     if (imgURL.length > 0) {
-      console.log(imgURL);
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
       setDataAbsensiSemuaKaryawan([]);
       if (location.length == 0) {
         alert(
-          "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!",
+          "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
         );
         return setIsSubmit(false);
       }
@@ -134,6 +142,7 @@ const Home = () => {
           waktu: currentTime,
           img: imgURL,
           overtime: overtimePresent ? "yes" : "no",
+          koordinat: `${coordinate.latitude}, ${coordinate.longitude}`,
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -188,8 +197,9 @@ const Home = () => {
     }
   }, [currentTime, isOvertime]);
 
-  const handleLocationUpdate = (address: string) => {
+  const handleLocationUpdate = (address: string, latitude: number, longitude: number) => {
     setLocation(address);
+    setCoordinate({ latitude, longitude });
   };
 
   return (
@@ -336,7 +346,9 @@ const Home = () => {
             </div>
           ))}
         </div>
-        <Location onLocationUpdate={handleLocationUpdate} />
+        <Location
+          onLocationUpdate={handleLocationUpdate}
+        />
         {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
           <p className="text-black">ABSENSI DILAKUKAN 2 KALI SEHARI</p>
