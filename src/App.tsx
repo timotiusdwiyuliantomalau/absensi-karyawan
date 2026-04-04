@@ -36,11 +36,11 @@ const router = createHashRouter([
     element: <KaryawanDetail />,
   },
   { path: "/register-form", element: <FormRegister /> },
-  { path: "/rekap-absensi-karyawan", element: <RekapAbsensiKaryawan /> },
+  { path: "/laporan-absensi-karyawan", element: <RekapAbsensiKaryawan /> },
   { path: "/kalender", element: <Kalender /> },
   { path: "/kunjungan", element: <ModalKunjungan /> },
   { path: "/rekap-kunjungan-karyawan", element: <RekapKunjunganKaryawan /> },
-  { path: "/manajemen-karyawan", element: <AdministrasiKaryawan /> },
+  { path: "/administrasi-karyawan", element: <AdministrasiKaryawan /> },
   { path: "/tambah-gerai", element: <TambahGerai /> },
   {path:"/izin-karyawan",element:<IzinKaryawan/>}
 ]);
