@@ -141,6 +141,7 @@ const IzinKaryawan = () => {
       title: "Alasan Izin Kerja",
       html: `
           <p style="font-size: 20px;font-style: italic;">Silakan isi alasan izin kerja</p>
+          
         <input id="alasan" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
         </input>
       `,

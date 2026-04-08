@@ -14,7 +14,7 @@ interface LocationProps {
 const Location = ({ onLocationUpdate }: LocationProps) => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [error, setError] = useState<string>('');
-
+  
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(

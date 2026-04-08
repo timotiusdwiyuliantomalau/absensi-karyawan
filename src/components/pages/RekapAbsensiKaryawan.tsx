@@ -5,10 +5,12 @@ import {
   getGerai,
 } from "../../firebase/service";
 import LoadingRefresh from "../ui/LoadingRefresh";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, SearchIcon } from "lucide-react";
 import * as XLSX from "xlsx-js-style";
 
 export default function RekapAbsensiKaryawan() {
+  const [dataAbsensiSemuaKaryawanMurni, setDataAbsensiSemuaKaryawanMurni] =
+    useState<any>([]);
   const [dataAbsensiSemuaKaryawan, setDataAbsensiSemuaKaryawan] = useState<any>(
     [],
   );
@@ -53,6 +55,7 @@ export default function RekapAbsensiKaryawan() {
               ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
+            setDataAbsensiSemuaKaryawanMurni(hasilMultiAbsensi);
           } else {
             let daftarKaryawanSementara = res;
             let arr: any = [];
@@ -75,17 +78,17 @@ export default function RekapAbsensiKaryawan() {
               ),
             }));
             setDataAbsensiSemuaKaryawan(hasilMultiAbsensi);
+            setDataAbsensiSemuaKaryawanMurni(hasilMultiAbsensi);
           }
         });
       },
     );
   }, [selectedBranch, formattedDate]);
 
- const handleExportExcel = () => {
-    console.log({dataAbsensiSemuaKaryawan});
+  const handleExportExcel = () => {
     const data = dataAbsensiSemuaKaryawan;
     const workbook = XLSX.utils.book_new();
-    
+
     // Process data
     const karyawanMasuk: any[] = [];
     const karyawanPulang: any[] = [];
@@ -495,8 +498,9 @@ export default function RekapAbsensiKaryawan() {
         tableHeaderStyle(COLORS.YELLOW, COLORS.BLACK),
       );
     }
-    
-    const lemburEndRow = karyawanIzin.length > 0 ? izinTitleRow! - 1 : tidakMasukTitleRow - 1;
+
+    const lemburEndRow =
+      karyawanIzin.length > 0 ? izinTitleRow! - 1 : tidakMasukTitleRow - 1;
     for (let row = lemburDataStartRow; row < lemburEndRow; row++) {
       for (let col = 0; col < 6; col++) {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
@@ -538,7 +542,6 @@ export default function RekapAbsensiKaryawan() {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
       }
     }
-
     // Add merges for titles
     getMerges().push({ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } });
     getMerges().push({
@@ -553,14 +556,14 @@ export default function RekapAbsensiKaryawan() {
       s: { r: lemburTitleRow, c: 0 },
       e: { r: lemburTitleRow, c: 5 },
     });
-    
+
     if (karyawanIzin.length > 0) {
       getMerges().push({
         s: { r: izinTitleRow!, c: 0 },
         e: { r: izinTitleRow!, c: 5 },
       });
     }
-    
+
     getMerges().push({
       s: { r: tidakMasukTitleRow, c: 0 },
       e: { r: tidakMasukTitleRow, c: 3 },
@@ -580,7 +583,6 @@ export default function RekapAbsensiKaryawan() {
         }
         currentRow += count;
       });
-
     // Add merges for gerai cells - Pulang
     currentRow = pulangDataStartRow;
     Object.keys(pulangByGerai)
@@ -651,7 +653,19 @@ export default function RekapAbsensiKaryawan() {
 
     // Download file
     XLSX.writeFile(workbook, filename);
-};
+  };
+
+  const handleSearch = (e: any) => {
+    const query = e.target.value.toLowerCase();
+    const filteredData = dataAbsensiSemuaKaryawanMurni.filter(
+      (karyawan: any) =>
+        karyawan.nama.toLowerCase().includes(query) ||
+        karyawan.gerai.toLowerCase().includes(query) ||
+        karyawan.divisi.toLowerCase().includes(query),
+    );
+    setDataAbsensiSemuaKaryawan(filteredData);
+    query === "" && setDataAbsensiSemuaKaryawan(dataAbsensiSemuaKaryawanMurni);
+  };
 
   return (
     <div className="flex flex-col items-center w-3/4 desktop:w-1/2 mx-auto mt-5">
@@ -675,21 +689,32 @@ export default function RekapAbsensiKaryawan() {
       <h1 className="text-xl font-bold mb-3 text-center mt-5">
         Rekap Absensi Karyawan
       </h1>
-      <div className="flex gap-2 items-center mb-4 justify-center">
-        <p className="text-lg font-semibold">GERAI : </p>
-        <select
-          className="w-1/2 sm:w-40 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={selectedBranch}
-          onChange={(e) => {
-            setSelectedBranch(e.target.value);
-          }}
-        >
-          {branches.map((branch) => (
-            <option key={branch} value={branch}>
-              {branch}
-            </option>
-          ))}
-        </select>
+      <div className="flex gap-2 items-center mb-4 justify-between w-full">
+        <span>
+          <p className="text-lg font-semibold">GERAI : </p>
+          <select
+            className="w-1/2 sm:w-40 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={selectedBranch}
+            onChange={(e) => {
+              setSelectedBranch(e.target.value);
+            }}
+          >
+            {branches.map((branch,index) => (
+              <option key={branch+index} value={branch}>
+                {branch}
+              </option>
+            ))}
+          </select>
+        </span>
+        <span className="flex bg-slate-300 py-2 px-3 gap-2 rounded-xl">
+          <input
+            onKeyUp={(e) => handleSearch(e)}
+            className="text-lg pl-2"
+            name=""
+            id=""
+          />
+          <SearchIcon />
+        </span>
       </div>
       <div className="flex flex-col bg-white gap-5">
         {dataAbsensiSemuaKaryawan.length > 0 ? (
@@ -715,14 +740,16 @@ export default function RekapAbsensiKaryawan() {
                         alt=""
                       />
                       <span>
-                        {absensi.alasan_izin_kerja && <span>
-                        <p className="font-semibold text-sm tablet:text-lg">
-                          Alasan Izin :{" "}
-                        </p>
-                        <p className="text-sm tablet:text-lg">
-                          {absensi.alasan_izin_kerja.toUpperCase()}
-                        </p>
-                        </span>}
+                        {absensi.alasan_izin_kerja && (
+                          <span>
+                            <p className="font-semibold text-sm tablet:text-lg">
+                              Alasan Izin :{" "}
+                            </p>
+                            <p className="text-sm tablet:text-lg">
+                              {absensi.alasan_izin_kerja.toUpperCase()}
+                            </p>
+                          </span>
+                        )}
                         <p className="font-semibold text-sm tablet:text-lg">
                           Alamat :{" "}
                         </p>
@@ -734,10 +761,11 @@ export default function RekapAbsensiKaryawan() {
                             className={`text-sm font-semibold tablet:text-lg ${
                               absensi.waktu < "08:06"
                                 ? "bg-green-500"
-                                : "bg-red-500" 
+                                : "bg-red-500"
                             } ${absensi.alasan_izin_kerja ? "bg-yellow-500" : ""} p-2 w-fit rounded-lg`}
                           >
-                            {absensi.alasan_izin_kerja&&"IZIN"} {absensi.waktu}
+                            {absensi.alasan_izin_kerja && "IZIN"}{" "}
+                            {absensi.waktu}
                           </p>
                         ) : (
                           <p className="text-sm font-semibold tablet:text-lg bg-green-500 p-2 w-fit rounded-lg">

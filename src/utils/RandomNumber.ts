@@ -218,79 +218,13 @@ export class RandomDigits {
 
 // Usage examples and tests
 export function examples() {
-  console.log("=== Random Digit String Generator Examples ===\n");
-
   // Basic generation like "685556676"
-  console.log("9-digit strings (like 685556676):");
   for (let i = 0; i < 5; i++) {
-    console.log(RandomDigits.generate(9));
+   
   }
-
-  // Different lengths
-  console.log("\nDifferent lengths:");
-  console.log("3 digits:", RandomDigits.generate(3));
-  console.log("6 digits:", RandomDigits.generate(6));
-  console.log("12 digits:", RandomDigits.generate(12));
-  console.log("15 digits:", RandomDigits.generate(15));
-
-  // Allow leading zeros
-  console.log("\nWith leading zeros allowed:");
+  
   for (let i = 0; i < 3; i++) {
-    console.log(RandomDigits.generate(8, true));
-  }
-
-  // Generate multiple at once
-  console.log("\nGenerate 5 strings at once:");
-  const multiple = RandomDigits.generateMultiple(5, 9);
-  multiple.forEach((str, index) => console.log(`${index + 1}: ${str}`));
-
-  // Custom digit ranges
-  console.log("\nOnly digits 1-5:");
-  console.log(RandomDigits.generateWithRange(10, 1, 5));
-  console.log(RandomDigits.generateWithRange(10, 1, 5));
-
-  // Pattern-based generation
-  console.log("\nPattern-based generation:");
-  console.log("Phone style:", RandomDigits.generatePhone("XXX-XXX-XXXX"));
-  console.log("ID style:", RandomDigits.generateId(10, true));
-  console.log(
-    "Custom pattern:",
-    RandomDigits.generateWithPattern("XX-XX-XX-XX")
-  );
-  console.log(
-    "Credit card style:",
-    RandomDigits.generateWithPattern("XXXX-XXXX-XXXX-XXXX")
-  );
-
-  // As numbers and arrays
-  console.log("\nDifferent output formats:");
-  console.log("As number:", RandomDigits.generateAsNumber(8));
-  console.log("As array:", RandomDigits.generateAsArray(6));
-
-  // Using options
-  console.log("\nUsing custom options:");
-  console.log(
-    RandomDigits.generateWithOptions({
-      length: 12,
-      minDigit: 2,
-      maxDigit: 8,
-      allowLeadingZero: false,
-    })
-  );
-
-  console.log(
-    RandomDigits.generateWithOptions({
-      customPattern: "XXX.XXX.XXX",
-      allowLeadingZero: true,
-    })
-  );
-
-  // Various lengths like your example
-  console.log("\nVarious lengths:");
-  console.log("Short (4):", RandomDigits.generate(4));
-  console.log("Medium (9):", RandomDigits.generate(9)); // Like your 685556676
-  console.log("Long (16):", RandomDigits.generate(16));
-  console.log("Very long (25):", RandomDigits.generate(25));
+   }
 }
 
 // Export default
