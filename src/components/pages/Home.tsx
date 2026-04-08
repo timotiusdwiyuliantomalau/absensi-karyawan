@@ -248,7 +248,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            // disabled={hasAbsent}
+            disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -292,13 +292,13 @@ const Home = () => {
                       confirmButtonColor: "#25D366",
                       cancelButtonColor: "#d33",
                       confirmButtonText:
-                        '<i class="fab fa-whatsapp"></i> Konfirmasi WA',
+                        '<i class="fab fa-whatsapp"></i>WA Sekarang',
                       cancelButtonText: "Batal",
                     }).then((result) => {
                       if (result.isConfirmed) {
                         // Redirect ke WhatsApp HR
                         // Ganti nomor dengan nomor WA HR Anda
-                        window.open("https://wa.me/6285881197184", "_blank");
+                        window.open("https://wa.me/6283153909114", "_blank");
                       }
                     });
                   }}

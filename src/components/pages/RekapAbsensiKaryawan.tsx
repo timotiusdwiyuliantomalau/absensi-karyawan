@@ -689,9 +689,9 @@ export default function RekapAbsensiKaryawan() {
       <h1 className="text-xl font-bold mb-3 text-center mt-5">
         Rekap Absensi Karyawan
       </h1>
-      <div className="flex gap-2 items-center mb-4 justify-between w-full">
-        <span>
-          <p className="text-lg font-semibold">GERAI : </p>
+      <div className="gridgap-2 items-center mb-4 justify-between w-full">
+        <div className="flex w-full items-center">
+          <p className="text-lg font-semibold">GERAI </p>
           <select
             className="w-1/2 sm:w-40 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={selectedBranch}
@@ -705,16 +705,16 @@ export default function RekapAbsensiKaryawan() {
               </option>
             ))}
           </select>
-        </span>
-        <span className="flex bg-slate-300 py-2 px-3 gap-2 rounded-xl">
+        </div>
+        <div className="self-end flex justify-center bg-slate-200 py-2 px-3 gap-2 rounded-xl">
           <input
             onKeyUp={(e) => handleSearch(e)}
-            className="text-lg pl-2"
+            className="text-md lg:text-lg pl-2"
             name=""
             id=""
           />
           <SearchIcon />
-        </span>
+        </div>
       </div>
       <div className="flex flex-col bg-white gap-5">
         {dataAbsensiSemuaKaryawan.length > 0 ? (
