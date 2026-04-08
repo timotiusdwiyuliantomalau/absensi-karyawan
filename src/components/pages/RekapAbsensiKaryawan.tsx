@@ -689,7 +689,7 @@ export default function RekapAbsensiKaryawan() {
       <h1 className="text-xl font-bold mb-3 text-center mt-5">
         Rekap Absensi Karyawan
       </h1>
-      <div className="gridgap-2 items-center mb-4 justify-between w-full">
+      <div className="grid gap-2 items-center mb-4 justify-between w-full">
         <div className="flex w-full items-center">
           <p className="text-lg font-semibold">GERAI </p>
           <select
