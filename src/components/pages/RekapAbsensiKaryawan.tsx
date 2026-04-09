@@ -644,13 +644,12 @@ export default function RekapAbsensiKaryawan() {
         }
         currentRow += count;
       });
-
     // Add worksheet to workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Absensi");
 
     // Generate filename
     const filename = `Rekap_Absensi_${formattedDate}.xlsx`;
-
+    
     // Download file
     XLSX.writeFile(workbook, filename);
   };

@@ -298,7 +298,7 @@ const Home = () => {
                       if (result.isConfirmed) {
                         // Redirect ke WhatsApp HR
                         // Ganti nomor dengan nomor WA HR Anda
-                        window.open("https://wa.me/6283153909114", "_blank");
+                        window.open("https://wa.me/6283852800508", "_blank");
                       }
                     });
                   }}

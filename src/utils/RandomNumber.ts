@@ -92,7 +92,6 @@ export class RandomDigits {
           Math.floor(Math.random() * (maxDigit - minDigit + 1)) + minDigit;
       }
     }
-
     return result;
   }
 
@@ -111,7 +110,6 @@ export class RandomDigits {
 
     for (let i = 0; i < pattern.length; i++) {
       const char = pattern[i];
-
       if (char === "X" || char === "x") {
         if (isFirstDigitInGroup && !allowLeadingZero) {
           // First digit in a group: 1-9
@@ -127,7 +125,6 @@ export class RandomDigits {
         isFirstDigitInGroup = true; // Next X will be first in new group
       }
     }
-
     return result;
   }
 
