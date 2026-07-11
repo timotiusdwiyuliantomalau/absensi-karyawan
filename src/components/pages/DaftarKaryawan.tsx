@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 const DaftarKaryawan = () => {
   const [daftarKaryawan, setDaftarKaryawan] = useState<any>([]);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
-
   const branches = [
     "ALL",
     "BEKASI",
@@ -29,7 +28,6 @@ const DaftarKaryawan = () => {
       return setDaftarKaryawan(res);
     }
     if (event.target.value.length < 1) {
-      console.log("oke");
       getDaftarKaryawan().then((res: any) => {
         setDaftarKaryawan(res);
       });
@@ -109,7 +107,7 @@ const DaftarKaryawan = () => {
               onChange={(e) => {
                 setSelectedBranch(e.target.value);
               }}
-            >
+            > 
               {branches.map((branch) => (
                 <option key={branch} value={branch}>
                   {branch}

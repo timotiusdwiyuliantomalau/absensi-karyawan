@@ -111,13 +111,9 @@ export default function RekapAbsensiKaryawan() {
           posisi: karyawan.divisi.toUpperCase(),
           alamat: firstAbsen.alamat.toUpperCase(),
           waktu: firstAbsen.waktu,
+          shift: firstAbsen.shift,
         });
-
-        karyawan.absensi.forEach((absen: any) => {
-          const [hours, minutes] = absen.waktu.split(":").map(Number);
-          const waktuMinutes = hours * 60 + minutes;
-          const batasWaktu = 17 * 60;
-
+        karyawan.absensi.forEach((absen: any, absenIndex: number) => {
           // Check untuk karyawan izin
           if (absen.alasan_izin_kerja) {
             karyawanIzin.push({
@@ -126,6 +122,7 @@ export default function RekapAbsensiKaryawan() {
               alasan: absen.alasan_izin_kerja.toUpperCase(),
               alamat: absen.alamat.toUpperCase(),
               waktu: absen.waktu,
+              shift: absen.shift,
             });
           }
 
@@ -136,19 +133,18 @@ export default function RekapAbsensiKaryawan() {
               posisi: karyawan.divisi.toUpperCase(),
               alamat: absen.alamat.toUpperCase(),
               waktu: absen.waktu,
+              shift: absen.shift,
             });
-          }
-
-          if (
-            waktuMinutes >= batasWaktu &&
-            (!absen.overtime || absen.overtime === "no")
-          ) {
+          } else if (absenIndex > 0) {
+            // Absen ke-2 dst (bukan overtime) dianggap sebagai absen pulang,
+            // terlepas dari jam berapa karyawan tersebut pulang (mengikuti shift masing-masing)
             karyawanPulang.push({
               gerai: karyawan.gerai.toUpperCase(),
               nama: karyawan.nama.toUpperCase(),
               posisi: karyawan.divisi.toUpperCase(),
               alamat: absen.alamat.toUpperCase(),
               waktu: absen.waktu,
+              shift: absen.shift,
             });
           }
         });
@@ -184,7 +180,15 @@ export default function RekapAbsensiKaryawan() {
     const masukTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN MASUK"]);
     const masukHeaderRow = worksheetData.length;
-    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    worksheetData.push([
+      "NO.",
+      "GERAI",
+      "NAMA",
+      "POSISI",
+      "ALAMAT",
+      "WAKTU",
+      "SHIFT",
+    ]);
 
     let counterMasuk = 1;
     const masukDataStartRow = worksheetData.length;
@@ -199,6 +203,7 @@ export default function RekapAbsensiKaryawan() {
             k.posisi,
             k.alamat,
             k.waktu,
+            k.shift,
           ]);
         });
       });
@@ -208,7 +213,15 @@ export default function RekapAbsensiKaryawan() {
     const pulangTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN PULANG"]);
     const pulangHeaderRow = worksheetData.length;
-    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    worksheetData.push([
+      "NO.",
+      "GERAI",
+      "NAMA",
+      "POSISI",
+      "ALAMAT",
+      "WAKTU",
+      "SHIFT",
+    ]);
 
     let counterPulang = 1;
     const pulangDataStartRow = worksheetData.length;
@@ -223,6 +236,7 @@ export default function RekapAbsensiKaryawan() {
             k.posisi,
             k.alamat,
             k.waktu,
+            k.shift,
           ]);
         });
       });
@@ -232,7 +246,15 @@ export default function RekapAbsensiKaryawan() {
     const lemburTitleRow = worksheetData.length;
     worksheetData.push(["ABSEN KARYAWAN LEMBUR"]);
     const lemburHeaderRow = worksheetData.length;
-    worksheetData.push(["NO.", "GERAI", "NAMA", "POSISI", "ALAMAT", "WAKTU"]);
+    worksheetData.push([
+      "NO.",
+      "GERAI",
+      "NAMA",
+      "POSISI",
+      "ALAMAT",
+      "WAKTU",
+      "SHIFT",
+    ]);
 
     let counterLembur = 1;
     const lemburDataStartRow = worksheetData.length;
@@ -247,6 +269,7 @@ export default function RekapAbsensiKaryawan() {
             k.posisi,
             k.alamat,
             k.waktu,
+            k.shift,
           ]);
         });
       });
@@ -258,7 +281,15 @@ export default function RekapAbsensiKaryawan() {
       izinTitleRow = worksheetData.length;
       worksheetData.push(["ABSEN KARYAWAN IZIN"]);
       izinHeaderRow = worksheetData.length;
-      worksheetData.push(["NO.", "GERAI", "NAMA", "ALASAN", "ALAMAT", "WAKTU"]);
+      worksheetData.push([
+        "NO.",
+        "GERAI",
+        "NAMA",
+        "ALASAN",
+        "ALAMAT",
+        "WAKTU",
+        "SHIFT",
+      ]);
 
       let counterIzin = 1;
       izinDataStartRow = worksheetData.length;
@@ -273,6 +304,7 @@ export default function RekapAbsensiKaryawan() {
               k.alasan,
               k.alamat,
               k.waktu,
+              k.shift,
             ]);
           });
         });
@@ -311,6 +343,7 @@ export default function RekapAbsensiKaryawan() {
       { wch: 25 }, // POSISI/ALASAN
       { wch: 60 }, // ALAMAT
       { wch: 10 }, // WAKTU
+      { wch: 10 }, // SHIFT
     ];
 
     // Initialize merges
@@ -435,13 +468,13 @@ export default function RekapAbsensiKaryawan() {
       },
     };
 
-    // Apply styles - Title
-    for (let col = 0; col < 6; col++) {
+    // Apply styles - Title (sekarang 7 kolom karena ada SHIFT)
+    for (let col = 0; col < 7; col++) {
       applyCellStyle(getCellRef(0, col), titleStyle);
     }
 
     // Apply styles - Karyawan Masuk
-    for (let col = 0; col < 6; col++) {
+    for (let col = 0; col < 7; col++) {
       applyCellStyle(
         getCellRef(masukTitleRow, col),
         sectionTitleStyle(COLORS.LIGHT_GREEN),
@@ -463,7 +496,7 @@ export default function RekapAbsensiKaryawan() {
             ? lateRowStyle
             : onTimeRowStyle;
 
-          for (let col = 0; col < 6; col++) {
+          for (let col = 0; col < 7; col++) {
             applyCellStyle(getCellRef(currentRow, col), styleToApply);
           }
           masukRowIndex++;
@@ -471,7 +504,7 @@ export default function RekapAbsensiKaryawan() {
       });
 
     // Apply styles - Karyawan Pulang
-    for (let col = 0; col < 6; col++) {
+    for (let col = 0; col < 7; col++) {
       applyCellStyle(
         getCellRef(pulangTitleRow, col),
         sectionTitleStyle(COLORS.LIGHT_GREEN),
@@ -482,13 +515,13 @@ export default function RekapAbsensiKaryawan() {
       );
     }
     for (let row = pulangDataStartRow; row < lemburTitleRow - 1; row++) {
-      for (let col = 0; col < 6; col++) {
+      for (let col = 0; col < 7; col++) {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
       }
     }
 
     // Apply styles - Karyawan Lembur
-    for (let col = 0; col < 6; col++) {
+    for (let col = 0; col < 7; col++) {
       applyCellStyle(
         getCellRef(lemburTitleRow, col),
         sectionTitleStyle(COLORS.LIGHT_YELLOW),
@@ -498,18 +531,17 @@ export default function RekapAbsensiKaryawan() {
         tableHeaderStyle(COLORS.YELLOW, COLORS.BLACK),
       );
     }
-
     const lemburEndRow =
       karyawanIzin.length > 0 ? izinTitleRow! - 1 : tidakMasukTitleRow - 1;
     for (let row = lemburDataStartRow; row < lemburEndRow; row++) {
-      for (let col = 0; col < 6; col++) {
+      for (let col = 0; col < 7; col++) {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
       }
     }
 
     // Apply styles - Karyawan Izin (BARU)
     if (karyawanIzin.length > 0) {
-      for (let col = 0; col < 6; col++) {
+      for (let col = 0; col < 7; col++) {
         applyCellStyle(
           getCellRef(izinTitleRow!, col),
           sectionTitleStyle(COLORS.LIGHT_BLUE),
@@ -519,48 +551,51 @@ export default function RekapAbsensiKaryawan() {
           tableHeaderStyle(COLORS.BLUE, COLORS.WHITE),
         );
       }
+
       for (let row = izinDataStartRow!; row < tidakMasukTitleRow - 1; row++) {
-        for (let col = 0; col < 6; col++) {
+        for (let col = 0; col < 7; col++) {
           applyCellStyle(getCellRef(row, col), dataRowStyle);
         }
       }
     }
 
-    // Apply styles - Karyawan Tidak Masuk
+    // Apply styles - Karyawan Tidak Masuk (tetap 4 kolom, tidak ada data shift)
     for (let col = 0; col < 4; col++) {
       applyCellStyle(
         getCellRef(tidakMasukTitleRow, col),
         sectionTitleStyle(COLORS.LIGHT_RED),
       );
+
       applyCellStyle(
         getCellRef(tidakMasukHeaderRow, col),
         tableHeaderStyle(COLORS.RED, COLORS.WHITE),
       );
     }
+
     for (let row = tidakMasukDataStartRow; row < worksheetData.length; row++) {
       for (let col = 0; col < 4; col++) {
         applyCellStyle(getCellRef(row, col), dataRowStyle);
       }
     }
-    // Add merges for titles
-    getMerges().push({ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } });
+    // Add merges for titles (sekarang sampai kolom index 6 karena 7 kolom)
+    getMerges().push({ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } });
     getMerges().push({
       s: { r: masukTitleRow, c: 0 },
-      e: { r: masukTitleRow, c: 5 },
+      e: { r: masukTitleRow, c: 6 },
     });
     getMerges().push({
       s: { r: pulangTitleRow, c: 0 },
-      e: { r: pulangTitleRow, c: 5 },
+      e: { r: pulangTitleRow, c: 6 },
     });
     getMerges().push({
       s: { r: lemburTitleRow, c: 0 },
-      e: { r: lemburTitleRow, c: 5 },
+      e: { r: lemburTitleRow, c: 6 },
     });
 
     if (karyawanIzin.length > 0) {
       getMerges().push({
         s: { r: izinTitleRow!, c: 0 },
-        e: { r: izinTitleRow!, c: 5 },
+        e: { r: izinTitleRow!, c: 6 },
       });
     }
 
@@ -646,10 +681,8 @@ export default function RekapAbsensiKaryawan() {
       });
     // Add worksheet to workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Absensi");
-
     // Generate filename
     const filename = `Rekap_Absensi_${formattedDate}.xlsx`;
-    
     // Download file
     XLSX.writeFile(workbook, filename);
   };
@@ -698,8 +731,8 @@ export default function RekapAbsensiKaryawan() {
               setSelectedBranch(e.target.value);
             }}
           >
-            {branches.map((branch,index) => (
-              <option key={branch+index} value={branch}>
+            {branches.map((branch, index) => (
+              <option key={branch + index} value={branch}>
                 {branch}
               </option>
             ))}
@@ -755,6 +788,14 @@ export default function RekapAbsensiKaryawan() {
                         <p className="text-sm tablet:text-lg">
                           {absensi.alamat.substring(0, 50)}..
                         </p>
+                        <span className="flex gap-2">
+                          <p className="font-semibold text-sm tablet:text-lg">
+                            Shift :{" "}
+                          </p>
+                          <p className="text-sm tablet:text-lg">
+                            {absensi.shift}
+                          </p>
+                        </span>
                         {index == 0 ? (
                           <p
                             className={`text-sm font-semibold tablet:text-lg ${

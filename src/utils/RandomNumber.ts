@@ -20,7 +20,7 @@ export class RandomDigits {
    */
   static generate(
     length: number = 9,
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): string {
     if (length <= 0) throw new Error("Length must be positive");
 
@@ -49,7 +49,7 @@ export class RandomDigits {
   static generateMultiple(
     count: number = 5,
     length: number = 9,
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): string[] {
     const results: string[] = [];
     for (let i = 0; i < count; i++) {
@@ -70,7 +70,7 @@ export class RandomDigits {
     length: number = 9,
     minDigit: number = 0,
     maxDigit: number = 9,
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): string {
     if (length <= 0) throw new Error("Length must be positive");
     if (minDigit < 0 || minDigit > 9) throw new Error("MinDigit must be 0-9");
@@ -103,11 +103,10 @@ export class RandomDigits {
    */
   static generateWithPattern(
     pattern: string = "XXXXXXXXX",
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): string {
     let result = "";
     let isFirstDigitInGroup = true;
-
     for (let i = 0; i < pattern.length; i++) {
       const char = pattern[i];
       if (char === "X" || char === "x") {
@@ -145,7 +144,7 @@ export class RandomDigits {
    */
   static generateId(
     length: number = 10,
-    includeHyphens: boolean = false
+    includeHyphens: boolean = false,
   ): string {
     if (includeHyphens && length >= 6) {
       const pattern = "XXX-XX-" + "X".repeat(length - 5);
@@ -177,7 +176,7 @@ export class RandomDigits {
         length,
         minDigit,
         maxDigit,
-        allowLeadingZero
+        allowLeadingZero,
       );
     }
 
@@ -192,7 +191,7 @@ export class RandomDigits {
    */
   static generateAsNumber(
     length: number = 9,
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): number {
     const digitString = this.generate(length, allowLeadingZero);
     return parseInt(digitString, 10);
@@ -206,7 +205,7 @@ export class RandomDigits {
    */
   static generateAsArray(
     length: number = 9,
-    allowLeadingZero: boolean = false
+    allowLeadingZero: boolean = false,
   ): number[] {
     const digitString = this.generate(length, allowLeadingZero);
     return digitString.split("").map((d) => parseInt(d, 10));
@@ -216,12 +215,9 @@ export class RandomDigits {
 // Usage examples and tests
 export function examples() {
   // Basic generation like "685556676"
-  for (let i = 0; i < 5; i++) {
-   
-  }
-  
-  for (let i = 0; i < 3; i++) {
-   }
+  for (let i = 0; i < 5; i++) {}
+
+  for (let i = 0; i < 3; i++) {}
 }
 
 // Export default

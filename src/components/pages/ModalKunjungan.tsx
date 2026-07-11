@@ -11,11 +11,12 @@ export default function ModalKunjungan(data: any) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
+  
   function handleSubmit(e: any) {
     e.preventDefault();
     if (!data.data.alamat) {
       return alert(
-        "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!"
+        "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!",
       );
     }
     dispatch(setIsLoading());
@@ -30,6 +31,7 @@ export default function ModalKunjungan(data: any) {
       }, 1000);
     });
   }
+  
   return (
     <main className="bg-black/50 w-full min-h-full fixed z-10 justify-center items-center flex">
       <form

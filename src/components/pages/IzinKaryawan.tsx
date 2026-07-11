@@ -141,7 +141,6 @@ const IzinKaryawan = () => {
       title: "Alasan Izin Kerja",
       html: `
           <p style="font-size: 20px;font-style: italic;">Silakan isi alasan izin kerja</p>
-          
         <input id="alasan" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
         </input>
       `,
@@ -283,48 +282,6 @@ const IzinKaryawan = () => {
         </div>
       </div>
       <div className="p-4">
-        {/* <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
-          {arrayFeature.map((item, index) => (
-            <div key={index}>
-              {item.text != "Kunjungan" && (
-                <div>
-                  <Link
-                    to={item.link}
-                    className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em]"
-                  >
-                    <div className="flex justify-center text-2xl">
-                      {item.icon}
-                    </div>
-                    <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
-                      {item.text}
-                    </div>
-                  </Link>
-                </div>
-              )}
-              {item.text == "Kunjungan" && (
-                <div
-                  className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
-                  onClick={() => {
-                    setIsCamera(true);
-                    if (location.length == 0) {
-                      return alert(
-                        "TUNGGU SAMPAI LOKASI ANDA MUNCUL DI BAWAH KANAN HALAMAN! NYALAKAN GPS ANDA TERLEBIH DAHULU!",
-                      );
-                    }
-                    setIsKunjungan(true);
-                  }}
-                >
-                  <div className="flex justify-center text-2xl">
-                    {item.icon}
-                  </div>
-                  <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
-                    {item.text}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div> */}
         <Location onLocationUpdate={handleLocationUpdate} />
         {isCamera && <Camera></Camera>}
         <div className="text-center text-xl text-green-700 font-bold mt-12 mb-4 flex flex-col items-center justify-center gap-2">
@@ -332,7 +289,7 @@ const IzinKaryawan = () => {
           <span className="text-sm flex gap-3">
             <span className="flex gap-1 bg-yellow-400 p-2 rounded-full">
               {" "}
-              <Clock8></Clock8> <p>08.00</p>
+            <Clock8></Clock8> <p>08.00</p>
             </span>
             <span className="flex gap-1 bg-yellow-400 p-2 rounded-full">
               <Clock5></Clock5> <p>17.00</p>

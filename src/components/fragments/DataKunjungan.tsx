@@ -9,13 +9,13 @@ export default function DataKunjungan({ email }: any) {
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
   const [data, setData] = useState<any>([]);
-
   useEffect(() => {
     getDataKunjungan("kunjungan-karyawan-" + formattedDate).then((res: any) => {
       const data = res.filter((result: any) => result.email == email);
       setData(data);
     });
   }, []);
+  
   return (
     <>
     {data.length>0&&(<main className="bg-yellow-400 rounded-lg py-4 px-5 mt-5">

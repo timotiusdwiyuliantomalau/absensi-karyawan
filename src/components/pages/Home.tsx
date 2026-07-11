@@ -47,6 +47,7 @@ const Home = () => {
   const [isKunjungan, setIsKunjungan] = useState(false);
   const [overtimePresent, setOvertimePresent] = useState(false);
   const [isOvertime, setIsOvertime] = useState(false);
+  const [shift, setShift] = useState<number>(0);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
   let arrayFeature = [
     {
@@ -55,7 +56,7 @@ const Home = () => {
       link: "/",
     },
     { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-    { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
+    { icon: <FaCalendarAlt />, text: "Izin Kerja", link: "https://docs.google.com/forms/d/e/1FAIpQLScMMATPyhqADbmVOdqjbPLvEBPxuuURlK_K7BSVxwgkE1k_Mw/viewform" },
   ];
   let isAuthorize = [
     "rivkigunawan88@gmail.com",
@@ -116,7 +117,6 @@ const Home = () => {
       return;
     }
     if (imgURL.length > 0) {
-      console.log(imgURL);
       setIsSubmit(true);
       setIsCamera(false);
       setHasAbsent(true);
@@ -134,6 +134,7 @@ const Home = () => {
           waktu: currentTime,
           img: imgURL,
           overtime: overtimePresent ? "yes" : "no",
+          shift,
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -141,18 +142,18 @@ const Home = () => {
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan, overtimePresent]);
+  }, [imgURL, isKunjungan, overtimePresent, shift]);
 
   const handleAbsent = useCallback((): void => {
-    if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
-      const showAbsenForm = async (): Promise<void> => {
+    if (myProfile?.divisi.includes("CS")) {
+      const showShiftForm = async (): Promise<void> => {
         const { value: formValues } = await Swal.fire<any>({
-          title: "Absen Pulang / Lembur?",
+          title: "Shift CS",
           html: `
         <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
-          <option value="">-- Pilih Jenis Absen --</option>
-          <option value="lembur">Absen Lembur</option>
-          <option value="pulang">Absen Pulang</option>
+          <option value="">-- Pilih Shift CS --</option>
+          <option value=1>Shift 1</option>
+          <option value=2>Shift 2</option>
         </select>
       `,
           focusConfirm: false,
@@ -171,22 +172,61 @@ const Home = () => {
               return false;
             }
             return {
-              jenisAbsen: selectValue,
+              shift: selectValue,
             };
           },
         });
         if (formValues) {
-          formValues.jenisAbsen === "lembur"
-            ? setOvertimePresent(true)
-            : setOvertimePresent(false);
-          return setIsCamera(true);
+          setShift(formValues.shift);
+          if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
+            const showAbsenForm = async (): Promise<void> => {
+              const { value: formValues } = await Swal.fire<any>({
+                title: "Absen Pulang / Lembur?",
+                html: `
+        <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+          <option value="">-- Pilih Jenis Absen --</option>
+          <option value="lembur">Absen Lembur</option>
+          <option value="pulang">Absen Pulang</option>
+        </select>
+      `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: "Submit",
+                cancelButtonText: "Batal",
+                confirmButtonColor: "#667eea",
+                cancelButtonColor: "#d33",
+                preConfirm: () => {
+                  const selectElement = document.getElementById(
+                    "swal-select",
+                  ) as HTMLSelectElement;
+                  const selectValue = selectElement?.value;
+                  if (!selectValue) {
+                    Swal.showValidationMessage("Silakan pilih jenis absen!");
+                    return false;
+                  }
+                  return {
+                    jenisAbsen: selectValue,
+                  };
+                },
+              });
+              if (formValues) {
+                formValues.jenisAbsen === "lembur"
+                  ? setOvertimePresent(true)
+                  : setOvertimePresent(false);
+                return setIsCamera(true);
+              }
+            };
+            showAbsenForm();
+          } else {
+            setIsCamera(true);
+          }
+        } else {
+          setShift(0);
         }
       };
-      showAbsenForm();
-    } else {
-      setIsCamera(true);
+      showShiftForm();
     }
-  }, [currentTime, isOvertime]);
+  }, [currentTime, isOvertime, myProfile]);
 
   const handleLocationUpdate = (address: string) => {
     setLocation(address);
@@ -239,7 +279,6 @@ const Home = () => {
               <div className="text-lg ">{myProfile?.divisi.toUpperCase()}</div>
             </div>
           </div>
-
           <div className="text-md font-bold flex gap-2 items-center">
             <FaCalendar className="text-2xl" />
             <p className="text-[10] ">{tanggalHariIni}</p>
@@ -248,7 +287,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            disabled={hasAbsent}
+            // disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -267,11 +306,10 @@ const Home = () => {
         <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
           {arrayFeature.map((item, index) => (
             <div key={index}>
-              {item.text != "Kunjungan" && item.text != "Izin" ? (
                 <div>
                   <Link
                     to={item.link}
-                    className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em]"
+                    className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em] cursor-pointer"
                   >
                     <div className="flex justify-center text-2xl">
                       {item.icon}
@@ -281,37 +319,6 @@ const Home = () => {
                     </div>
                   </Link>
                 </div>
-              ) : (
-                <div
-                  onClick={() => {
-                    Swal.fire({
-                      title: "Perhatian",
-                      text: "Anda harus menghubungi Whatsapp HR",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#25D366",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText:
-                        '<i class="fab fa-whatsapp"></i>WA Sekarang',
-                      cancelButtonText: "Batal",
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        // Redirect ke WhatsApp HR
-                        // Ganti nomor dengan nomor WA HR Anda
-                        window.open("https://wa.me/6283852800508", "_blank");
-                      }
-                    });
-                  }}
-                  className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em]"
-                >
-                  <div className="flex justify-center text-2xl">
-                    {item.icon}
-                  </div>
-                  <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
-                    {item.text}
-                  </div>
-                </div>
-              )}
               {item.text == "Kunjungan" && (
                 <div
                   className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
@@ -367,11 +374,11 @@ const Home = () => {
                     {index == 0 ? (
                       <div
                         className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${
-                          item.waktu < jamMasuk ? "bg-green-500" : "bg-red-500"
+                          item.waktu < jamMasuk ? "bg-green-600" : "bg-red-500"
                         }`}
                       >
-                        <span className="font-bold py-2">
-                          {index == 0 ? "Absen Masuk" : "Absen"}
+                       <span className="flex items-center gap-1 font-bold py-2">
+                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="font-bold text-yellow-400">{item.shift && `(SHIFT ${item.shift})`}</span>
                         </span>
                         <span className="text-xs tablet:text-sm font-semibold">
                           {item.waktu > jamMasuk && <p>Terlambat</p>}
@@ -381,14 +388,16 @@ const Home = () => {
                     ) : (
                       <div
                         key={index}
-                        className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-500`}
+                        className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-600`}
                       >
                         <span className="font-bold py-2">
-                          {index == 0 ? "Absen Masuk" : "Absen Pulang"}
+                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="text-yellow-400 font-bold">{item.shift && `(SHIFT ${item.shift})`}</span>
                         </span>
+
                         <span className="text-xs tablet:text-sm font-semibold">
                           <span className="font-semibold">{item.waktu}</span>
                         </span>
+
                       </div>
                     )}
                     <div></div>

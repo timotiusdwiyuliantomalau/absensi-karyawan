@@ -64,6 +64,7 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     alasan_izin_kerja: data.alasan_izin_kerja,
     overtime: data.overtime,
     img: data.img,
+    shift: data.shift
   }:{
     email: data.email.toLowerCase(),
     alamat: data.alamat,
@@ -71,7 +72,8 @@ export async function handleSubmitAbsensi(data: any, collectionName: string) {
     nama: data.nama,
     waktu: data.waktu,
     img: data.img,
-    overtime: data.overtime
+    overtime: data.overtime,
+    shift: data.shift
   };
   let snapshot = result.data();
   snapshot?.data.push(data);

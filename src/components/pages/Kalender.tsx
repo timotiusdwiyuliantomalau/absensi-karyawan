@@ -20,7 +20,6 @@ const Kalender = () => {
   const [events, setEvents] = useState<any>([]);
   const [newEvent, setNewEvent] = useState("");
   const [libur, setLibur] = useState<any>([]);
-
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
@@ -60,6 +59,7 @@ const Kalender = () => {
     const day = String(date.getDate());
     return `${year}-${month}-${day}`;
   }
+  
   useEffect(() => {
     getHariLibur().then((res) => {
       setLibur(res.data);
