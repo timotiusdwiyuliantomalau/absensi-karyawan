@@ -178,54 +178,55 @@ const Home = () => {
         });
         if (formValues) {
           setShift(formValues.shift);
-          if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
-            const showAbsenForm = async (): Promise<void> => {
-              const { value: formValues } = await Swal.fire<any>({
-                title: "Absen Pulang / Lembur?",
-                html: `
-        <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
-          <option value="">-- Pilih Jenis Absen --</option>
-          <option value="lembur">Absen Lembur</option>
-          <option value="pulang">Absen Pulang</option>
-        </select>
-      `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: "Submit",
-                cancelButtonText: "Batal",
-                confirmButtonColor: "#667eea",
-                cancelButtonColor: "#d33",
-                preConfirm: () => {
-                  const selectElement = document.getElementById(
-                    "swal-select",
-                  ) as HTMLSelectElement;
-                  const selectValue = selectElement?.value;
-                  if (!selectValue) {
-                    Swal.showValidationMessage("Silakan pilih jenis absen!");
-                    return false;
-                  }
-                  return {
-                    jenisAbsen: selectValue,
-                  };
-                },
-              });
-              if (formValues) {
-                formValues.jenisAbsen === "lembur"
-                  ? setOvertimePresent(true)
-                  : setOvertimePresent(false);
-                return setIsCamera(true);
-              }
-            };
-            showAbsenForm();
-          } else {
-            setIsCamera(true);
-          }
+          return setIsCamera(true);        
         } else {
           setShift(0);
         }
       };
       showShiftForm();
     }
+    else if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
+          const showAbsenForm = async (): Promise<void> => {
+            const { value: formValues } = await Swal.fire<any>({
+              title: "Absen Pulang / Lembur?",
+              html: `
+      <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+        <option value="">-- Pilih Jenis Absen --</option>
+        <option value="lembur">Absen Lembur</option>
+        <option value="pulang">Absen Pulang</option>
+      </select>
+    `,
+              focusConfirm: false,
+              showCancelButton: true,
+              confirmButtonText: "Submit",
+              cancelButtonText: "Batal",
+              confirmButtonColor: "#667eea",
+              cancelButtonColor: "#d33",
+              preConfirm: () => {
+                const selectElement = document.getElementById(
+                  "swal-select",
+                ) as HTMLSelectElement;
+                const selectValue = selectElement?.value;
+                if (!selectValue) {
+                  Swal.showValidationMessage("Silakan pilih jenis absen!");
+                  return false;
+                }
+                return {
+                  jenisAbsen: selectValue,
+                };
+              },
+            });
+            if (formValues) {
+              formValues.jenisAbsen === "lembur"
+                ? setOvertimePresent(true)
+                : setOvertimePresent(false);
+              return setIsCamera(true);
+            }
+          };
+          showAbsenForm();
+        } else {
+          setIsCamera(true);
+        }
   }, [currentTime, isOvertime, myProfile]);
 
   const handleLocationUpdate = (address: string) => {
@@ -391,7 +392,7 @@ const Home = () => {
                         className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-600`}
                       >
                         <span className="font-bold py-2">
-                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="text-yellow-400 font-bold">{item.shift && `(SHIFT ${item.shift})`}</span>
+                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="text-yellow-400 font-bold">{item.shift!=0 && `(SHIFT ${item.shift})`}</span>
                         </span>
 
                         <span className="text-xs tablet:text-sm font-semibold">
