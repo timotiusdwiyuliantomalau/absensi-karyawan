@@ -53,6 +53,7 @@ const Kalender = () => {
     }
   };
 
+  
   function formatDate(date: any) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -65,6 +66,7 @@ const Kalender = () => {
       setLibur(res.data);
     });
   }, []);
+
   const MONTH =
     currentDate.getMonth().toString().length < 2
       ? "0" + (currentDate.getMonth() + 1).toString()

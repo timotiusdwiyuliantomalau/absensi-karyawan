@@ -45,7 +45,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const isModal = useSelector((state: any) => state.slice.isModal);
   const [isKunjungan, setIsKunjungan] = useState(false);
-  const [overtimePresent, setOvertimePresent] = useState(false);
   const [isOvertime, setIsOvertime] = useState(false);
   const [shift, setShift] = useState<number>(0);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
@@ -133,8 +132,8 @@ const Home = () => {
           alamat: location,
           waktu: currentTime,
           img: imgURL,
-          overtime: overtimePresent ? "yes" : "no",
-          shift,
+          overtime:"no",
+          shift: shift!=0 ? shift : null,
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -142,7 +141,7 @@ const Home = () => {
         window.location.reload();
       });
     }
-  }, [imgURL, isKunjungan, overtimePresent, shift]);
+  }, [imgURL, isKunjungan, shift]);
 
   const handleAbsent = useCallback((): void => {
     if (myProfile?.divisi.includes("CS")) {
@@ -185,48 +184,51 @@ const Home = () => {
       };
       showShiftForm();
     }
-    else if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
-          const showAbsenForm = async (): Promise<void> => {
-            const { value: formValues } = await Swal.fire<any>({
-              title: "Absen Pulang / Lembur?",
-              html: `
-      <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
-        <option value="">-- Pilih Jenis Absen --</option>
-        <option value="lembur">Absen Lembur</option>
-        <option value="pulang">Absen Pulang</option>
-      </select>
-    `,
-              focusConfirm: false,
-              showCancelButton: true,
-              confirmButtonText: "Submit",
-              cancelButtonText: "Batal",
-              confirmButtonColor: "#667eea",
-              cancelButtonColor: "#d33",
-              preConfirm: () => {
-                const selectElement = document.getElementById(
-                  "swal-select",
-                ) as HTMLSelectElement;
-                const selectValue = selectElement?.value;
-                if (!selectValue) {
-                  Swal.showValidationMessage("Silakan pilih jenis absen!");
-                  return false;
-                }
-                return {
-                  jenisAbsen: selectValue,
-                };
-              },
-            });
-            if (formValues) {
-              formValues.jenisAbsen === "lembur"
-                ? setOvertimePresent(true)
-                : setOvertimePresent(false);
-              return setIsCamera(true);
-            }
-          };
-          showAbsenForm();
-        } else {
-          setIsCamera(true);
-        }
+    // else if (currentTime >= "18:00" && !isOvertime && currentTime <= "18:15") {
+    //       const showAbsenForm = async (): Promise<void> => {
+    //         const { value: formValues } = await Swal.fire<any>({
+    //           title: "Absen Pulang / Lembur?",
+    //           html: `
+    //   <select id="swal-select" class="swal2-input" style="width: 80%; padding: 10px; font-size: 16px;">
+    //     <option value="">-- Pilih Jenis Absen --</option>
+    //     <option value="lembur">Absen Lembur</option>
+    //     <option value="pulang">Absen Pulang</option>
+    //   </select>
+    // `,
+    //           focusConfirm: false,
+    //           showCancelButton: true,
+    //           confirmButtonText: "Submit",
+    //           cancelButtonText: "Batal",
+    //           confirmButtonColor: "#667eea",
+    //           cancelButtonColor: "#d33",
+    //           preConfirm: () => {
+    //             const selectElement = document.getElementById(
+    //               "swal-select",
+    //             ) as HTMLSelectElement;
+    //             const selectValue = selectElement?.value;
+    //             if (!selectValue) {
+    //               Swal.showValidationMessage("Silakan pilih jenis absen!");
+    //               return false;
+    //             }
+    //             return {
+    //               jenisAbsen: selectValue,
+    //             };
+    //           },
+    //         });
+    //         if (formValues) {
+    //           formValues.jenisAbsen === "lembur"
+    //             ? setOvertimePresent(true)
+    //             : setOvertimePresent(false);
+    //           return setIsCamera(true);
+    //         }
+    //       };
+    //       showAbsenForm();
+    //     } else {
+    //       setIsCamera(true);
+    //     }
+    else {
+      setIsCamera(true);
+    }
   }, [currentTime, isOvertime, myProfile]);
 
   const handleLocationUpdate = (address: string) => {
@@ -293,7 +295,7 @@ const Home = () => {
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
           >
-            {currentTime <= jamPulang ? "Absen Masuk" : "Absensi Pulang"}
+            Absen Sekarang
           </button>
         </div>
         <div className="flex justify-center mt-10">
@@ -379,7 +381,7 @@ const Home = () => {
                         }`}
                       >
                        <span className="flex items-center gap-1 font-bold py-2">
-                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="font-bold text-yellow-400">{item.shift && `(SHIFT ${item.shift})`}</span>
+                          Telah Absen <span></span><span className="font-bold text-yellow-400">{item.shift && `(SHIFT ${item.shift})`}</span>
                         </span>
                         <span className="text-xs tablet:text-sm font-semibold">
                           {item.waktu > jamMasuk && <p>Terlambat</p>}
@@ -392,7 +394,7 @@ const Home = () => {
                         className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-600`}
                       >
                         <span className="font-bold py-2">
-                          {index == 0 ? "Absen Masuk" : "Absen Pulang"} <span></span><span className="text-yellow-400 font-bold">{item.shift!=0 && `(SHIFT ${item.shift})`}</span>
+                          Telah Absen <span></span><span className="text-yellow-400 font-bold">{item.shift&&item.shift!=0 && `(SHIFT ${item.shift})`}</span>
                         </span>
 
                         <span className="text-xs tablet:text-sm font-semibold">
