@@ -55,7 +55,11 @@ const Home = () => {
       link: "/",
     },
     { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-    { icon: <FaCalendarAlt />, text: "Izin Kerja", link: "https://docs.google.com/forms/d/e/1FAIpQLScMMATPyhqADbmVOdqjbPLvEBPxuuURlK_K7BSVxwgkE1k_Mw/viewform" },
+    {
+      icon: <FaCalendarAlt />,
+      text: "Izin Kerja",
+      link: "https://docs.google.com/forms/d/e/1FAIpQLScMMATPyhqADbmVOdqjbPLvEBPxuuURlK_K7BSVxwgkE1k_Mw/viewform",
+    },
   ];
   let isAuthorize = [
     "rivkigunawan88@gmail.com",
@@ -132,8 +136,8 @@ const Home = () => {
           alamat: location,
           waktu: currentTime,
           img: imgURL,
-          overtime:"no",
-          shift: shift!=0 ? shift : null,
+          overtime: "no",
+          shift: shift != 0 ? shift : null,
         },
         "absensi-karyawan-" + formattedDate,
       ).then((res: any) => {
@@ -177,7 +181,7 @@ const Home = () => {
         });
         if (formValues) {
           setShift(formValues.shift);
-          return setIsCamera(true);        
+          return setIsCamera(true);
         } else {
           setShift(0);
         }
@@ -290,7 +294,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            disabled={hasAbsent}
+            // disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -309,19 +313,19 @@ const Home = () => {
         <div className="flex text-center text-black mb-5 justify-center items-center gap-4">
           {arrayFeature.map((item, index) => (
             <div key={index}>
-                <div>
-                  <Link
-                    to={item.link}
-                    className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em] cursor-pointer"
-                  >
-                    <div className="flex justify-center text-2xl">
-                      {item.icon}
-                    </div>
-                    <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
-                      {item.text}
-                    </div>
-                  </Link>
-                </div>
+              <div>
+                <Link
+                  to={item.link}
+                  className="bg-white p-4 rounded-lg flex flex-col w-[4em] tablet:w-32 desktop:w-[15em] cursor-pointer"
+                >
+                  <div className="flex justify-center text-2xl">
+                    {item.icon}
+                  </div>
+                  <div className="mt-2 text-xs tablet:text-sm font-medium h-5 flex items-center justify-center">
+                    {item.text}
+                  </div>
+                </Link>
+              </div>
               {item.text == "Kunjungan" && (
                 <div
                   className="bg-white p-4 rounded-lg flex flex-col cursor-pointer w-[4em] tablet:w-32 desktop:w-[15em]"
@@ -380,8 +384,11 @@ const Home = () => {
                           item.waktu < jamMasuk ? "bg-green-600" : "bg-red-500"
                         }`}
                       >
-                       <span className="flex items-center gap-1 font-bold py-2">
-                          Telah Absen <span></span><span className="font-bold text-yellow-400">{item.shift && `(SHIFT ${item.shift})`}</span>
+                        <span className="flex items-center gap-1 font-bold py-2">
+                          Telah Absen <span></span>
+                          <span className="font-bold text-yellow-400">
+                            {item.shift && `(SHIFT ${item.shift})`}
+                          </span>
                         </span>
                         <span className="text-xs tablet:text-sm font-semibold">
                           {item.waktu > jamMasuk && <p>Terlambat</p>}
@@ -394,13 +401,17 @@ const Home = () => {
                         className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-600`}
                       >
                         <span className="font-bold py-2">
-                          Telah Absen <span></span><span className="text-yellow-400 font-bold">{item.shift&&item.shift!=0 && `(SHIFT ${item.shift})`}</span>
+                          Telah Absen <span></span>
+                          <span className="text-yellow-400 font-bold">
+                            {item.shift &&
+                              item.shift != 0 &&
+                              `(SHIFT ${item.shift})`}
+                          </span>
                         </span>
 
                         <span className="text-xs tablet:text-sm font-semibold">
                           <span className="font-semibold">{item.waktu}</span>
                         </span>
-
                       </div>
                     )}
                     <div></div>

@@ -27,6 +27,7 @@ const Kalender = () => {
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));
   };
+  
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)));
@@ -79,7 +80,7 @@ const Kalender = () => {
       </h1>
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center jus  tify-between">
         <p className="text-center flex gap-2 items-center text-sm font-semibold text-blue-500 bg-white">
           {tanggalHariIni}
         </p>
