@@ -45,6 +45,7 @@ const Location = ({ onLocationUpdate }: LocationProps) => {
       setError("Geolocation is not supported by your browser");
     }
   }, [onLocationUpdate]);
+  
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }

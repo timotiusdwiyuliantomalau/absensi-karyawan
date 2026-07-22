@@ -9,6 +9,7 @@ export default function DataKunjungan({ email }: any) {
   const year = date.getFullYear();
   const formattedDate = `${day}-${month}-${year}`;
   const [data, setData] = useState<any>([]);
+  
   useEffect(() => {
     getDataKunjungan("kunjungan-karyawan-" + formattedDate).then((res: any) => {
       const data = res.filter((result: any) => result.email == email);

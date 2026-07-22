@@ -64,7 +64,7 @@ const DaftarKaryawan = () => {
         setDaftarKaryawan(listKaryawan);
       }
     });
-  }, [selectedBranch]); // Dependency pada selectedBranch saja
+  }, [selectedBranch]);
 
   return (
     <div className="min-h-screen bg-gray-50">

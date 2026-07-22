@@ -36,42 +36,8 @@ const IzinKaryawan = () => {
   const imgURL = useSelector((state: any) => state.slice.imgURL);
   const isModal = useSelector((state: any) => state.slice.isModal);
   const [alasanIzinKerja, setAlasanIzinKerja] = useState<string>("");
-  // const dispatch = useDispatch();
-  // const [isKunjungan, setIsKunjungan] = useState(false);
-  // const [overtimePresent, setOvertimePresent] = useState(false);
-  // const [isOvertime, setIsOvertime] = useState(false);
   const isLoading = useSelector((state: RootState) => state.slice.isLoading);
-  // let arrayFeature = [
-  //   {
-  //     icon: <FaUsers />,
-  //     text: "Daftar Karyawan",
-  //     link: "/",
-  //   },
-  //   { icon: <FaCalendar />, text: "Kalender", link: "/kalender" },
-  //   { icon: <FaCalendarAlt />, text: "Izin", link: "/" },
-  // ];
-  // let isAuthorize = [
-  //   "rivkigunawan88@gmail.com",
-  //   "sardigunawangarage@gmail.com",
-  //   "angjarwo05@gmail.com",
-  //   "ruhyatdede767@gmail.com",
-  //   "robbyr673@gmail.com",
-  //   "teguhpriyanto387@gmail.com",
-  //   "david.bongkeng0069@gmail.com",
-  //   "davin.ggmedia@gmail.com",
-  //   "aulyasari85@gmail.com",
-  //   "jokowaloyo1999@gmail.com",
-  //   "xii8a.timotiusdym20@gmail.com",
-  // ];
-  // isAuthorize.forEach((karyawan: any) => {
-  //   karyawan == myProfile?.email &&
-  //     arrayFeature.push({
-  //       icon: <FaMapMarkedAlt />,
-  //       text: "Kunjungan",
-  //       link: "/kunjungan",
-  //     });
-  // });
-
+  
   useEffect(() => {
     const result = getCookie("myData");
     setMyProfile(JSON.parse(result || ""));

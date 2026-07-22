@@ -11,7 +11,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CalendarDays } from "lucide-react";
 import { tanggalHariIni } from "../../utils/tanggalSekarang";
 import { getHariLibur } from "../../firebase/service";
-// import Swal from "sweetalert2";
 
 const Kalender = () => {
   const [currentDate, setCurrentDate] = useState(new Date());

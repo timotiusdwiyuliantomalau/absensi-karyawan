@@ -255,10 +255,10 @@ const Home = () => {
       {isSubmit && <LoadingElement></LoadingElement>}
       <div className="bg-orange-500 text-white px-4 pt-4 pb-7 rounded-b-3xl flex flex-col">
         <div className="flex justify-between items-center">
-          <div className="flex items-center">
+          <div className="flex items-center">`
             <span className="p-[0.1em] bg-white rounded-full">
               <img src="./LOGO%20OFFICIAL.png" alt="Logo" className="w-8" />
-            </span>
+            </span>`
             <span className="ml-2 text-md font-bold text-black">
               Absensi Karyawan
             </span>
@@ -294,7 +294,7 @@ const Home = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={handleAbsent}
-            // disabled={hasAbsent}
+            disabled={hasAbsent}
             className={`bg-black text-white py-2 px-6 rounded-full text-lg font-semibold ${
               hasAbsent ? "opacity-40 cursor-not-allowed" : ""
             }`}
@@ -372,6 +372,7 @@ const Home = () => {
                   <div className="flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-yellow-500">
                     <span className="font-bold py-2">Izin Kerja</span>
                     <span className="text-xs tablet:text-sm font-semibold">
+                      
                       <p className="text-lg">{item.alasan_izin_kerja}</p>
                       <span className="font-semibold">{item.waktu}</span>
                     </span>
@@ -379,10 +380,24 @@ const Home = () => {
                 ) : item.overtime == "no" ? (
                   <div key={index}>
                     {index == 0 ? (
-                      <div
-                        className={`flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold ${
-                          item.waktu < jamMasuk ? "bg-green-600" : "bg-red-500"
-                        }`}
+                      <div>
+                     { item.waktu > jamMasuk && item.shift!=2 && !item.name.includes("davin")? (
+                          <div
+                        className={"flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-red-600"}
+                      >
+                        <span className="flex items-center gap-1 font-bold py-2">
+                          Terlambat <span></span>
+                          <span className="font-bold text-yellow-400">
+                            {item.shift && `(SHIFT ${item.shift})`}
+                          </span>
+                        </span>
+                        <span className="text-xs tablet:text-sm font-semibold">
+                          <span className="font-semibold">{item.waktu}</span>
+                        </span>
+                      </div>
+                      ):(
+                            <div
+                        className={"flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-green-600"}
                       >
                         <span className="flex items-center gap-1 font-bold py-2">
                           Telah Absen <span></span>
@@ -391,9 +406,11 @@ const Home = () => {
                           </span>
                         </span>
                         <span className="text-xs tablet:text-sm font-semibold">
-                          {item.waktu > jamMasuk && <p>Terlambat</p>}
                           <span className="font-semibold">{item.waktu}</span>
                         </span>
+                      </div>
+                      )
+                      }
                       </div>
                     ) : (
                       <div
