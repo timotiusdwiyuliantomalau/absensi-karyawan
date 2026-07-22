@@ -381,7 +381,7 @@ const Home = () => {
                   <div key={index}>
                     {index == 0 ? (
                       <div>
-                     { item.waktu > jamMasuk && item.shift!=2 && !item.name.includes("davin")? (
+                     { item.waktu > jamMasuk && item.shift!=2 && !(item.nama.toLowerCase().includes("davin"))? (
                           <div
                         className={"flex items-center justify-between text-white px-10 py-3 rounded-full shadow-xl gap-5 desktop:font-bold bg-red-600"}
                       >
